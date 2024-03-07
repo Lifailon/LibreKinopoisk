@@ -6,13 +6,11 @@
 
 Реализовано:
 
-- ☑️ Открытие плеера [Kinobox](https://kinomix.web.app) для просмотра выбранного фильма или сериала онлайн.
-- ☑️ Поиск трейлеров на [YouTube](https://youtube.com) по оригинальному названию.
-
-Планируется:
-
-- Добавить поддержику обновленной версии сайта [HD Кинопоиск](https://hd.kinopoisk.ru)
-- Поиск в треккерах и [IMDb](https://imdb.com)
+- ✅ Открытие плеера [Kinobox](https://kinomix.web.app) для просмотра выбранного фильма или сериала онлайн.
+- ✅ Поиск в [Кинозал](https://kinozal.tv) с фильтрацией по оригинальному названию и году выхода.
+- ✅ Поиск трейлеров на [YouTube](https://youtube.com) по оригинальному названию.
+- ❎ Поддержка обновленной версии сайта [HD Кинопоиск](https://hd.kinopoisk.ru).
+- ❎ Поиск в [IMDb](https://imdb.com) по id.
 
 ![Image alt](https://github.com/Lifailon/OpenKinopoisk/blob/rsa/image/kinopoisk-buttons.jpg)
 
