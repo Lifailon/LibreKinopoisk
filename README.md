@@ -24,4 +24,8 @@
 
 ![Image alt](https://github.com/Lifailon/OpenKinopoisk/blob/rsa/image/add-extension.jpg)
 
+- Сохраните свой токен API для доступа к дополнительному функционалу.
+
+> Данный функционал еще не реализован
+
 ![Image alt](https://github.com/Lifailon/OpenKinopoisk/blob/rsa/image/popup.jpg)
