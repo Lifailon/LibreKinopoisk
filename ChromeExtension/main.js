@@ -63,6 +63,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             buttonBlock.parentNode.insertBefore(KinozalButton, buttonBlock.nextSibling)
         }
 
+        // Извлекаем токен из локального хранилища
+        chrome.storage.local.get(['saveTokenKinopoisk'], function(result) {
+           var Token = result.saveTokenKinopoisk;
+        })
+        
         // Извлекаем идентификатора фильма из параметра с URL
         const kinopoiskID = url?.split('/')?.filter(itm => Number(itm)).pop()
         // Создание кнопки для перехода на Kinobox

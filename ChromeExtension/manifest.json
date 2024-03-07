@@ -11,6 +11,16 @@
     "256": "icons/icon256.png",
     "512": "icons/icon512.png"
   },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "32": "icons/icon32.png",
+      "64": "icons/icon64.png",
+      "128": "icons/icon128.png",
+      "256": "icons/icon256.png",
+      "512": "icons/icon512.png"
+    }
+  },
   "content_scripts": [
     {
       "matches": [
