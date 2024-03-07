@@ -10,9 +10,6 @@
 - ✅ Поиск в [Кинозал](https://kinozal.tv) с фильтрацией по оригинальному названию и году выхода.
 - ✅ Поиск трейлеров на [YouTube](https://youtube.com) по названию.
 - ✅ Передача токена через интерфейс расширения.
- 
-Планируется
-
 - ❎ Поддержка на сайта [Кинопоиск HD](https://hd.kinopoisk.ru).
 - ❎ Поиск в [IMDb](https://imdb.com) и в других ресурсах по id через API.
 
@@ -27,4 +24,4 @@
 
 ![Image alt](https://github.com/Lifailon/OpenKinopoisk/blob/rsa/image/add-extension.jpg)
 
-![Image alt](https://github.com/Lifailon/OpenKinopoisk/blob/rsa/image/poput.jpg)
+![Image alt](https://github.com/Lifailon/OpenKinopoisk/blob/rsa/image/popup.jpg)
