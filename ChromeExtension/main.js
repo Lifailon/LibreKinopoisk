@@ -19,13 +19,13 @@ document.addEventListener("DOMContentLoaded", async function () {
         el.style.marginRight = '10px' // отступ между кнопками
         el.style.marginTop = '25px' // отступ сверху
         el.style.marginBottom = '-10px' // отступ снизу
-        el.style.transition = 'transform 0.3s ease'; // добавляем transition для анимации
+        el.style.transition = 'transform 0.3s ease' // добавляем transition для анимации
         el.addEventListener('mouseenter', () => { // добавляем обработчик события для наведения курсора на кнопку
-            el.style.transform = 'scale(1.05)'; // увеличиваем размер кнопки при наведении
-        });
+            el.style.transform = 'scale(1.05)' // увеличиваем размер кнопки при наведении
+        })
         el.addEventListener('mouseleave', () => { // добавляем обработчик события для ухода курсора с кнопки
-            el.style.transform = 'scale(1)'; // возвращаем кнопку к исходному размеру
-        });
+            el.style.transform = 'scale(1)' // возвращаем кнопку к исходному размеру
+        })
         return el
     }
 
@@ -44,37 +44,58 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         // Добавить кнопки если находим оригинальное название
         if (title) {
-            // Поиск на YouTube
-            const YouTubeButton = newElementPadding({
-                tag: 'a',
-                id: 'YouTube-Button',
-                href: `https://www.youtube.com/results?search_query=${title}+Trailer`,
-                content: 'Трейлер',
-            })
-            YouTubeButton.setAttribute('target', '_blank')
-            buttonBlock.parentNode.insertBefore(YouTubeButton, buttonBlock.nextSibling)
-
             // Читаем массив и забираем год
             const yearElements = document.querySelectorAll('.styles_link__3QfAk')
             const yearElement = yearElements[0]
             const year = yearElement.textContent
 
+            // Извлекаем содержимое токена из интерфейса расширения (локального хранилища)
+            var Token
+            chrome.storage.local.get(['saveTokenKinopoisk'], function(result) {
+                var Token = result.saveTokenKinopoisk
+                // Google CSE (Custom Search Engine)
+                // const Token = '' // API-ключ
+                const cx = '35c78340f49eb474a' // ID поисковой системы 
+                // IMDb
+                const query = `${title} ${year} site:imdb.com` // Формируем запрос поиска с фильтрацией по сайту
+                const urlGoogleSearch = `https://www.googleapis.com/customsearch/v1?key=${Token}&cx=${cx}&q=${encodeURIComponent(query)}`
+                // Выполняем асинхронный запрос к API
+                fetch(urlGoogleSearch)
+                // Преобразует полученный ответ JSON в объект JavaScript
+                .then(response => response.json())
+                .then(data => {
+                    const IMDbGoogleButton = newElementPadding({
+                        tag: 'a',
+                        id: 'IMDb-Google-Button',
+                        href: data.items[0].link, // Забираем из содержимого массива поиска ссылку первого элемента
+                        content: 'IMDb'
+                    })
+                    IMDbGoogleButton.setAttribute('target', '_blank')
+                    buttonBlock.parentNode.insertBefore(IMDbGoogleButton, buttonBlock.nextSibling)
+                })
+            })
+
             // Поиск в Кинозал по шаблону
             const KinozalButton = newElementPadding({
                 tag: 'a',
-                id: 'Google-Button',
+                id: 'Kinozal-Button',
                 href: `https://kinozal.tv/browse.php?s=${title}&d=${year}`,
-                content: `Кинозал`,
+                content: 'Кинозал'
             })
             KinozalButton.setAttribute('target', '_blank')
             buttonBlock.parentNode.insertBefore(KinozalButton, buttonBlock.nextSibling)
+
+            // Поиск на YouTube
+            const YouTubeButton = newElementPadding({
+                tag: 'a',
+                id: 'YouTube-Button',
+                href: `https://www.youtube.com/results?search_query=${title}+Trailer+Russian`,
+                content: 'Трейлер'
+            })
+            YouTubeButton.setAttribute('target', '_blank')
+            buttonBlock.parentNode.insertBefore(YouTubeButton, buttonBlock.nextSibling)
         }
 
-        // Извлекаем токен из локального хранилища
-        chrome.storage.local.get(['saveTokenKinopoisk'], function(result) {
-           var Token = result.saveTokenKinopoisk;
-        })
-        
         // Извлекаем идентификатора фильма из параметра с URL
         const kinopoiskID = url?.split('/')?.filter(itm => Number(itm)).pop()
         // Создание кнопки для перехода на Kinobox
@@ -82,7 +103,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             tag: 'a',
             id: 'Kinobox-Button',
             href: `https://kinomix.web.app/#${kinopoiskID}`,
-            content: 'Смотреть онлайн',
+            content: 'Смотреть онлайн'
         })
         // Открывать ссылку в новой вкладке
         KinoboxButton.setAttribute('target', '_blank')
@@ -100,7 +121,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             tag: 'a',
             id: 'Kinobox-Button',
             href: `https://kinomix.web.app`,
-            content: 'Смотреть онлайн',
+            content: 'Смотреть онлайн'
         })
         KinoboxButton.setAttribute('target', '_blank')
         buttonBlock.parentNode.insertBefore(KinoboxButton, buttonBlock.nextSibling)

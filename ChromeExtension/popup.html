@@ -9,21 +9,40 @@
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
             margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
+            padding: 0;
+        }
+        header {
+            background-color: #1A355B;
+            padding: 10px 20px;
+            position: relative;
+        }
+        .logo {
+            background-image: url('icons/icon128.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            width: 100px;
+            height: 40px;
+        }
+        .title {
+            color: #fff;
+            font-size: 24px;
+            position: absolute;
+            left: 70px;
+            top: 50%;
+            transform: translateY(-50%);
         }
         .container {
-            width: 420px;
-            height: 320px;
-            max-width: 420px;
-            max-height: 320px;
+            width: 400px;
+            max-width: 400px;
+            height: 250px;
+            max-height: 250px;
             margin: 0 auto;
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        h1 {
+        h2 {
             font-size: 24px;
             margin-bottom: 20px;
             text-align: center;
@@ -40,7 +59,7 @@
         button {
             width: 100%;
             padding: 10px;
-            background-color: #007bff;
+            background-color: #ff6600cb;
             color: #fff;
             border: none;
             border-radius: 4px;
@@ -48,7 +67,7 @@
             cursor: pointer;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #ff6600;
         }
         p {
             font-size: 14px;
@@ -77,16 +96,18 @@
     </style>
 </head>
 <body>
+    <header>
+        <div class="logo"></div>
+        <div class="title">Open Kinopoisk</div>
+    </header>
     <div class="container">
-        <h2>Open Kinopoisk</h2>
+        <b>Расширение, которое добавляет кнопки на сайт <a href="https://kinopoisk.ru">Кинопоиск</a> для поиска фильмов и сериалов в открытых источниках.</b>
         <b></b>
-        <b>Добавляет кнопки на сайте <a href="https://kinopoisk.ru">Кинопоиск</a> для поиска фильмов и сериалов в открытых ресурсах.</b>
-        <b></b>
-        <h3>Введите токен для доступа к функционалу API:</h3>
-        <input type="text" id="textInput" placeholder="Enter token">
+        <h3>Токен доступа поисковика Google:</h3>
+        <input type="text" id="textInput" placeholder="Введите свой токен">
         <button id="saveButton">Сохранить</button>
         <div id="messageBox" style="display: none;"></div>
-        <p>Узнайте, как получить токен доступа <a href="https://kinopoisk.dev">здесь</a>.</p>
+        <p>Узнайте, как получить токен доступа <a href="https://developers.google.com/custom-search/v1/overview?hl=ru">здесь</a>.</p>
         <p>© 2024, <a href="https://github.com/Lifailon/OpenKinopoisk">GitHub</a>.</p>
     </div>
     <script src="popup.js" defer></script>
