@@ -19,6 +19,13 @@ document.addEventListener("DOMContentLoaded", async function () {
         el.style.marginRight = '10px' // отступ между кнопками
         el.style.marginTop = '25px' // отступ сверху
         el.style.marginBottom = '-10px' // отступ снизу
+        el.style.transition = 'transform 0.3s ease'; // добавляем transition для анимации
+        el.addEventListener('mouseenter', () => { // добавляем обработчик события для наведения курсора на кнопку
+            el.style.transform = 'scale(1.05)'; // увеличиваем размер кнопки при наведении
+        });
+        el.addEventListener('mouseleave', () => { // добавляем обработчик события для ухода курсора с кнопки
+            el.style.transform = 'scale(1)'; // возвращаем кнопку к исходному размеру
+        });
         return el
     }
 
