@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             chrome.storage.local.get(['saveTokenKinopoisk'], function(result) {
                 var Token = result.saveTokenKinopoisk
                 // Google CSE (Custom Search Engine)
+                // const Token = '' // API-ключ
                 const cx = '35c78340f49eb474a' // ID поисковой системы 
                 // IMDb
                 const queryIMDb = `allintitle:${titleElement.textContent} ${year} site:imdb.com` // Формируем запрос поиска с фильтрацией по сайту
@@ -86,6 +87,21 @@ document.addEventListener("DOMContentLoaded", async function () {
                     buttonBlock.parentNode.insertBefore(TMDbGoogleButton, buttonBlock.nextSibling)
                 })
                 // Torrent
+                // allintext:the rookie site:fasts-torrent.net
+                const queryTorrent = `allintext:${titleElement.textContent} site:fasts-torrent.net`
+                const urlGoogleSearchTorrent = `https://www.googleapis.com/customsearch/v1?key=${Token}&cx=${cx}&q=${encodeURIComponent(queryTorrent)}`
+                fetch(urlGoogleSearchTorrent)
+                .then(response => response.json())
+                .then(data => {
+                    const TorrentGoogleButton = newElementPadding({
+                        tag: 'a',
+                        id: 'Torrent-Google-Button',
+                        href: data.items[0].link,
+                        content: data.items[0].title
+                    })
+                    TorrentGoogleButton.setAttribute('target', '_blank')
+                    buttonBlock.parentNode.insertBefore(TorrentGoogleButton, buttonBlock.nextSibling)
+                })
             })
             // Поиск в Кинозал по шаблону
             const KinozalButton = newElementPadding({
