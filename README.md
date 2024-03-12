@@ -28,7 +28,7 @@
 
 ![Image alt](https://github.com/Lifailon/OpenKinopoisk/blob/rsa/image/add-extension.jpg)
 
-- Введите свой токен доступа для поисковика Google:
+- Введите свой токен доступа для поисковой системы Google:
 
 ![Image alt](https://github.com/Lifailon/OpenKinopoisk/blob/rsa/image/popup.jpg)
 

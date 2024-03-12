@@ -39,8 +39,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
         
         // Поиск элемента оригинального названия на странице по классу
-        const element = document.querySelector('.styles_originalTitle__JaNKM')
-        const title = element ? element.textContent.replace(/ /g, '+') : ''
+        const titleElement = document.querySelector('.styles_originalTitle__JaNKM')
+        const title = titleElement ? titleElement.textContent.replace(/ /g, '+') : ''
 
         // Добавить кнопки если находим оригинальное название
         if (title) {
@@ -50,18 +50,15 @@ document.addEventListener("DOMContentLoaded", async function () {
             const year = yearElement.textContent
 
             // Извлекаем содержимое токена из интерфейса расширения (локального хранилища)
-            var Token
             chrome.storage.local.get(['saveTokenKinopoisk'], function(result) {
                 var Token = result.saveTokenKinopoisk
                 // Google CSE (Custom Search Engine)
-                // const Token = '' // API-ключ
                 const cx = '35c78340f49eb474a' // ID поисковой системы 
                 // IMDb
-                const query = `${title} ${year} site:imdb.com` // Формируем запрос поиска с фильтрацией по сайту
-                const urlGoogleSearch = `https://www.googleapis.com/customsearch/v1?key=${Token}&cx=${cx}&q=${encodeURIComponent(query)}`
+                const queryIMDb = `allintitle:${titleElement.textContent} ${year} site:imdb.com` // Формируем запрос поиска с фильтрацией по сайту
+                const urlGoogleSearchIMDb = `https://www.googleapis.com/customsearch/v1?key=${Token}&cx=${cx}&q=${encodeURIComponent(queryIMDb)}`
                 // Выполняем асинхронный запрос к API
-                fetch(urlGoogleSearch)
-                // Преобразует полученный ответ JSON в объект JavaScript
+                fetch(urlGoogleSearchIMDb)
                 .then(response => response.json())
                 .then(data => {
                     const IMDbGoogleButton = newElementPadding({
@@ -73,8 +70,23 @@ document.addEventListener("DOMContentLoaded", async function () {
                     IMDbGoogleButton.setAttribute('target', '_blank')
                     buttonBlock.parentNode.insertBefore(IMDbGoogleButton, buttonBlock.nextSibling)
                 })
+                // TMDb
+                const queryTMDb = `allintitle:${titleElement.textContent} ${year} site:themoviedb.org`
+                const urlGoogleSearchTMDb = `https://www.googleapis.com/customsearch/v1?key=${Token}&cx=${cx}&q=${encodeURIComponent(queryTMDb)}`
+                fetch(urlGoogleSearchTMDb)
+                .then(response => response.json())
+                .then(data => {
+                    const TMDbGoogleButton = newElementPadding({
+                        tag: 'a',
+                        id: 'TMDb-Google-Button',
+                        href: data.items[0].link,
+                        content: 'TMDb'
+                    })
+                    TMDbGoogleButton.setAttribute('target', '_blank')
+                    buttonBlock.parentNode.insertBefore(TMDbGoogleButton, buttonBlock.nextSibling)
+                })
+                // Torrent
             })
-
             // Поиск в Кинозал по шаблону
             const KinozalButton = newElementPadding({
                 tag: 'a',
@@ -90,7 +102,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 tag: 'a',
                 id: 'YouTube-Button',
                 href: `https://www.youtube.com/results?search_query=${title}+Trailer+Russian`,
-                content: 'Трейлер'
+                content: 'Трейлеры'
             })
             YouTubeButton.setAttribute('target', '_blank')
             buttonBlock.parentNode.insertBefore(YouTubeButton, buttonBlock.nextSibling)
