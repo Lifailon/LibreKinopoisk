@@ -24,10 +24,10 @@
   "content_scripts": [
     {
       "matches": [
-        "https://www.kinopoisk.ru/*",
         "https://kinopoisk.ru/*",
-        "https://www.hd.kinopoisk.ru/*",
-        "https://hd.kinopoisk.ru/*"
+        "https://www.kinopoisk.ru/*",
+        "https://hd.kinopoisk.ru/*",
+        "https://www.hd.kinopoisk.ru/*"
       ],
       "js": [
         "main.js"
@@ -42,10 +42,10 @@
         "assets/icons/*"
       ],
       "matches": [
-        "https://www.kinopoisk.ru/*",
         "https://kinopoisk.ru/*",
-        "https://www.hd.kinopoisk.ru/*",
-        "https://hd.kinopoisk.ru/*"
+        "https://www.kinopoisk.ru/*",
+        "https://hd.kinopoisk.ru/*",
+        "https://www.hd.kinopoisk.ru/*"
       ]
     }
   ],
@@ -54,6 +54,9 @@
     "storage"
   ],
   "host_permissions": [
-    "https://*.kinopoisk.ru/*"
+    "https://kinopoisk.ru/*",
+    "https://www.kinopoisk.ru/*",
+    "https://hd.kinopoisk.ru/*",
+    "https://www.hd.kinopoisk.ru/*"
   ]
 }
