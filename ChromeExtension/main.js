@@ -111,120 +111,165 @@ const main = async function (url) {
             ///     });
             /// });
         })
-        // NoName-Club
-        let urlNoNameClub = null
-        if (url?.includes('series')) {
-            urlNoNameClub = `https://nnmclub.to/forum/tracker.php?nm=${title}+${year}+сезон`
-        } else {
-            urlNoNameClub = `https://nnmclub.to/forum/tracker.php?nm=${title}+${year}`
-        }
-        const NoNameClubButton = newElementPadding({
-            tag: 'a',
-            id: 'NoNameClub-Button',
-            href: urlNoNameClub,
-            content: 'NoName-Club'
-        })
-        NoNameClubButton.setAttribute('target', '_blank')
-        buttonBlock.parentNode.insertBefore(NoNameClubButton, buttonBlock.nextSibling)
 
-        // RuTracker
-        let urlRuTracker = null
-        if (url?.includes('series')) {
-            urlRuTracker = `https://rutracker.org/forum/tracker.php?nm=${title}+${year}+сезон`
-        } else {
-            urlRuTracker = `https://rutracker.org/forum/tracker.php?nm=${title}+${year}`
-        }
-        const RuTrackerButton = newElementPadding({
-            tag: 'a',
-            id: 'RuTracker-Button',
-            href: urlRuTracker,
-            content: 'RuTracker'
-        })
-        RuTrackerButton.setAttribute('target', '_blank')
-        buttonBlock.parentNode.insertBefore(RuTrackerButton, buttonBlock.nextSibling)
+        // Torrent
+        // Проверка включенного CheckBox в настройках
+        chrome.storage.local.get(['TorrentCheckBox'], function(result) {
+            var TorrentCheckBox = result.TorrentCheckBox;
+            if (TorrentCheckBox) {
+                // NoName-Club
+                let urlNoNameClub = null
+                if (url?.includes('series')) {
+                    urlNoNameClub = `https://nnmclub.to/forum/tracker.php?nm=${title}+${year}+сезон`
+                } else {
+                    urlNoNameClub = `https://nnmclub.to/forum/tracker.php?nm=${title}+${year}`
+                }
+                const NoNameClubButton = newElementPadding({
+                    tag: 'a',
+                    id: 'NoNameClub-Button',
+                    href: urlNoNameClub,
+                    content: 'NoName-Club'
+                })
+                NoNameClubButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(NoNameClubButton, buttonBlock.nextSibling)
 
-        // Kinozal
-        const KinozalButton = newElementPadding({
-            tag: 'a',
-            id: 'Kinozal-Button',
-            href: `https://kinozal.tv/browse.php?s=${title}&d=${year}`,
-            content: 'Кинозал'
-        })
-        KinozalButton.setAttribute('target', '_blank')
-        buttonBlock.parentNode.insertBefore(KinozalButton, buttonBlock.nextSibling)
+                // RuTracker
+                let urlRuTracker = null
+                if (url?.includes('series')) {
+                    urlRuTracker = `https://rutracker.org/forum/tracker.php?nm=${title}+${year}+сезон`
+                } else {
+                    urlRuTracker = `https://rutracker.org/forum/tracker.php?nm=${title}+${year}`
+                }
+                const RuTrackerButton = newElementPadding({
+                    tag: 'a',
+                    id: 'RuTracker-Button',
+                    href: urlRuTracker,
+                    content: 'RuTracker'
+                })
+                RuTrackerButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(RuTrackerButton, buttonBlock.nextSibling)
 
-        // Plex
-        let typePlex = null
-        if (url?.includes('film')) {
-            typePlex = 'movie'
-        }
-        else if (url?.includes('series')) {
-            typePlex = 'show'
-        }
-        const PlexButton = newElementPadding({
-            tag: 'a',
-            id: 'Plex-Button',
-            href: `https://www.google.com/search?q=allintitle:${title}+${year}+site:plex.tv/${typePlex}&btnI`,
-            // href: `https://watch.plex.tv/${typePlex}/${titlePlex}`,
-            content: 'Plex'
-        })
-        PlexButton.setAttribute('target', '_blank')
-        buttonBlock.parentNode.insertBefore(PlexButton, buttonBlock.nextSibling)
+                // Kinozal
+                const KinozalButton = newElementPadding({
+                    tag: 'a',
+                    id: 'Kinozal-Button',
+                    href: `https://kinozal.tv/browse.php?s=${title}&d=${year}`,
+                    content: 'Кинозал'
+                })
+                KinozalButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(KinozalButton, buttonBlock.nextSibling)
 
-        // TMDb 
-        const TMDbGoogleButton = newElementPadding({
-            tag: 'a',
-            id: 'TMDb-Google-Button',
-            href: `https://www.google.com/search?q=allintitle:${title}+${year}+site:themoviedb.org&btnI`,
-            content: 'TMDb'
-        })
-        TMDbGoogleButton.setAttribute('target', '_blank')
-        buttonBlock.parentNode.insertBefore(TMDbGoogleButton, buttonBlock.nextSibling)
+                // RuTor
+                const RuTorButton = newElementPadding({
+                    tag: 'a',
+                    id: 'RuTor-Button',
+                    // Все слова (100) / Любое из слов (200) / Логическое выражение (300)
+                    href: `https://rutor.info/search/0/0/300/0/${title}+${year}`,
+                    content: 'RuTor'
+                })
+                RuTorButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(RuTorButton, buttonBlock.nextSibling)
+            }
+        });
 
-        // IMDb
-        const IMDbGoogleButton = newElementPadding({
-            tag: 'a',
-            id: 'IMDb-Google-Button',
-            href: `https://www.google.com/search?q=allintitle:${title}+${year}+site:imdb.com&btnI`,
-            content: 'IMDb'
-        })
-        IMDbGoogleButton.setAttribute('target', '_blank')
-        buttonBlock.parentNode.insertBefore(IMDbGoogleButton, buttonBlock.nextSibling)
+        // Database
+        // Проверка включенного CheckBox в настройках
+        chrome.storage.local.get(['DbCheckBox'], function(result) {
+            var DbCheckBox = result.DbCheckBox;
+            if (DbCheckBox) {
+                // Plex
+                let typePlex = null
+                if (url?.includes('film')) {
+                    typePlex = 'movie'
+                }
+                else if (url?.includes('series')) {
+                    typePlex = 'show'
+                }
+                const PlexButton = newElementPadding({
+                    tag: 'a',
+                    id: 'Plex-Button',
+                    href: `https://www.google.com/search?q=allintitle:${title}+${year}+site:plex.tv/${typePlex}&btnI`,
+                    // href: `https://watch.plex.tv/${typePlex}/${titlePlex}`,
+                    content: 'Plex'
+                })
+                PlexButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(PlexButton, buttonBlock.nextSibling)
+            
+                // TMDb 
+                const TMDbGoogleButton = newElementPadding({
+                    tag: 'a',
+                    id: 'TMDb-Google-Button',
+                    href: `https://www.google.com/search?q=allintitle:${title}+${year}+site:themoviedb.org&btnI`,
+                    content: 'TMDb'
+                })
+                TMDbGoogleButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(TMDbGoogleButton, buttonBlock.nextSibling)
+            
+                // IMDb
+                const IMDbGoogleButton = newElementPadding({
+                    tag: 'a',
+                    id: 'IMDb-Google-Button',
+                    href: `https://www.google.com/search?q=allintitle:${title}+${year}+site:imdb.com&btnI`,
+                    content: 'IMDb'
+                })
+                IMDbGoogleButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(IMDbGoogleButton, buttonBlock.nextSibling)
+            }
+        });
 
-        // Wiki 
-        const WikiGoogleButton = newElementPadding({
-            tag: 'a',
-            id: 'Wiki-Button',
-            href: `https://ru.wikipedia.org/w/index.php?search=${title}`,
-            content: 'Wikipedia'
-        })
-        WikiGoogleButton.setAttribute('target', '_blank')
-        buttonBlock.parentNode.insertBefore(WikiGoogleButton, buttonBlock.nextSibling)
+        // Wikipedia 
+        // Проверка включенного CheckBox в настройках
+        chrome.storage.local.get(['WikiCheckBox'], function(result) {
+            var WikiCheckBox = result.WikiCheckBox;
+            if (WikiCheckBox) {
+                const WikiGoogleButton = newElementPadding({
+                    tag: 'a',
+                    id: 'Wiki-Button',
+                    href: `https://ru.wikipedia.org/w/index.php?search=${title}`,
+                    content: 'Wiki'
+                })
+                WikiGoogleButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(WikiGoogleButton, buttonBlock.nextSibling)
+            }
+        });
 
         // YouTube
-        const YouTubeButton = newElementPadding({
-            tag: 'a',
-            id: 'YouTube-Button',
-            href: `https://www.youtube.com/results?search_query=${title}+${year}+Trailer+Russian`,
-            content: 'Трейлеры'
-        })
-        YouTubeButton.setAttribute('target', '_blank')
-        buttonBlock.parentNode.insertBefore(YouTubeButton, buttonBlock.nextSibling)
+        // Проверка включенного CheckBox в настройках
+        chrome.storage.local.get(['YouTubeCheckBox'], function(result) {
+            var YouTubeCheckBox = result.YouTubeCheckBox;
+            if (YouTubeCheckBox) {
+                const YouTubeButton = newElementPadding({
+                    tag: 'a',
+                    id: 'YouTube-Button',
+                    href: `https://www.youtube.com/results?search_query=${title}+${year}+Trailer+Russian`,
+                    content: 'Трейлеры'
+                })
+                YouTubeButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(YouTubeButton, buttonBlock.nextSibling)
+            }
+        });
     }
 
-    // Извлекаем идентификатора фильма из параметра с URL
-    const kinopoiskID = url?.split('/')?.filter(itm => Number(itm)).pop()
-    // Создание кнопки для перехода на Kinobox
-    const KinoboxButton = newElementPadding({
-        tag: 'a',
-        id: 'Kinobox-Button',
-        href: `https://kinomix.web.app/#${kinopoiskID}`,
-        content: 'Смотреть онлайн'
-    })
-    // Открывать ссылку в новой вкладке
-    KinoboxButton.setAttribute('target', '_blank')
-    // Добавляем кнопку после блока кнопок на странице
-    buttonBlock.parentNode.insertBefore(KinoboxButton, buttonBlock.nextSibling)
+    // Kinobox
+    // Проверка включенного CheckBox в настройках
+    chrome.storage.local.get(['KinoboxCheckBox'], function(result) {
+        var KinoboxCheckBox = result.KinoboxCheckBox;
+        if (KinoboxCheckBox) {
+            // Извлекаем идентификатора фильма из параметра с URL
+            const kinopoiskID = url?.split('/')?.filter(itm => Number(itm)).pop()
+            // Создание кнопки для перехода на Kinobox
+            const KinoboxButton = newElementPadding({
+                tag: 'a',
+                id: 'Kinobox-Button',
+                href: `https://kinomix.web.app/#${kinopoiskID}`,
+                content: 'Смотреть онлайн'
+            })
+            // Открывать ссылку в новой вкладке
+            KinoboxButton.setAttribute('target', '_blank')
+            // Добавляем кнопку после блока кнопок на странице
+            buttonBlock.parentNode.insertBefore(KinoboxButton, buttonBlock.nextSibling)
+        }
+    });
 }
 
 // Функция для отображения кнопок на странице hd.kinopoisk

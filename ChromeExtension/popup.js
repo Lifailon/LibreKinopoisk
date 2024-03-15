@@ -40,3 +40,97 @@ links.forEach(function(link) {
         chrome.tabs.create({ url: url })
     })
 })
+
+// Забираем элементы кнопок Настройки и Начало и контейнеры их состояний
+var settingsButton = document.getElementById('settingsButton');
+var homeButton = document.getElementById('homeButton');
+var settingsState = document.getElementById('settingsState');
+var homeState = document.getElementById('homeState');
+// Обработчик события для кнопки "Настройки"
+settingsButton.addEventListener('click', function() {
+    homeState.style.display = 'none'; // Скрываем начальное состояние
+    settingsState.style.display = 'block'; // Отображаем состояние настроек
+});
+// Обработчик события для кнопки "Начало"
+homeButton.addEventListener('click', function() {
+    settingsState.style.display = 'none'; // Скрываем состояние настроек
+    homeState.style.display = 'block'; // Отображаем начальное состояние
+});
+
+// Забираем все CheckBox
+var KinoboxCheckBox = document.getElementById('KinoboxCheckBox');
+var YouTubeCheckBox = document.getElementById('YouTubeCheckBox');
+var WikiCheckBox = document.getElementById('WikiCheckBox');
+var DbCheckBox = document.getElementById('DbCheckBox');
+var TorrentCheckBox = document.getElementById('TorrentCheckBox');
+
+// При загрузке страницы, загружаем значение из chrome.storage и устанавливаем его для чекбокса
+document.addEventListener('DOMContentLoaded', function() {
+    chrome.storage.local.get('KinoboxCheckBox', function(data) {
+        // Если значение не найдено, устанавливаем значение по умолчанию (включеноы)
+        if (typeof data.KinoboxCheckBox === 'undefined') {
+            KinoboxCheckBox.checked = true;
+            // Сохраняем значение по умолчанию в хранилище
+            chrome.storage.local.set({ 'KinoboxCheckBox': true });
+        } else {
+            KinoboxCheckBox.checked = data.KinoboxCheckBox;
+        }
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    chrome.storage.local.get('YouTubeCheckBox', function(data) {
+        if (typeof data.YouTubeCheckBox === 'undefined') {
+            YouTubeCheckBox.checked = true;
+            chrome.storage.local.set({ 'YouTubeCheckBox': true });
+        } else {
+            YouTubeCheckBox.checked = data.YouTubeCheckBox;
+        }
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    chrome.storage.local.get('WikiCheckBox', function(data) {
+        if (typeof data.WikiCheckBox === 'undefined') {
+            WikiCheckBox.checked = true;
+            chrome.storage.local.set({ 'WikiCheckBox': true });
+        } else {
+            WikiCheckBox.checked = data.WikiCheckBox;
+        }
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    chrome.storage.local.get('DbCheckBox', function(data) {
+        if (typeof data.DbCheckBox === 'undefined') {
+            DbCheckBox.checked = true;
+            chrome.storage.local.set({ 'DbCheckBox': true });
+        } else {
+            DbCheckBox.checked = data.DbCheckBox;
+        }
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    chrome.storage.local.get('TorrentCheckBox', function(data) {
+        if (typeof data.TorrentCheckBox === 'undefined') {
+            TorrentCheckBox.checked = true;
+            chrome.storage.local.set({ 'TorrentCheckBox': true });
+        } else {
+            TorrentCheckBox.checked = data.TorrentCheckBox;
+        }
+    });
+});
+
+// При изменении состояния чекбокса сохраняем состояние чекбокса в chrome.storage
+KinoboxCheckBox.addEventListener('change', function() {
+    chrome.storage.local.set({ 'KinoboxCheckBox': this.checked });
+});
+YouTubeCheckBox.addEventListener('change', function() {
+    chrome.storage.local.set({ 'YouTubeCheckBox': this.checked });
+});
+WikiCheckBox.addEventListener('change', function() {
+    chrome.storage.local.set({ 'WikiCheckBox': this.checked });
+});
+DbCheckBox.addEventListener('change', function() {
+    chrome.storage.local.set({ 'DbCheckBox': this.checked });
+});
+TorrentCheckBox.addEventListener('change', function() {
+    chrome.storage.local.set({ 'TorrentCheckBox': this.checked });
+});

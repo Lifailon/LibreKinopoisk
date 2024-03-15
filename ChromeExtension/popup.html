@@ -33,9 +33,7 @@
         }
         .container {
             width: 400px;
-            max-width: 400px;
-            height: 250px;
-            max-height: 250px;
+            height: 290px;
             margin: 0 auto;
             background-color: #fff;
             padding: 20px;
@@ -93,6 +91,93 @@
         a:hover {
             text-decoration: underline;
         }
+        /* Кнопки Начало и Настройки */
+        .bottom-buttons {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999;
+        }
+        .small-button {
+            width: auto;
+            padding: 5px 10px;
+            font-size: 14px;
+            margin: 0 5px;
+            background-color: #557096;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .small-button:hover {
+            background-color: #1A355B;
+        }
+        /* Скрыть настоящий чекбокс */
+        .checkbox-input {
+            display: none;
+        }
+        /* Стилизация контейнера чекбокса */
+        .checkbox-container {
+            display: flex;
+            position: relative;
+            width: 48px; /* Ширина контейнера */
+            height: 24px; /* Высота контейнера */
+            align-items: center; /* Выравнивание элементов по вертикали */
+        }
+        /* Стилизация фона чекбокса */
+        .checkbox-label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #d1cdcd; /* Цвет фона чекбокса */
+            border-radius: 17px; /* Радиус скругления */
+            border: 1px solid #ccc; /* Граница чекбокса */
+            cursor: pointer;
+            transition: background-color 0.3s; /* Плавный переход цвета */
+        }
+        /* Стилизация ползунка при выключенном состоянии */
+        .checkbox-input:not(:checked) + .checkbox-label::after {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            width: 20px; /* Ширина ползунка */
+            height: 20px; /* Высота ползунка */
+            background-color: #fff; /* Цвет выключенного ползунка (белый) */
+            border: 1px solid #ccc; /* Граница ползунка */
+            border-radius: 50%; /* Круглый ползунок */
+            transition: left 0.3s, background-color 0.3s; /* Плавное смещение */
+        }
+        /* Стилизация ползунка при включенном состоянии */
+        .checkbox-input:checked + .checkbox-label::after {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            width: 20px; /* Ширина ползунка */
+            height: 20px; /* Высота ползунка */
+            background-color: #fff; /* Цвет выключенного ползунка (белый) */
+            border: 1px solid #ccc; /* Граница ползунка */
+            border-radius: 50%; /* Круглый ползунок */
+            transition: left 0.3s, background-color 0.3s; /* Плавное смещение */
+        }
+        /* Плавное смещение ползунка вправо */
+        .checkbox-input:checked + .checkbox-label::after {
+            left: calc(100% - 23px);
+        }
+        /* Новый цвет фона внутри контейнера чекбокса при активации */
+        .checkbox-input:checked + .checkbox-label {
+            background-color: #4CAF50;
+        }
+        /* Текст справа от чекбоксов */
+        .checkbox-container span {
+            margin-left: 60px; /* Отступ между чекбоксом и текстом */
+            white-space: nowrap; /* Запрещает перенос текста на новую строку */
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -100,7 +185,7 @@
         <div class="logo"></div>
         <div class="title">Open Kinopoisk</div>
     </header>
-    <div class="container">
+    <div class="container" id="homeState">
         <b>Расширение, которое добавляет кнопки на сайт <a href="https://kinopoisk.ru">Кинопоиск</a> для поиска фильмов и сериалов в открытых источниках.</b>
         <b></b>
         <h3>Токен доступа поисковика Google:</h3>
@@ -109,6 +194,47 @@
         <div id="messageBox" style="display: none;"></div>
         <p>Узнайте, как получить токен доступа <a href="https://developers.google.com/custom-search/v1/overview?hl=ru">здесь</a>.</p>
         <p>© 2024, <a href="https://github.com/Lifailon/OpenKinopoisk">GitHub</a>.</p>
+        <hr>
+        <div class="bottom-buttons">
+            <button id="settingsButton" class="small-button">Настройки</button>
+        </div>
+    </div>
+    <div class="container" id="settingsState" style="display: none">
+        <b>Настройка отображения кнопок на странице:</b>
+        <br>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="KinoboxCheckBox" class="checkbox-input">
+            <label for="KinoboxCheckBox" class="checkbox-label"></label>
+            <span>Смотреть онлайн (Kinobox)</span>
+        </div>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="YouTubeCheckBox" class="checkbox-input">
+            <label for="YouTubeCheckBox" class="checkbox-label"></label>
+            <span>Трейлеры (YouTube)</span>
+        </div>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="WikiCheckBox" class="checkbox-input">
+            <label for="WikiCheckBox" class="checkbox-label"></label>
+            <span>Wikipedia</span>
+        </div>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="DbCheckBox" class="checkbox-input">
+            <label for="DbCheckBox" class="checkbox-label"></label>
+            <span>Заребужные базы данных (IMDb, TMDb, Plex)</span>
+        </div>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="TorrentCheckBox" class="checkbox-input">
+            <label for="TorrentCheckBox" class="checkbox-label"></label>
+            <span>Торрент трекеры</span>
+        </div>
+        <div class="bottom-buttons">
+            <button id="homeButton" class="small-button">Начало</button>
+        </div>
     </div>
     <script src="popup.js" defer></script>
 </body>
