@@ -17,7 +17,7 @@
             position: relative;
         }
         .logo {
-            background-image: url('icons/icon128.png');
+            background-image: url('icons/active/icon128.png');
             background-size: contain;
             background-repeat: no-repeat;
             width: 100px;
@@ -92,15 +92,27 @@
             text-decoration: underline;
         }
         /* Кнопки Начало и Настройки */
-        .bottom-buttons {
-            position: absolute;
+        .bottom-buttons-container {
+            position: fixed;
+            left: 0;
+            right: 0;
             bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
             z-index: 999;
+            text-align: center; /* Центрируем кнопку */
+        }
+        .bottom-buttons-container hr {
+            width: 100%; /* Линия занимает всю ширину родительского контейнера */
+            border: none;
+            height: 2px; /* Толщина линии */
+            background-color: #ccc; /* Цвет линии */
+        }
+        .bottom-buttons {
+            position: relative; /* Чтобы кнопка оставалась в потоке */
+            display: inline-block; /* Чтобы кнопка была в строке с линией */
         }
         .small-button {
-            width: auto;
+            width: 100px;
+            height: 30px;
             padding: 5px 10px;
             font-size: 14px;
             margin: 0 5px;
@@ -194,10 +206,12 @@
         <div id="messageBox" style="display: none;"></div>
         <p>Узнайте, как получить токен доступа <a href="https://developers.google.com/custom-search/v1/overview?hl=ru">здесь</a>.</p>
         <p>© 2024, <a href="https://github.com/Lifailon/OpenKinopoisk">GitHub</a>.</p>
-        <hr>
-        <div class="bottom-buttons">
-            <button id="settingsButton" class="small-button">Настройки</button>
-        </div>
+        <div class="bottom-buttons-container">
+            <hr>
+            <div class="bottom-buttons">
+                <button id="settingsButton" class="small-button">Настройки</button>
+            </div>
+        </div>        
     </div>
     <div class="container" id="settingsState" style="display: none">
         <b>Настройка отображения кнопок на странице:</b>
@@ -232,9 +246,13 @@
             <label for="TorrentCheckBox" class="checkbox-label"></label>
             <span>Торрент трекеры</span>
         </div>
-        <div class="bottom-buttons">
-            <button id="homeButton" class="small-button">Начало</button>
+        <div class="bottom-buttons-container">
+            <hr>
+            <div class="bottom-buttons">
+                <button id="homeButton" class="small-button">Начало</button>
+            </div>
         </div>
+        
     </div>
     <script src="popup.js" defer></script>
 </body>
