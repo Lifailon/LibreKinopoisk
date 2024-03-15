@@ -5,20 +5,27 @@
   "author": "Lifailon",
   "description": "Добавляет кнопки на сайте kinopoisk.ru для поиска фильмов и сериалов в открытых источниках.",
   "icons": {
-    "32": "icons/icon32.png",
-    "64": "icons/icon64.png",
-    "128": "icons/icon128.png",
-    "256": "icons/icon256.png",
-    "512": "icons/icon512.png"
+    "32": "icons/active/icon32.png",
+    "64": "icons/active/icon64.png",
+    "128": "icons/active/icon128.png",
+    "256": "icons/active/icon256.png",
+    "512": "icons/active/icon512.png"
   },
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "32": "icons/icon32.png",
-      "64": "icons/icon64.png",
-      "128": "icons/icon128.png",
-      "256": "icons/icon256.png",
-      "512": "icons/icon512.png"
+      "32": "icons/active/icon32.png",
+      "64": "icons/active/icon64.png",
+      "128": "icons/active/icon128.png",
+      "256": "icons/active/icon256.png",
+      "512": "icons/active/icon512.png"
+    },
+    "inactive_icon": {
+      "32": "icons/inactive/icon32.png",
+      "64": "icons/inactive/icon64.png",
+      "128": "icons/inactive/icon128.png",
+      "256": "icons/inactive/icon256.png",
+      "512": "icons/inactive/icon512.png"
     }
   },
   "content_scripts": [
