@@ -49,12 +49,14 @@ const main = async function (url) {
     // Получаем все дочерние элементы span, забираем только первый и его содержимое
     var nameElement = firstTitleElement.querySelectorAll('span')[0].textContent
     // Обрезаем строку до скобки (не включая) и удаляем пробелы в начале и в конце
-    var indexOfBracket = nameElement.indexOf('(');
+    var indexOfBracket = nameElement.indexOf('(')
     if (indexOfBracket !== -1) {
-        var name = nameElement.substring(0, indexOfBracket).trim();
+        var name = nameElement.substring(0, indexOfBracket).trim()
     }
 
-    // Если оригинальное название отсутствует, обновляем на русском
+    // Задаем исходный язык для Wikipedia
+    let language = 'ru'
+    // Если оригинальное название отсутствует, обновляем на исходное название
     if (!title) {
         if (name) {
             title = name
@@ -71,66 +73,33 @@ const main = async function (url) {
         // Извлекаем содержимое токена из интерфейса расширения (локального хранилища)
         chrome.storage.local.get(['saveTokenKinopoisk'], function(result) {
             var Token = result.saveTokenKinopoisk
-            /// // Google CSE (Custom Search Engine)
-            /// // const Token = '' // API-ключ
-            /// const cx = '35c78340f49eb474a' // ID поисковой системы 
-            /// // Заголовок запроса для RapidAPI
-            /// const headers = new Headers({
-            ///     "X-RapidAPI-Key": Token,
-            ///     "X-RapidAPI-Host": "google-search72.p.rapidapi.com"
-            /// })
-            /// // IMDb
-            /// const queryIMDb = `allintitle:${titleElement.textContent} ${year} site:imdb.com` // Формируем запрос поиска с фильтрацией по сайту
-            /// const urlGoogleSearchIMDb = `https://www.googleapis.com/customsearch/v1?key=${Token}&cx=${cx}&q=${encodeURIComponent(queryIMDb)}`
-            /// // const urlGoogleSearchIMDb = `https://google-search72.p.rapidapi.com/search?q=${encodeURIComponent(queryIMDb)}`
-            /// // Выполняем асинхронный запрос к API
-            /// // fetch(urlGoogleSearchIMDb, { headers })
-            /// fetch(urlGoogleSearchIMDb)
-            /// .then(response => response.json())
-            /// .then(data => {
-            ///     const IMDbGoogleButton = newElementPadding({
-            ///         tag: 'a',
-            ///         id: 'IMDb-Google-Button',
-            ///         href: data.items[0].link, // Забираем из содержимого массива поиска ссылку первого элемента
-            ///         content: 'IMDb'
-            ///     })
-            ///     IMDbGoogleButton.setAttribute('target', '_blank')
-            ///     buttonBlock.parentNode.insertBefore(IMDbGoogleButton, buttonBlock.nextSibling)
-            /// })
-            /// // TMDb
-            /// const queryTMDb = `allintitle:${titleElement.textContent} ${year} site:themoviedb.org`
-            /// const urlGoogleSearchTMDb = `https://www.googleapis.com/customsearch/v1?key=${Token}&cx=${cx}&q=${encodeURIComponent(queryTMDb)}`
-            /// // const urlGoogleSearchTMDb = `https://google-search72.p.rapidapi.com/search?q=${encodeURIComponent(queryTMDb)}`
-            /// // fetch(urlGoogleSearchTMDb, { headers })
-            /// fetch(urlGoogleSearchTMDb)
-            /// .then(response => response.json())
-            /// .then(data => {
-            ///     const TMDbGoogleButton = newElementPadding({
-            ///         tag: 'a',
-            ///         id: 'TMDb-Google-Button',
-            ///         href: data.items[0].link,
-            ///         content: 'TMDb'
-            ///     })
-            ///     TMDbGoogleButton.setAttribute('target', '_blank')
-            ///     buttonBlock.parentNode.insertBefore(TMDbGoogleButton, buttonBlock.nextSibling)
-            /// })
-            /// // Torrent
-            /// const queryTorrent = `allintext:${titleElement.textContent}`
-            /// const urlGoogleSearchTorrent = `https://www.googleapis.com/customsearch/v1?key=${Token}&cx=${cx}&q=${encodeURIComponent(queryTorrent)}`
-            /// fetch(urlGoogleSearchTorrent)
-            /// .then(response => response.json())
-            /// .then(data => {
-            ///     data.items.forEach(item => {
-            ///         const TorrentGoogleButton = newElementPadding({
-            ///             tag: 'a',
-            ///             id: `Torrent-Google-Button-${item.id}`, // Уникальный ID для каждой кнопки
-            ///             href: item.link,
-            ///             content: item.title
-            ///         })
-            ///         TorrentGoogleButton.setAttribute('target', '_blank')
-            ///         buttonBlock.parentNode.insertBefore(TorrentGoogleButton, buttonBlock.nextSibling)
-            ///     })
-            /// })
+            // Google CSE (Custom Search Engine)
+            // const Token = '' // API-ключ
+            const cx = '87cb27565e927482b' // ID поисковой системы с доменом для поиска *.kinozal.tv/details*
+            // Заголовок запроса для RapidAPI
+            const headers = new Headers({
+                "X-RapidAPI-Key": Token,
+                "X-RapidAPI-Host": "google-search72.p.rapidapi.com"
+            })
+            const urlGoogleSearchTorrent = `https://www.googleapis.com/customsearch/v1?q=intitle:${titleElement.textContent}&key=${Token}&cx=${cx}&lr=lang_${language}&num=10&$start=0`
+            // const urlGoogleSearchTMDb = `https://google-search72.p.rapidapi.com/search?q=${titleElement.textContent}`
+            // fetch(urlGoogleSearchTMDb, { headers })
+            fetch(urlGoogleSearchTorrent)
+            .then(response => response.json())
+            .then(data => {
+                if (data.items && data.items.length > 0) {
+                    data.items.forEach(item => {
+                        const TorrentGoogleButton = newElementPadding({
+                            tag: 'a',
+                            id: `Torrent-Google-Button-${item.id}`, // Уникальный ID для каждой кнопки
+                            href: item.link,
+                            content: item.title
+                        })
+                        TorrentGoogleButton.setAttribute('target', '_blank')
+                        buttonBlock.parentNode.insertBefore(TorrentGoogleButton, buttonBlock.nextSibling)
+                    })
+                }
+            })
         })
 
         // Torrent
@@ -138,6 +107,16 @@ const main = async function (url) {
         chrome.storage.local.get(['TorrentCheckBox'], function(result) {
             var TorrentCheckBox = result.TorrentCheckBox
             if (TorrentCheckBox) {
+                // Rezka
+                const RezkaButton = newElementPadding({
+                    tag: 'a',
+                    id: 'Rezka-Button',
+                    href: `https://rezka.cc/ajax_search?q=${title}+${year}`,
+                    content: 'Rezka'
+                })
+                RezkaButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(RezkaButton, buttonBlock.nextSibling)
+
                 // NoName-Club
                 let urlNoNameClub = null
                 if (url?.includes('series')) {
@@ -193,59 +172,102 @@ const main = async function (url) {
             }
         })
 
-        // Database
+        // Database RU
         // Проверка включенного CheckBox в настройках
-        chrome.storage.local.get(['DbCheckBox'], function(result) {
-            var DbCheckBox = result.DbCheckBox
-            if (DbCheckBox) {
-                // Plex
-                let typePlex = null
-                if (url?.includes('film')) {
-                    typePlex = 'movie'
-                }
-                else if (url?.includes('series')) {
-                    typePlex = 'show'
-                }
-                const PlexButton = newElementPadding({
+        chrome.storage.local.get(['DbRuCheckBox'], function(result) {
+            var DbRuCheckBox = result.DbRuCheckBox
+            if (DbRuCheckBox) {
+                // FilmRu
+                const FilmRuButton = newElementPadding({
                     tag: 'a',
-                    id: 'Plex-Button',
-                    href: `https://www.google.com/search?q=${title}+${year}+site:plex.tv/${typePlex}&btnI`,
-                    // href: `https://watch.plex.tv/${typePlex}/${_title}`,
-                    content: 'Plex'
+                    id: 'Toramp-Google-Button',
+                    href: `https://www.film.ru/search/result?type=movies&text=${title}`,
+                    // href: `https://www.google.com/search?q=${title}+${year}+site:film.ru&btnI`,
+                    content: 'Film'
                 })
-                PlexButton.setAttribute('target', '_blank')
-                buttonBlock.parentNode.insertBefore(PlexButton, buttonBlock.nextSibling)
-            
-                // TMDb 
-                const TMDbGoogleButton = newElementPadding({
+                FilmRuButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(FilmRuButton, buttonBlock.nextSibling)
+ 
+                // MyShows
+                const MyShowsButton = newElementPadding({
                     tag: 'a',
-                    id: 'TMDb-Google-Button',
-                    href: `https://www.google.com/search?q=${title}+${year}+site:themoviedb.org&btnI`,
-                    content: 'TMDb'
+                    id: 'Toramp-Google-Button',
+                    href: `https://myshows.me/search/?q=${title}`,
+                    // href: `https://www.google.com/search?q=${title}+${year}+site:myshows.me&btnI`,
+                    content: 'MyShows'
                 })
-                TMDbGoogleButton.setAttribute('target', '_blank')
-                buttonBlock.parentNode.insertBefore(TMDbGoogleButton, buttonBlock.nextSibling)
-            
-                // IMDb
-                const IMDbGoogleButton = newElementPadding({
+                MyShowsButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(MyShowsButton, buttonBlock.nextSibling)
+ 
+                // Toramp 
+                const TorampButton = newElementPadding({
                     tag: 'a',
-                    id: 'IMDb-Google-Button',
-                    href: `https://www.google.com/search?q=${title}+${year}+site:imdb.com&btnI`,
-                    content: 'IMDb'
+                    id: 'Toramp-Google-Button',
+                    href: `https://www.toramp.com/ru/search/?q=${title}+${year}`,
+                    // href: `https://www.google.com/search?q=${title}+${year}+site:toramp.com&btnI`,
+                    content: 'Торамп'
                 })
-                IMDbGoogleButton.setAttribute('target', '_blank')
-                buttonBlock.parentNode.insertBefore(IMDbGoogleButton, buttonBlock.nextSibling)
+                TorampButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(TorampButton, buttonBlock.nextSibling)
                 
                 // Kinorium 
-                const KinoriumGoogleButton = newElementPadding({
+                const KinoriumButton = newElementPadding({
                     tag: 'a',
                     id: 'Kinorium-Google-Button',
-                    // href: `https://www.google.com/search?q=${title}+${year}+site:ru.kinorium.com&btnI`,
                     href: `https://ru.kinorium.com/search/?type=movie&q=${title}+${year}`,
+                    // href: `https://www.google.com/search?q=${title}+${year}+site:ru.kinorium.com&btnI`,
                     content: 'Кинориум'
                 })
-                KinoriumGoogleButton.setAttribute('target', '_blank')
-                buttonBlock.parentNode.insertBefore(KinoriumGoogleButton, buttonBlock.nextSibling)
+                KinoriumButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(KinoriumButton, buttonBlock.nextSibling)
+
+            }
+        })
+
+        // Database EN
+        // Проверка включенного CheckBox в настройках
+        chrome.storage.local.get(['DbEnCheckBox'], function(result) {
+            var DbEnCheckBox = result.DbEnCheckBox
+            if (DbEnCheckBox) {
+                // Plex
+                // let typePlex = null
+                // if (url?.includes('film')) {
+                //     typePlex = 'movie'
+                // }
+                // else if (url?.includes('series')) {
+                //     typePlex = 'show'
+                // }
+                // const PlexButton = newElementPadding({
+                //     tag: 'a',
+                //     id: 'Plex-Button',
+                //     href: `https://watch.plex.tv/${typePlex}/${_title}`,
+                //     // href: `https://www.google.com/search?q=${title}+${year}+site:plex.tv/${typePlex}&btnI`,
+                //     content: 'Plex'
+                // })
+                // PlexButton.setAttribute('target', '_blank')
+                // buttonBlock.parentNode.insertBefore(PlexButton, buttonBlock.nextSibling)
+            
+                // TMDb 
+                const TMDbButton = newElementPadding({
+                    tag: 'a',
+                    id: 'TMDb-Google-Button',
+                    href: `https://www.themoviedb.org/search?query=${title}`,
+                    // href: `https://www.google.com/search?q=${title}+${year}+site:themoviedb.org&btnI`,
+                    content: 'TMDb'
+                })
+                TMDbButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(TMDbButton, buttonBlock.nextSibling)
+            
+                // IMDb
+                const IMDbButton = newElementPadding({
+                    tag: 'a',
+                    id: 'IMDb-Google-Button',
+                    href: `https://www.imdb.com/find/?q=${title}+${year}`,
+                    // href: `https://www.google.com/search?q=${title}+${year}+site:imdb.com&btnI`,
+                    content: 'IMDb'
+                })
+                IMDbButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(IMDbButton, buttonBlock.nextSibling)
             }
         })
 
@@ -257,8 +279,8 @@ const main = async function (url) {
                 const WikiGoogleButton = newElementPadding({
                     tag: 'a',
                     id: 'Wiki-Button',
-                    href: `https://ru.wikipedia.org/w/index.php?search=${title}`,
-                    content: 'Wikipedia'
+                    href: `https://${language}.wikipedia.org/w/index.php?search=${title}`,
+                    content: 'Wiki'
                 })
                 WikiGoogleButton.setAttribute('target', '_blank')
                 buttonBlock.parentNode.insertBefore(WikiGoogleButton, buttonBlock.nextSibling)

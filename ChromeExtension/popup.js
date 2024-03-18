@@ -61,7 +61,8 @@ homeButton.addEventListener('click', function() {
 var KinoboxCheckBox = document.getElementById('KinoboxCheckBox');
 var YouTubeCheckBox = document.getElementById('YouTubeCheckBox');
 var WikiCheckBox = document.getElementById('WikiCheckBox');
-var DbCheckBox = document.getElementById('DbCheckBox');
+var DbEnCheckBox = document.getElementById('DbEnCheckBox');
+var DbRuCheckBox = document.getElementById('DbRuCheckBox');
 var TorrentCheckBox = document.getElementById('TorrentCheckBox');
 
 // При загрузке страницы, загружаем значение из chrome.storage и устанавливаем его для чекбокса
@@ -98,12 +99,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 document.addEventListener('DOMContentLoaded', function() {
-    chrome.storage.local.get('DbCheckBox', function(data) {
-        if (typeof data.DbCheckBox === 'undefined') {
-            DbCheckBox.checked = true;
-            chrome.storage.local.set({ 'DbCheckBox': true });
+    chrome.storage.local.get('DbEnCheckBox', function(data) {
+        if (typeof data.DbEnCheckBox === 'undefined') {
+            DbEnCheckBox.checked = true;
+            chrome.storage.local.set({ 'DbEnCheckBox': true });
         } else {
-            DbCheckBox.checked = data.DbCheckBox;
+            DbEnCheckBox.checked = data.DbEnCheckBox;
+        }
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    chrome.storage.local.get('DbRuCheckBox', function(data) {
+        if (typeof data.DbRuCheckBox === 'undefined') {
+            DbRuCheckBox.checked = true;
+            chrome.storage.local.set({ 'DbRuCheckBox': true });
+        } else {
+            DbRuCheckBox.checked = data.DbRuCheckBox;
         }
     });
 });
@@ -128,8 +139,11 @@ YouTubeCheckBox.addEventListener('change', function() {
 WikiCheckBox.addEventListener('change', function() {
     chrome.storage.local.set({ 'WikiCheckBox': this.checked });
 });
-DbCheckBox.addEventListener('change', function() {
-    chrome.storage.local.set({ 'DbCheckBox': this.checked });
+DbEnCheckBox.addEventListener('change', function() {
+    chrome.storage.local.set({ 'DbEnCheckBox': this.checked });
+});
+DbRuCheckBox.addEventListener('change', function() {
+    chrome.storage.local.set({ 'DbRuCheckBox': this.checked });
 });
 TorrentCheckBox.addEventListener('change', function() {
     chrome.storage.local.set({ 'TorrentCheckBox': this.checked });
