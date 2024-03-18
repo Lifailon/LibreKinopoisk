@@ -75,28 +75,35 @@ const main = async function (url) {
             var Token = result.saveTokenKinopoisk
             // Google CSE (Custom Search Engine)
             // const Token = '' // API-ключ
-            const cx = '87cb27565e927482b' // ID поисковой системы с доменом для поиска *.kinozal.tv/details*
+            const cx = 'e37dd9d94f75f4c8d' // ID поисковой системы для поиска в rutor.org/torrent*
+            // const cx = '357fa5a907d2f4437' // ID поисковой системы для поиска в nnmclub.to/forum/viewtopic**
+            // const cx = '87cb27565e927482b' // ID поисковой системы для поиска в kinozal.tv/details*
             // Заголовок запроса для RapidAPI
-            const headers = new Headers({
-                "X-RapidAPI-Key": Token,
-                "X-RapidAPI-Host": "google-search72.p.rapidapi.com"
-            })
-            const urlGoogleSearchTorrent = `https://www.googleapis.com/customsearch/v1?q=intitle:${titleElement.textContent}&key=${Token}&cx=${cx}&lr=lang_${language}&num=10&$start=0`
+            // const headers = new Headers({
+            //     "X-RapidAPI-Key": Token,
+            //     "X-RapidAPI-Host": "google-search72.p.rapidapi.com"
+            // })
+            const urlGoogleSearchTorrent = `https://www.googleapis.com/customsearch/v1?q=intitle:${titleElement.textContent}&key=${Token}&cx=${cx}&lr=lang_${language}&num=10&$start=1`
             // const urlGoogleSearchTMDb = `https://google-search72.p.rapidapi.com/search?q=${titleElement.textContent}`
             // fetch(urlGoogleSearchTMDb, { headers })
             fetch(urlGoogleSearchTorrent)
             .then(response => response.json())
             .then(data => {
+                // Проверяем, что массив не пустой (не выводить ошибки в консоль)
                 if (data.items && data.items.length > 0) {
                     data.items.forEach(item => {
-                        const TorrentGoogleButton = newElementPadding({
-                            tag: 'a',
-                            id: `Torrent-Google-Button-${item.id}`, // Уникальный ID для каждой кнопки
-                            href: item.link,
-                            content: item.title
-                        })
-                        TorrentGoogleButton.setAttribute('target', '_blank')
-                        buttonBlock.parentNode.insertBefore(TorrentGoogleButton, buttonBlock.nextSibling)
+                        // Проверяем заголовки содержимого поиска (отсеять ложные совпадения)
+                        if (item.title.includes(titleElement.textContent)) {
+                            let newTitle = item.title.replace(/- rutor\.info/g,'').replace(/rutor\.info ::/g,'').replace(/\.\.\./g,'')
+                            let downloadLink = item.link.replace(/torrent/,'download').replace(/(\d+).*/, '$1')
+                            const TorrentGoogleButton = newElementPadding({
+                                tag: 'a',
+                                id: `Torrent-Google-Button-${item.id}`,
+                                href: downloadLink,
+                                content: newTitle
+                            })
+                            buttonBlock.parentNode.insertBefore(TorrentGoogleButton, buttonBlock.nextSibling)
+                        }
                     })
                 }
             })
