@@ -33,7 +33,7 @@ const main = async function (url) {
     if (!buttonBlock) {
         return
     }
-    
+
     // Поиск элемента оригинального названия на странице по классу
     const titleElement = document.querySelector('.styles_originalTitle__JaNKM')
     let title = titleElement ? titleElement.textContent.replace(/ /g, '+') : ''
@@ -71,7 +71,7 @@ const main = async function (url) {
         const year = yearElement.textContent
 
         // Извлекаем содержимое токена из интерфейса расширения (локального хранилища)
-        chrome.storage.local.get(['saveTokenKinopoisk'], function(result) {
+        chrome.storage.local.get(['saveTokenKinopoisk'], function (result) {
             var Token = result.saveTokenKinopoisk
             // Google CSE (Custom Search Engine)
             // const Token = '' // API-ключ
@@ -87,31 +87,31 @@ const main = async function (url) {
             // const urlGoogleSearchTMDb = `https://google-search72.p.rapidapi.com/search?q=${titleElement.textContent}`
             // fetch(urlGoogleSearchTMDb, { headers })
             fetch(urlGoogleSearchTorrent)
-            .then(response => response.json())
-            .then(data => {
-                // Проверяем, что массив не пустой (не выводить ошибки в консоль)
-                if (data.items && data.items.length > 0) {
-                    data.items.forEach(item => {
-                        // Проверяем заголовки содержимого поиска (отсеять ложные совпадения)
-                        if (item.title.includes(titleElement.textContent)) {
-                            let newTitle = item.title.replace(/- rutor\.info/g,'').replace(/rutor\.info ::/g,'').replace(/\.\.\./g,'')
-                            let downloadLink = item.link.replace(/torrent/,'download').replace(/(\d+).*/, '$1')
-                            const TorrentGoogleButton = newElementPadding({
-                                tag: 'a',
-                                id: `Torrent-Google-Button-${item.id}`,
-                                href: downloadLink,
-                                content: newTitle
-                            })
-                            buttonBlock.parentNode.insertBefore(TorrentGoogleButton, buttonBlock.nextSibling)
-                        }
-                    })
-                }
-            })
+                .then(response => response.json())
+                .then(data => {
+                    // Проверяем, что массив не пустой (не выводить ошибки в консоль)
+                    if (data.items && data.items.length > 0) {
+                        data.items.forEach(item => {
+                            // Проверяем заголовки содержимого поиска (отсеять ложные совпадения)
+                            if (item.title.includes(titleElement.textContent)) {
+                                let newTitle = item.title.replace(/- rutor\.info/g, '').replace(/rutor\.info ::/g, '').replace(/\.\.\./g, '')
+                                let downloadLink = item.link.replace(/torrent/, 'download').replace(/(\d+).*/, '$1')
+                                const TorrentGoogleButton = newElementPadding({
+                                    tag: 'a',
+                                    id: `Torrent-Google-Button-${item.id}`,
+                                    href: downloadLink,
+                                    content: newTitle
+                                })
+                                buttonBlock.parentNode.insertBefore(TorrentGoogleButton, buttonBlock.nextSibling)
+                            }
+                        })
+                    }
+                })
         })
 
         // Torrent
         // Проверка включенного CheckBox в настройках
-        chrome.storage.local.get(['TorrentCheckBox'], function(result) {
+        chrome.storage.local.get(['TorrentCheckBox'], function (result) {
             var TorrentCheckBox = result.TorrentCheckBox
             if (TorrentCheckBox) {
                 // Rezka
@@ -181,7 +181,7 @@ const main = async function (url) {
 
         // Database RU
         // Проверка включенного CheckBox в настройках
-        chrome.storage.local.get(['DbRuCheckBox'], function(result) {
+        chrome.storage.local.get(['DbRuCheckBox'], function (result) {
             var DbRuCheckBox = result.DbRuCheckBox
             if (DbRuCheckBox) {
                 // FilmRu
@@ -194,7 +194,7 @@ const main = async function (url) {
                 })
                 FilmRuButton.setAttribute('target', '_blank')
                 buttonBlock.parentNode.insertBefore(FilmRuButton, buttonBlock.nextSibling)
- 
+
                 // MyShows
                 const MyShowsButton = newElementPadding({
                     tag: 'a',
@@ -205,7 +205,7 @@ const main = async function (url) {
                 })
                 MyShowsButton.setAttribute('target', '_blank')
                 buttonBlock.parentNode.insertBefore(MyShowsButton, buttonBlock.nextSibling)
- 
+
                 // Toramp 
                 const TorampButton = newElementPadding({
                     tag: 'a',
@@ -216,7 +216,7 @@ const main = async function (url) {
                 })
                 TorampButton.setAttribute('target', '_blank')
                 buttonBlock.parentNode.insertBefore(TorampButton, buttonBlock.nextSibling)
-                
+
                 // Kinorium 
                 const KinoriumButton = newElementPadding({
                     tag: 'a',
@@ -233,7 +233,7 @@ const main = async function (url) {
 
         // Database EN
         // Проверка включенного CheckBox в настройках
-        chrome.storage.local.get(['DbEnCheckBox'], function(result) {
+        chrome.storage.local.get(['DbEnCheckBox'], function (result) {
             var DbEnCheckBox = result.DbEnCheckBox
             if (DbEnCheckBox) {
                 // Plex
@@ -253,7 +253,7 @@ const main = async function (url) {
                 // })
                 // PlexButton.setAttribute('target', '_blank')
                 // buttonBlock.parentNode.insertBefore(PlexButton, buttonBlock.nextSibling)
-            
+
                 // TMDb 
                 const TMDbButton = newElementPadding({
                     tag: 'a',
@@ -264,7 +264,7 @@ const main = async function (url) {
                 })
                 TMDbButton.setAttribute('target', '_blank')
                 buttonBlock.parentNode.insertBefore(TMDbButton, buttonBlock.nextSibling)
-            
+
                 // IMDb
                 const IMDbButton = newElementPadding({
                     tag: 'a',
@@ -280,7 +280,7 @@ const main = async function (url) {
 
         // Wikipedia 
         // Проверка включенного CheckBox в настройках
-        chrome.storage.local.get(['WikiCheckBox'], function(result) {
+        chrome.storage.local.get(['WikiCheckBox'], function (result) {
             var WikiCheckBox = result.WikiCheckBox
             if (WikiCheckBox) {
                 const WikiGoogleButton = newElementPadding({
@@ -296,13 +296,13 @@ const main = async function (url) {
 
         // YouTube
         // Проверка включенного CheckBox в настройках
-        chrome.storage.local.get(['YouTubeCheckBox'], function(result) {
+        chrome.storage.local.get(['YouTubeCheckBox'], function (result) {
             var YouTubeCheckBox = result.YouTubeCheckBox
             if (YouTubeCheckBox) {
                 const YouTubeButton = newElementPadding({
                     tag: 'a',
                     id: 'YouTube-Button',
-                    href: `https://www.youtube.com/results?search_query=${title}+${year}+Trailer+Russian`,
+                    href: `https://www.youtube.com/results?search_query=${title}+${year}+трейлер`,
                     content: 'Трейлеры'
                 })
                 YouTubeButton.setAttribute('target', '_blank')
@@ -312,7 +312,7 @@ const main = async function (url) {
 
         // Online
         // Проверка включенного CheckBox в настройках
-        chrome.storage.local.get(['KinoboxCheckBox'], function(result) {
+        chrome.storage.local.get(['KinoboxCheckBox'], function (result) {
             var KinoboxCheckBox = result.KinoboxCheckBox
             if (KinoboxCheckBox) {
                 // Zetflix
@@ -345,35 +345,80 @@ const main = async function (url) {
         })
     }
 
-    // Online
-    // Проверка включенного CheckBox в настройках
-    chrome.storage.local.get(['KinoboxCheckBox'], function(result) {
-        var KinoboxCheckBox = result.KinoboxCheckBox
+    // Kinobox
+    chrome.storage.local.get(['KinoboxCheckBox'], function (result) {
+        var KinoboxCheckBox = result.KinoboxCheckBox;
+        // Проверка включенного CheckBox в настройках
         if (KinoboxCheckBox) {
-            // Извлекаем идентификатора фильма из параметра с URL
-            const kinopoiskID = url?.split('/')?.filter(itm => Number(itm)).pop()
-            // Bedemp2
-            const Bedemp2Button = newElementPadding({
-                tag: 'a',
-                id: 'Kinobox-Button',
-                href: `https://api.bedemp2.ws/embed/kp/${kinopoiskID}`,
-                content: 'Плеер'
-            })
-            Bedemp2Button.setAttribute('target', '_blank')
-            buttonBlock.parentNode.insertBefore(Bedemp2Button, buttonBlock.nextSibling)
-            // Kinobox
+            // Извлекаем ID фильма из URL
+            const kinopoiskID = url?.split('/')?.filter(itm => Number(itm)).pop();
+
+            // Создаем кнопку для открытия плеера Kinobox
             const KinoboxButton = newElementPadding({
                 tag: 'a',
                 id: 'Kinobox-Button',
-                href: `https://kinomix.web.app/#${kinopoiskID}`,
+                href: '#',
                 content: 'Смотреть онлайн'
-            })
-            // Открывать ссылку в новой вкладке
-            KinoboxButton.setAttribute('target', '_blank')
-            // Добавляем кнопку после блока кнопок на странице
-            buttonBlock.parentNode.insertBefore(KinoboxButton, buttonBlock.nextSibling)
+            });
+
+            // Добавляем обработчик события для кнопки
+            KinoboxButton.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                // Создаем модальное окно
+                const modal = document.createElement('div');
+                modal.style.position = 'fixed';
+                modal.style.top = '0';
+                modal.style.left = '0';
+                modal.style.width = '100%';
+                modal.style.height = '100%';
+                modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
+                modal.style.zIndex = '10000';
+                modal.style.display = 'flex';
+                modal.style.alignItems = 'center';
+                modal.style.justifyContent = 'center';
+
+                // const iframe = document.createElement('iframe')
+                // iframe.src = `https://kinomix.web.app/#${kinopoiskID}`
+                // iframe.style.width = '80%'
+                // iframe.style.height = '80%'
+                // iframe.style.border = 'none'
+
+                // Создаем контейнер для плеера Kinobox
+                const playerContainer = document.createElement('div');
+                playerContainer.className = 'kinobox_player';
+                playerContainer.style.width = '80%';
+                playerContainer.style.height = '80%';
+                playerContainer.style.backgroundColor = '#000';
+                playerContainer.style.position = 'relative';
+
+                // Создаем кнопку для закрытия модального окна
+                const closeButton = document.createElement('span');
+                closeButton.textContent = '×';
+                closeButton.style.position = 'absolute';
+                closeButton.style.top = '10px';
+                closeButton.style.right = '20px';
+                closeButton.style.color = '#fff';
+                closeButton.style.fontSize = '30px';
+                closeButton.style.cursor = 'pointer';
+                closeButton.addEventListener('click', function () {
+                    document.body.removeChild(modal);
+                });
+
+                // modal.appendChild(iframe)
+                modal.appendChild(playerContainer);
+                modal.appendChild(closeButton);
+                document.body.appendChild(modal);
+
+                // Встраиваем и выполняем код плеера Kinobox
+                (function () {
+                    kbox('.kinobox_player', { search: { kinopoisk: kinopoiskID } });
+                })();
+            });
+
+            buttonBlock.parentNode.insertBefore(KinoboxButton, buttonBlock.nextSibling);
         }
-    })
+    });
 }
 
 // Функция для отображения кнопок на странице hd.kinopoisk

@@ -31,13 +31,15 @@
   "content_scripts": [
     {
       "matches": [
+        "https://www.kinopoisk.ru/*",
         "https://kinopoisk.ru/*",
         "https://www.kinopoisk.ru/*",
         "https://hd.kinopoisk.ru/*",
         "https://www.hd.kinopoisk.ru/*"
       ],
       "js": [
-        "main.js"
+        "main.js",
+        "kinobox.min.js"
       ],
       "all_frames": false,
       "run_at": "document_start"
@@ -46,7 +48,8 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "assets/icons/*"
+        "assets/icons/*",
+        "kinobox.min.js"
       ],
       "matches": [
         "https://kinopoisk.ru/*",
