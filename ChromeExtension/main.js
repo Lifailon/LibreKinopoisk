@@ -342,7 +342,7 @@ const main = async function (url) {
                     modal.style.alignItems = 'center';
                     modal.style.justifyContent = 'center';
         
-                    // Создаем контейнер для таблицы
+                    // Контейнер для таблицы
                     const tableContainer = document.createElement('div');
                     tableContainer.style.width = '80%';
                     tableContainer.style.height = '80%';
@@ -354,6 +354,52 @@ const main = async function (url) {
                     tableContainer.style.display = 'flex';
                     tableContainer.style.flexDirection = 'column';
         
+                    // Контейнер для поля ввода и кнопки поиска
+                    const searchContainer = document.createElement('div');
+                    searchContainer.style.display = 'flex';
+                    searchContainer.style.alignItems = 'center';
+                    searchContainer.style.marginBottom = '10px';
+                    searchContainer.style.gap = '10px';
+
+                    // Поле ввода для ввода запроса вручную
+                    const searchInput = document.createElement('input');
+                    searchInput.type = 'text';
+                    searchInput.placeholder = 'Поиск по названию';
+                    searchInput.style.marginBottom = '10px';
+                    searchInput.style.padding = '10px';
+                    searchInput.style.borderRadius = '5px';
+                    searchInput.style.border = '1px solid #ddd';
+                    searchInput.style.width = '100%';
+                    searchInput.style.boxSizing = 'border-box';
+                    searchInput.style.flexGrow = '1'; // Расширяет input на всю оставшуюся ширину
+
+                    // Кнопку для выполнения поиска
+                    const searchButton = document.createElement('button');
+                    searchButton.textContent = 'Поиск';
+                    searchButton.style.padding = '10px 20px';
+                    searchButton.style.backgroundColor = '#1e90ff';
+                    searchButton.style.color = '#fff';
+                    searchButton.style.border = 'none';
+                    searchButton.style.borderRadius = '5px';
+                    searchButton.style.cursor = 'pointer';
+                    searchButton.style.marginLeft = '10px';
+
+                    // Обработчик события для кнопки поиска
+                    searchButton.addEventListener('click', function () {
+                        const query = searchInput.value.trim();
+                        if (query) {
+                            // Выполняем запрос с новым значением
+                            fetch(`https://toruapi.vercel.app/api/search/title/all?query=${query}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                displayTorrents(data);
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                        }
+                    });
+
                     // Создаем поле для фильтрации
                     const filterInput = document.createElement('input');
                     filterInput.type = 'text';
@@ -465,11 +511,20 @@ const main = async function (url) {
                     // Создаем тело таблицы
                     const tableBody = document.createElement('tbody');
                     table.appendChild(tableBody);
-        
-                    // Добавляем таблицу и фильтр в контейнер
+                    
+                    // Добавляем поле ввода и кнопку поиска в контейнер
+                    searchContainer.appendChild(searchInput);
+                    searchContainer.appendChild(searchButton);
+
+                    // Добавляем контейнер поиска в tableContainer
+                    tableContainer.appendChild(searchContainer);
+
+                    // Добавляем фильтр
                     tableContainer.appendChild(filterInput);
+
+                    // Добавляем таблицу
                     tableContainer.appendChild(table);
-        
+
                     // Создаем кнопку для закрытия модального окна
                     const closeButton = document.createElement('span');
                     closeButton.textContent = '×';
