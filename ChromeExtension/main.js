@@ -1,4 +1,4 @@
-// Функция создания нового HTML элемента с применением стилей
+// Функция создания кнопки с применением стилей
 const newElementPadding = ({ tag, id, content, href }) => {
     const el = document.createElement(tag)
     el.setAttribute('id', id)
@@ -36,6 +36,7 @@ const main = async function (url) {
 
     // Поиск элемента оригинального названия на странице по классу
     const titleElement = document.querySelector('.styles_originalTitle__JaNKM')
+    // Заменяем пробелы на символ сложения
     let title = titleElement ? titleElement.textContent.replace(/ /g, '+') : ''
     // Опускаем регистр
     const _title = titleElement ? titleElement.textContent.toLowerCase().replace(/ /g, '-') : ''
@@ -48,7 +49,7 @@ const main = async function (url) {
     var firstTitleElement = secondTitleElement.querySelector('[class^="styles_title__"]')
     // Получаем все дочерние элементы span, забираем только первый и его содержимое
     var nameElement = firstTitleElement.querySelectorAll('span')[0].textContent
-    // Обрезаем строку до скобки (не включая) и удаляем пробелы в начале и в конце
+    // Обрезаем строку до скобки и удаляем пробелы в начале и в конце
     var indexOfBracket = nameElement.indexOf('(')
     if (indexOfBracket !== -1) {
         var name = nameElement.substring(0, indexOfBracket).trim()
@@ -71,43 +72,43 @@ const main = async function (url) {
         const year = yearElement.textContent
 
         // Извлекаем содержимое токена из интерфейса расширения (локального хранилища)
-        chrome.storage.local.get(['saveTokenKinopoisk'], function (result) {
-            var Token = result.saveTokenKinopoisk
-            // Google CSE (Custom Search Engine)
-            // const Token = '' // API-ключ
-            const cx = 'e37dd9d94f75f4c8d' // ID поисковой системы для поиска в rutor.org/torrent*
-            // const cx = '357fa5a907d2f4437' // ID поисковой системы для поиска в nnmclub.to/forum/viewtopic**
-            // const cx = '87cb27565e927482b' // ID поисковой системы для поиска в kinozal.tv/details*
-            // Заголовок запроса для RapidAPI
-            // const headers = new Headers({
-            //     "X-RapidAPI-Key": Token,
-            //     "X-RapidAPI-Host": "google-search72.p.rapidapi.com"
-            // })
-            const urlGoogleSearchTorrent = `https://www.googleapis.com/customsearch/v1?q=intitle:${titleElement.textContent}&key=${Token}&cx=${cx}&lr=lang_${language}&num=10&$start=1`
-            // const urlGoogleSearchTMDb = `https://google-search72.p.rapidapi.com/search?q=${titleElement.textContent}`
-            // fetch(urlGoogleSearchTMDb, { headers })
-            fetch(urlGoogleSearchTorrent)
-                .then(response => response.json())
-                .then(data => {
-                    // Проверяем, что массив не пустой (не выводить ошибки в консоль)
-                    if (data.items && data.items.length > 0) {
-                        data.items.forEach(item => {
-                            // Проверяем заголовки содержимого поиска (отсеять ложные совпадения)
-                            if (item.title.includes(titleElement.textContent)) {
-                                let newTitle = item.title.replace(/- rutor\.info/g, '').replace(/rutor\.info ::/g, '').replace(/\.\.\./g, '')
-                                let downloadLink = item.link.replace(/torrent/, 'download').replace(/(\d+).*/, '$1')
-                                const TorrentGoogleButton = newElementPadding({
-                                    tag: 'a',
-                                    id: `Torrent-Google-Button-${item.id}`,
-                                    href: downloadLink,
-                                    content: newTitle
-                                })
-                                buttonBlock.parentNode.insertBefore(TorrentGoogleButton, buttonBlock.nextSibling)
-                            }
-                        })
-                    }
-                })
-        })
+        // chrome.storage.local.get(['saveTokenKinopoisk'], function (result) {
+        //     var Token = result.saveTokenKinopoisk
+        //     // Google CSE (Custom Search Engine)
+        //     // const Token = '' // API-ключ
+        //     const cx = 'e37dd9d94f75f4c8d' // ID поисковой системы для поиска в rutor.org/torrent*
+        //     // const cx = '357fa5a907d2f4437' // ID поисковой системы для поиска в nnmclub.to/forum/viewtopic**
+        //     // const cx = '87cb27565e927482b' // ID поисковой системы для поиска в kinozal.tv/details*
+        //     // Заголовок запроса для RapidAPI
+        //     // const headers = new Headers({
+        //     //     "X-RapidAPI-Key": Token,
+        //     //     "X-RapidAPI-Host": "google-search72.p.rapidapi.com"
+        //     // })
+        //     const urlGoogleSearchTorrent = `https://www.googleapis.com/customsearch/v1?q=intitle:${titleElement.textContent}&key=${Token}&cx=${cx}&lr=lang_${language}&num=10&$start=1`
+        //     // const urlGoogleSearchTMDb = `https://google-search72.p.rapidapi.com/search?q=${titleElement.textContent}`
+        //     // fetch(urlGoogleSearchTMDb, { headers })
+        //     fetch(urlGoogleSearchTorrent)
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             // Проверяем, что массив не пустой (не выводить ошибки в консоль)
+        //             if (data.items && data.items.length > 0) {
+        //                 data.items.forEach(item => {
+        //                     // Проверяем заголовки содержимого поиска (отсеять ложные совпадения)
+        //                     if (item.title.includes(titleElement.textContent)) {
+        //                         let newTitle = item.title.replace(/- rutor\.info/g, '').replace(/rutor\.info ::/g, '').replace(/\.\.\./g, '')
+        //                         let downloadLink = item.link.replace(/torrent/, 'download').replace(/(\d+).*/, '$1')
+        //                         const TorrentGoogleButton = newElementPadding({
+        //                             tag: 'a',
+        //                             id: `Torrent-Google-Button-${item.id}`,
+        //                             href: downloadLink,
+        //                             content: newTitle
+        //                         })
+        //                         buttonBlock.parentNode.insertBefore(TorrentGoogleButton, buttonBlock.nextSibling)
+        //                     }
+        //                 })
+        //             }
+        //         })
+        // })
 
         // Torrent
         // Проверка включенного CheckBox в настройках
@@ -309,6 +310,155 @@ const main = async function (url) {
                 buttonBlock.parentNode.insertBefore(YouTubeButton, buttonBlock.nextSibling)
             }
         })
+
+        chrome.storage.local.get(['TorrentCheckBox'], function (result) {
+            var TorrentCheckBox = result.TorrentCheckBox;
+            if (TorrentCheckBox) {
+                // Создаем кнопку для отображения торрентов
+                const torrentButton = newElementPadding({
+                    tag: 'a',
+                    id: 'TorAPI-Button',
+                    href: '#',
+                    content: 'Раздачи'
+                });
+        
+                // Добавляем обработчик события для кнопки
+                torrentButton.addEventListener('click', function (event) {
+                    event.preventDefault();
+        
+                    // Создаем модальное окно
+                    const modal = document.createElement('div');
+                    modal.style.position = 'fixed';
+                    modal.style.top = '0';
+                    modal.style.left = '0';
+                    modal.style.width = '100%';
+                    modal.style.height = '100%';
+                    modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
+                    modal.style.zIndex = '10000';
+                    modal.style.display = 'flex';
+                    modal.style.flexDirection = 'column';
+                    modal.style.alignItems = 'center';
+                    modal.style.justifyContent = 'center';
+        
+                    // Создаем контейнер для таблицы
+                    const tableContainer = document.createElement('div');
+                    tableContainer.style.width = '80%';
+                    tableContainer.style.height = '80%';
+                    tableContainer.style.backgroundColor = '#2d2d2d';
+                    tableContainer.style.padding = '20px';
+                    tableContainer.style.borderRadius = '10px';
+                    tableContainer.style.overflowY = 'auto';
+                    tableContainer.style.position = 'relative';
+                    tableContainer.style.display = 'flex';
+                    tableContainer.style.flexDirection = 'column';
+        
+                    // Создаем поле для фильтрации
+                    const filterInput = document.createElement('input');
+                    filterInput.type = 'text';
+                    filterInput.placeholder = 'Фильтрация по названию';
+                    filterInput.style.marginBottom = '10px';
+                    filterInput.style.padding = '10px';
+                    filterInput.style.borderRadius = '5px';
+                    filterInput.style.border = '1px solid #ddd';
+                    filterInput.style.width = '100%';
+                    filterInput.style.boxSizing = 'border-box';
+        
+                    filterInput.addEventListener('input', function () {
+                        const filterValue = filterInput.value.toLowerCase();
+                        const rows = tableBody.querySelectorAll('tr');
+                        rows.forEach(row => {
+                            const titleCell = row.querySelector('td');
+                            if (titleCell) {
+                                const titleText = titleCell.textContent.toLowerCase();
+                                if (titleText.includes(filterValue)) {
+                                    row.style.display = '';
+                                } else {
+                                    row.style.display = 'none';
+                                }
+                            }
+                        });
+                    });
+        
+                    // Создаем таблицу
+                    const table = document.createElement('table');
+                    table.id = 'torrent-table';
+                    table.style.width = '100%';
+                    table.style.borderCollapse = 'collapse';
+                    table.style.color = '#fff';
+        
+                    // Создаем заголовок таблицы
+                    const tableHead = document.createElement('thead');
+                    tableHead.innerHTML = `
+                        <tr style="background-color: #444;">
+                            <th style="padding: 10px; border-bottom: 1px solid #555;">Название</th>
+                            <th style="padding: 10px; border-bottom: 1px solid #555;">Торрент</th>
+                        </tr>
+                    `;
+                    table.appendChild(tableHead);
+        
+                    // Создаем тело таблицы
+                    const tableBody = document.createElement('tbody');
+                    table.appendChild(tableBody);
+        
+                    // Добавляем таблицу и фильтр в контейнер
+                    tableContainer.appendChild(filterInput);
+                    tableContainer.appendChild(table);
+        
+                    // Создаем кнопку для закрытия модального окна
+                    const closeButton = document.createElement('span');
+                    closeButton.textContent = '×';
+                    closeButton.style.position = 'absolute';
+                    closeButton.style.top = '10px';
+                    closeButton.style.right = '20px';
+                    closeButton.style.color = '#fff';
+                    closeButton.style.fontSize = '30px';
+                    closeButton.style.cursor = 'pointer';
+                    closeButton.addEventListener('click', function () {
+                        document.body.removeChild(modal);
+                    });
+        
+                    modal.appendChild(tableContainer);
+                    modal.appendChild(closeButton);
+                    document.body.appendChild(modal);
+        
+                    // Загрузка данных из API
+                    // fetch(`http://localhost:8443/api/search/title/rutracker?query=${title}`)
+                    // Использование прокси-сервиса, который добавляет заголовки CORS к запросам
+                    const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+                    const apiUrl = `https://toruapi.vercel.app/api/search/title/rutracker?query=${title}`;
+                    fetch(corsProxy + apiUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            displayTorrents(data);
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                });
+        
+                // Добавляем кнопку
+                buttonBlock.parentNode.insertBefore(torrentButton, buttonBlock.nextSibling);
+            }
+        });
+        
+        // Функция для отображения данных в таблице модального окна
+        function displayTorrents(data) {
+            const tableBody = document.querySelector('#torrent-table tbody');
+            tableBody.innerHTML = ''; // Очистить старые данные
+        
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.style.backgroundColor = '#333';
+                row.style.borderBottom = '1px solid #555';
+                row.style.padding = '10px';
+                row.innerHTML = `
+                    <td style="padding: 10px;"><a href="${item.Url}" target="_blank" style="color: #1e90ff;">${item.Name}</a></td>
+                    <td style="padding: 10px;"><a href="${item.Torrent}" target="_blank" style="color: #1e90ff;">Скачать</a></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
 
         // Online
         // Проверка включенного CheckBox в настройках
