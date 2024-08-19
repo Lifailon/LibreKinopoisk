@@ -359,7 +359,7 @@ const main = async function (url) {
                     searchContainer.style.display = 'flex';
                     searchContainer.style.alignItems = 'center';
                     searchContainer.style.marginBottom = '10px';
-                    searchContainer.style.gap = '10px';
+                    searchContainer.style.gap = '10px'; // добавляет промежуток между элементами
 
                     // Поле ввода для ввода запроса вручную
                     const searchInput = document.createElement('input');
@@ -372,8 +372,9 @@ const main = async function (url) {
                     searchInput.style.width = '100%';
                     searchInput.style.boxSizing = 'border-box';
                     searchInput.style.flexGrow = '1'; // Расширяет input на всю оставшуюся ширину
+                    searchInput.style.height = '42px'; // Устанавливает высоту поля ввода
 
-                    // Кнопку для выполнения поиска
+                    // Кнопка для выполнения поиска
                     const searchButton = document.createElement('button');
                     searchButton.textContent = 'Поиск';
                     searchButton.style.padding = '10px 20px';
@@ -382,8 +383,11 @@ const main = async function (url) {
                     searchButton.style.border = 'none';
                     searchButton.style.borderRadius = '5px';
                     searchButton.style.cursor = 'pointer';
-                    searchButton.style.marginLeft = '10px';
-
+                    searchButton.style.marginLeft = '10px'; // Отступ от поля ввода до кнопки
+                    searchButton.style.height = '42px'; // Устанавливает высоту кнопки
+                    searchButton.style.lineHeight = '22px'; // Выровнять текст по центру
+                    searchButton.style.marginTop = '-10px'; // Поднимаем кнопку на 5px
+                    
                     // Обработчик события для кнопки поиска
                     searchButton.addEventListener('click', function () {
                         const query = searchInput.value.trim();
@@ -400,7 +404,7 @@ const main = async function (url) {
                         }
                     });
 
-                    // Создаем поле для фильтрации
+                    // Поле для фильтрации
                     const filterInput = document.createElement('input');
                     filterInput.type = 'text';
                     filterInput.placeholder = 'Фильтрация по названию';
@@ -410,8 +414,12 @@ const main = async function (url) {
                     filterInput.style.border = '1px solid #ddd';
                     filterInput.style.width = '100%';
                     filterInput.style.boxSizing = 'border-box';
-        
-                    // Функция фильтрации
+                    filterInput.style.flexGrow = '1'; // Позволяет полю фильтрации занимать оставшееся пространство
+                    filterInput.style.marginLeft = '10px'; // Отступ между кнопкой и фильтром
+                    filterInput.style.height = '42px'; // Устанавливает высоту поля фильтрации
+                    filterInput.style.marginLeft = '10px'; // Отступ между кнопкой и фильтром
+
+                    // Функция для фильтрации
                     filterInput.addEventListener('input', function () {
                         const filterValue = filterInput.value.toLowerCase();
                         const rows = tableBody.querySelectorAll('tr');
@@ -435,7 +443,7 @@ const main = async function (url) {
                     table.style.borderCollapse = 'collapse';
                     table.style.color = '#fff';
         
-                    // Создаем заголовоки таблицы
+                    // Заголовки таблицы
                     const tableHead = document.createElement('thead');
                     tableHead.innerHTML = `
                         <tr style="background-color: #444;">
@@ -496,7 +504,7 @@ const main = async function (url) {
                         return 0;
                     }
 
-                    // Добавляем обработчики клика к заголовкам таблицы для сортировки
+                    // Обработчики клика к заголовкам таблицы для сортировки
                     const tableHeaders = tableHead.querySelectorAll('th');
                     tableHeaders.forEach((header, index) => {
                         // Начинаем с сортировки по возрастанию
@@ -508,19 +516,17 @@ const main = async function (url) {
                         });
                     });
         
-                    // Создаем тело таблицы
+                    // Тело таблицы
                     const tableBody = document.createElement('tbody');
                     table.appendChild(tableBody);
                     
-                    // Добавляем поле ввода и кнопку поиска в контейнер
+                    // Добавляем элементы в контейнер
                     searchContainer.appendChild(searchInput);
                     searchContainer.appendChild(searchButton);
+                    searchContainer.appendChild(filterInput);
 
-                    // Добавляем контейнер поиска в tableContainer
+                    // Добавляем контейнер в tableContainer
                     tableContainer.appendChild(searchContainer);
-
-                    // Добавляем фильтр
-                    tableContainer.appendChild(filterInput);
 
                     // Добавляем таблицу
                     tableContainer.appendChild(table);
