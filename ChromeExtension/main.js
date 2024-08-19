@@ -314,7 +314,7 @@ const main = async function (url) {
         chrome.storage.local.get(['TorrentCheckBox'], function (result) {
             var TorrentCheckBox = result.TorrentCheckBox;
             if (TorrentCheckBox) {
-                // Создаем кнопку для отображения торрентов
+                // Создаем кнопку для отображения таблицы раздач
                 const torrentButton = newElementPadding({
                     tag: 'a',
                     id: 'TorAPI-Button',
@@ -363,11 +363,12 @@ const main = async function (url) {
                     filterInput.style.width = '100%';
                     filterInput.style.boxSizing = 'border-box';
         
+                    // Функция фильтрации
                     filterInput.addEventListener('input', function () {
                         const filterValue = filterInput.value.toLowerCase();
                         const rows = tableBody.querySelectorAll('tr');
                         rows.forEach(row => {
-                            const titleCell = row.querySelector('td');
+                            const titleCell = row.querySelectorAll('td')[1];
                             if (titleCell) {
                                 const titleText = titleCell.textContent.toLowerCase();
                                 if (titleText.includes(filterValue)) {
@@ -390,7 +391,12 @@ const main = async function (url) {
                     const tableHead = document.createElement('thead');
                     tableHead.innerHTML = `
                         <tr style="background-color: #444;">
+                            <th style="padding: 10px; border-bottom: 1px solid #555;">Трекер</th>
                             <th style="padding: 10px; border-bottom: 1px solid #555;">Название</th>
+                            <th style="padding: 10px; border-bottom: 1px solid #555;">Размер</th>
+                            <th style="padding: 10px; border-bottom: 1px solid #555;">Сиды</th>
+                            <th style="padding: 10px; border-bottom: 1px solid #555;">Пиры</th>
+                            <th style="padding: 10px; border-bottom: 1px solid #555;">Дата</th>
                             <th style="padding: 10px; border-bottom: 1px solid #555;">Торрент</th>
                         </tr>
                     `;
@@ -450,7 +456,6 @@ const main = async function (url) {
             for (let source in data) {
                 if (data.hasOwnProperty(source)) {
                     const torrents = data[source]; // Получаем массив данных для каждого источника
-        
                     // Проходим по каждому элементу в массиве
                     torrents.forEach(item => {
                         const row = document.createElement('tr');
@@ -458,7 +463,12 @@ const main = async function (url) {
                         row.style.borderBottom = '1px solid #555';
                         row.style.padding = '10px';
                         row.innerHTML = `
+                            <td style="padding: 10px; border-bottom: 1px solid #555;">${source}</td>
                             <td style="padding: 10px;"><a href="${item.Url}" target="_blank" style="color: #1e90ff;">${item.Name}</a></td>
+                            <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Size}</td>
+                            <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Seeds}</td>
+                            <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Peers}</td>
+                            <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Date}</td>
                             <td style="padding: 10px;"><a href="${item.Torrent}" target="_blank" style="color: #1e90ff;">Скачать</a></td>
                         `;
                         tableBody.appendChild(row);
