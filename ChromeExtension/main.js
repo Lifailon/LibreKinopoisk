@@ -379,7 +379,7 @@ const main = async function (url) {
                             }
                         });
                     });
-        
+
                     // Создаем таблицу
                     const table = document.createElement('table');
                     table.id = 'torrent-table';
@@ -387,20 +387,50 @@ const main = async function (url) {
                     table.style.borderCollapse = 'collapse';
                     table.style.color = '#fff';
         
-                    // Создаем заголовок таблицы
+                    // Создаем заголовоки таблицы
                     const tableHead = document.createElement('thead');
                     tableHead.innerHTML = `
                         <tr style="background-color: #444;">
-                            <th style="padding: 10px; border-bottom: 1px solid #555;">Трекер</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #555;">Название</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #555;">Размер</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #555;">Сиды</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #555;">Пиры</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #555;">Дата</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #555;">Торрент</th>
+                            <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Трекер</th>
+                            <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Название</th>
+                            <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Размер</th>
+                            <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Сиды</th>
+                            <th style="padding: 10px; border-bottom: 1px солид #555; cursor: pointer;">Пиры</th>
+                            <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Дата</th>
+                            <th style="padding: 10px; border-bottom: 1px солид #555; cursor: pointer;">Торрент</th>
                         </tr>
                     `;
                     table.appendChild(tableHead);
+
+                    // Функция сортировки
+                    function sortTable(columnIndex, ascending) {
+                        const rows = Array.from(tableBody.querySelectorAll('tr'));
+                        rows.sort((a, b) => {
+                            const cellA = a.querySelectorAll('td')[columnIndex].textContent.toLowerCase();
+                            const cellB = b.querySelectorAll('td')[columnIndex].textContent.toLowerCase();
+                            if (cellA < cellB) {
+                                return ascending ? -1 : 1;
+                            } else if (cellA > cellB) {
+                                return ascending ? 1 : -1;
+                            } else {
+                                return 0;
+                            }
+                        });
+                        // Удаление существующих строк и добавление отсортированных
+                        rows.forEach(row => tableBody.appendChild(row));
+                    }
+
+                    // Добавляем обработчики клика к заголовкам таблицы для сортировки
+                    const tableHeaders = tableHead.querySelectorAll('th');
+                    tableHeaders.forEach((header, index) => {
+                        // Начинаем с сортировки по возрастанию
+                        let ascending = true;
+                        header.addEventListener('click', () => {
+                            sortTable(index, ascending);
+                            // Переключаем порядок сортировки
+                            ascending = !ascending;
+                        });
+                    });
         
                     // Создаем тело таблицы
                     const tableBody = document.createElement('tbody');
@@ -422,7 +452,8 @@ const main = async function (url) {
                     closeButton.addEventListener('click', function () {
                         document.body.removeChild(modal);
                     });
-        
+                    
+                    // Добавляем контейнер и кнопку закрытия в модальное окно
                     modal.appendChild(tableContainer);
                     modal.appendChild(closeButton);
                     document.body.appendChild(modal);
