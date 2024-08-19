@@ -311,6 +311,8 @@ const main = async function (url) {
             }
         })
 
+        // TorAPI
+        // Source: https://github.com/Lifailon/TorAPI
         chrome.storage.local.get(['TorrentCheckBox'], function (result) {
             var TorrentCheckBox = result.TorrentCheckBox;
             if (TorrentCheckBox) {
@@ -406,8 +408,18 @@ const main = async function (url) {
                     function sortTable(columnIndex, ascending) {
                         const rows = Array.from(tableBody.querySelectorAll('tr'));
                         rows.sort((a, b) => {
-                            const cellA = a.querySelectorAll('td')[columnIndex].textContent.toLowerCase();
-                            const cellB = b.querySelectorAll('td')[columnIndex].textContent.toLowerCase();
+                            let cellA = a.querySelectorAll('td')[columnIndex].textContent.toLowerCase();
+                            let cellB = b.querySelectorAll('td')[columnIndex].textContent.toLowerCase();
+                            // Проверка на числовые значения
+                            if (!isNaN(cellA) && !isNaN(cellB)) {
+                                // Сортировка как чисел
+                                cellA = parseFloat(cellA);
+                                cellB = parseFloat(cellB);
+                            } else if (cellA.includes('mb') || cellA.includes('gb')) {
+                                // Сортировка по размеру файла
+                                cellA = parseFileSize(cellA);
+                                cellB = parseFileSize(cellB);
+                            }
                             if (cellA < cellB) {
                                 return ascending ? -1 : 1;
                             } else if (cellA > cellB) {
@@ -418,6 +430,24 @@ const main = async function (url) {
                         });
                         // Удаление существующих строк и добавление отсортированных
                         rows.forEach(row => tableBody.appendChild(row));
+                    }
+                    
+                    // Функция для преобразования размера файла в числовое значение в байтах
+                    function parseFileSize(size) {
+                        const units = {
+                            'b':  1,
+                            'kb': 1024,
+                            'mb': 1024 ** 2,
+                            'gb': 1024 ** 3,
+                            'tb': 1024 ** 4
+                        };
+                        const match = size.match(/(\d+(\.\d+)?)(\s*)([kmgt]?b)/i);
+                        if (match) {
+                            const value = parseFloat(match[1]);
+                            const unit = match[4].toLowerCase();
+                            return value * (units[unit] || 1);
+                        }
+                        return 0;
                     }
 
                     // Добавляем обработчики клика к заголовкам таблицы для сортировки
@@ -459,11 +489,14 @@ const main = async function (url) {
                     document.body.appendChild(modal);
         
                     // Загрузка данных из API
-                    // fetch(`http://localhost:8443/api/search/title/rutracker?query=${title}`)
-                    // Использование прокси-сервиса, который добавляет заголовки CORS к запросам
-                    const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-                    const apiUrl = `https://toruapi.vercel.app/api/search/title/all?query=${title}`;
-                    fetch(corsProxy + apiUrl)
+                    // Использование прокси, который добавляет заголовки CORS к запросам
+                    // const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+                    // const apiUrl = `https://toruapi.vercel.app/api/search/title/all?query=${title}`;
+                    // fetch(corsProxy + apiUrl)
+                    // Локальный сервер
+                    // fetch(`http://localhost:8443/api/search/title/all?query=${title}`)
+                    // Публичный сервер на Vercel
+                    fetch(`https://toruapi.vercel.app/api/search/title/all?query=${title}`)
                         .then(response => response.json())
                         .then(data => {
                             displayTorrents(data);
@@ -546,6 +579,7 @@ const main = async function (url) {
     }
 
     // Kinobox
+    // Source: https://kinobox.tv
     chrome.storage.local.get(['KinoboxCheckBox'], function (result) {
         var KinoboxCheckBox = result.KinoboxCheckBox;
         // Проверка включенного CheckBox в настройках
