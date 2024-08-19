@@ -425,7 +425,7 @@ const main = async function (url) {
                     // fetch(`http://localhost:8443/api/search/title/rutracker?query=${title}`)
                     // Использование прокси-сервиса, который добавляет заголовки CORS к запросам
                     const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-                    const apiUrl = `https://toruapi.vercel.app/api/search/title/rutracker?query=${title}`;
+                    const apiUrl = `https://toruapi.vercel.app/api/search/title/all?query=${title}`;
                     fetch(corsProxy + apiUrl)
                         .then(response => response.json())
                         .then(data => {
@@ -446,18 +446,27 @@ const main = async function (url) {
             const tableBody = document.querySelector('#torrent-table tbody');
             tableBody.innerHTML = ''; // Очистить старые данные
         
-            data.forEach(item => {
-                const row = document.createElement('tr');
-                row.style.backgroundColor = '#333';
-                row.style.borderBottom = '1px solid #555';
-                row.style.padding = '10px';
-                row.innerHTML = `
-                    <td style="padding: 10px;"><a href="${item.Url}" target="_blank" style="color: #1e90ff;">${item.Name}</a></td>
-                    <td style="padding: 10px;"><a href="${item.Torrent}" target="_blank" style="color: #1e90ff;">Скачать</a></td>
-                `;
-                tableBody.appendChild(row);
-            });
+            // Проходим по всем ключам в объекте data
+            for (let source in data) {
+                if (data.hasOwnProperty(source)) {
+                    const torrents = data[source]; // Получаем массив данных для каждого источника
+        
+                    // Проходим по каждому элементу в массиве
+                    torrents.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.style.backgroundColor = '#333';
+                        row.style.borderBottom = '1px solid #555';
+                        row.style.padding = '10px';
+                        row.innerHTML = `
+                            <td style="padding: 10px;"><a href="${item.Url}" target="_blank" style="color: #1e90ff;">${item.Name}</a></td>
+                            <td style="padding: 10px;"><a href="${item.Torrent}" target="_blank" style="color: #1e90ff;">Скачать</a></td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                }
+            }
         }
+        
         
 
         // Online
