@@ -325,9 +325,8 @@ const main = async function (url) {
 
         // TorAPI
         // Source: https://github.com/Lifailon/TorAPI
-        chrome.storage.local.get(['TorrentCheckBox'], function (result) {
-            var TorrentCheckBox = result.TorrentCheckBox;
-            if (TorrentCheckBox) {
+        chrome.storage.local.get(['torSrv'], function(result) {
+            var torSrv = result.torSrv
                 // Создаем кнопку для отображения таблицы раздач
                 const torrentButton = newElementPadding({
                     tag: 'a',
@@ -583,7 +582,9 @@ const main = async function (url) {
                     // Локальный сервер
                     // fetch(`http://localhost:8443/api/search/title/all?query=${title}`)
                     // Публичный сервер на Vercel
-                    fetch(`https://toruapi.vercel.app/api/search/title/all?query=${title}`)
+                    // fetch(`https://toruapi.vercel.app/api/search/title/all?query=${title}`)
+                    // Используем переменную из хранилища
+                    fetch(`${torSrv}/api/search/title/all?query=${title}`)
                         .then(response => response.json())
                         .then(data => {
                             displayTorrents(data);
@@ -595,7 +596,6 @@ const main = async function (url) {
         
                 // Добавляем кнопку
                 buttonBlock.parentNode.insertBefore(torrentButton, buttonBlock.nextSibling);
-            }
         });
         
         // Функция для отображения данных в таблице модального окна
