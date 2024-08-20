@@ -67,5 +67,8 @@
     "https://www.kinopoisk.ru/*",
     "https://hd.kinopoisk.ru/*",
     "https://www.hd.kinopoisk.ru/*"
-  ]
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
 }
