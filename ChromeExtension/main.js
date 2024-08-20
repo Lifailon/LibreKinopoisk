@@ -464,15 +464,19 @@ const main = async function (url) {
                         rows.sort((a, b) => {
                             let cellA = a.querySelectorAll('td')[columnIndex].textContent.toLowerCase();
                             let cellB = b.querySelectorAll('td')[columnIndex].textContent.toLowerCase();
-                            // Проверка на числовые значения
+                            // Числовые значения
                             if (!isNaN(cellA) && !isNaN(cellB)) {
-                                // Сортировка как чисел
                                 cellA = parseFloat(cellA);
                                 cellB = parseFloat(cellB);
+                            // Размер файла
                             } else if (cellA.includes('mb') || cellA.includes('gb')) {
-                                // Сортировка по размеру файла
                                 cellA = parseFileSize(cellA);
                                 cellB = parseFileSize(cellB);
+                            }
+                            // Формат даты
+                            else if (isDate(cellA) && isDate(cellB)) {
+                                cellA = parseDate(cellA);
+                                cellB = parseDate(cellB);
                             }
                             if (cellA < cellB) {
                                 return ascending ? -1 : 1;
@@ -492,8 +496,7 @@ const main = async function (url) {
                             'b':  1,
                             'kb': 1024,
                             'mb': 1024 ** 2,
-                            'gb': 1024 ** 3,
-                            'tb': 1024 ** 4
+                            'gb': 1024 ** 3
                         };
                         const match = size.match(/(\d+(\.\d+)?)(\s*)([kmgt]?b)/i);
                         if (match) {
@@ -502,6 +505,17 @@ const main = async function (url) {
                             return value * (units[unit] || 1);
                         }
                         return 0;
+                    }
+
+                    // Функция для проверки, является ли строка датой в формате dd.mm.yyyy
+                    function isDate(str) {
+                        return /^\d{2}\.\d{2}\.\d{4}$/.test(str);
+                    }
+
+                    // Функция для преобразования даты из формата строки в объект Date
+                    function parseDate(dateStr) {
+                        const [day, month, year] = dateStr.split('.');
+                        return new Date(`${year}-${month}-${day}`);
                     }
 
                     // Обработчики клика к заголовкам таблицы для сортировки
@@ -593,7 +607,7 @@ const main = async function (url) {
                             <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Size}</td>
                             <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Seeds}</td>
                             <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Peers}</td>
-                            <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Date}</td>
+                            <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Date.split(' ')[0]}</td>
                             <td style="padding: 10px;"><a href="${item.Torrent}" target="_blank" style="color: #1e90ff;">Скачать</a></td>
                         `;
                         tableBody.appendChild(row);
