@@ -1,20 +1,30 @@
+// Сохранение адреса сервера в поле ввода интерфейса
+var KinoboxCheckBox = document.getElementById('textInput')
+document.addEventListener('DOMContentLoaded', function() {
+    chrome.storage.local.get('torSrv', function(data) {
+        textInput.value = data.torSrv
+    })
+})
+
+// Сохранение адреса сервера TorAPI в локальное хранилище
 document.getElementById('saveButton').addEventListener('click', function() {
     var button = document.getElementById('saveButton')
     var text = document.getElementById('textInput').value
     // Отключаем обработчики событий для изменения цвета фона при наведении
     button.onmouseover = null
     button.onmouseleave = null
-    // Сохраняем текст в локальное хранилище
+    // Если поле ввода пустое, обновить на значение по умолчанию
     if (text === 'undefined' || text === '' || text === null) {
         text = 'https://toruapi.vercel.app'
     }
+    // Сохраняем текст в локальное хранилище
     chrome.storage.local.set({ 'torSrv': text }, function() {
         // Оповещаем пользователя о сохранении
         button.innerHTML = 'Адрес сервера сохранен'
         button.style.backgroundColor = '#4CAF50' // Зеленый цвет фона
         button.style.animation = 'savedEffect 3s ease-in-out'
-        // Очищаем поле ввода текста
-        textInput.value = ''
+        // Обновляем поле ввода текста
+        textInput.value = text
         // Убираем эффект через 3 секунды и возвращаем исходный цвет и эффекты
         setTimeout(function() {
             button.innerHTML = 'Сохранить'
@@ -30,7 +40,7 @@ document.getElementById('saveButton').addEventListener('click', function() {
     })
 })
 
-// Логика запуска функции открытия модального окна для поиска раздачи
+// Логика запуска функции открытия модального окна для поиска раздач в торрент трекерах через TorAPI
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('showTorrentTableButton').addEventListener('click', function() {
         chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {

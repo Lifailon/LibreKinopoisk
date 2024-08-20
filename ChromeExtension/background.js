@@ -1,5 +1,7 @@
 chrome.runtime.onInstalled.addListener(function() {
-    chrome.storage.local.get(['torSrv',
+    chrome.storage.local.get([
+        'torSrv',
+        'textInput',
         'KinoboxCheckBox',
         'YouTubeCheckBox', 
         'WikiCheckBox', 
