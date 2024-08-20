@@ -327,264 +327,84 @@ const main = async function (url) {
         // Source: https://github.com/Lifailon/TorAPI
         chrome.storage.local.get(['torSrv'], function(result) {
             var torSrv = result.torSrv
-                // Создаем кнопку для отображения таблицы раздач
-                const torrentButton = newElementPadding({
-                    tag: 'a',
-                    id: 'TorAPI-Button',
-                    href: '#',
-                    content: 'Раздачи'
-                });
+            // Создаем кнопку для отображения таблицы раздач
+            const torrentButton = newElementPadding({
+                tag: 'a',
+                id: 'TorAPI-Button',
+                href: '#',
+                content: 'Раздачи'
+            });
         
-                // Добавляем обработчик события для кнопки
-                torrentButton.addEventListener('click', function (event) {
-                    event.preventDefault();
+            // Добавляем обработчик события для кнопки
+            torrentButton.addEventListener('click', function (event) {
+                event.preventDefault();
         
-                    // Создаем модальное окно
-                    const modal = document.createElement('div');
-                    modal.style.position = 'fixed';
-                    modal.style.top = '0';
-                    modal.style.left = '0';
-                    modal.style.width = '100%';
-                    modal.style.height = '100%';
-                    modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
-                    modal.style.zIndex = '10000';
-                    modal.style.display = 'flex';
-                    modal.style.flexDirection = 'column';
-                    modal.style.alignItems = 'center';
-                    modal.style.justifyContent = 'center';
+                // Создаем модальное окно
+                const modal = document.createElement('div');
+                modal.style.position = 'fixed';
+                modal.style.top = '0';
+                modal.style.left = '0';
+                modal.style.width = '100%';
+                modal.style.height = '100%';
+                modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
+                modal.style.zIndex = '10000';
+                modal.style.display = 'flex';
+                modal.style.flexDirection = 'column';
+                modal.style.alignItems = 'center';
+                modal.style.justifyContent = 'center';
         
-                    // Контейнер для таблицы
-                    const tableContainer = document.createElement('div');
-                    tableContainer.style.width = '80%';
-                    tableContainer.style.height = '80%';
-                    tableContainer.style.backgroundColor = '#2d2d2d';
-                    tableContainer.style.padding = '20px';
-                    tableContainer.style.borderRadius = '10px';
-                    tableContainer.style.overflowY = 'auto';
-                    tableContainer.style.position = 'relative';
-                    tableContainer.style.display = 'flex';
-                    tableContainer.style.flexDirection = 'column';
+                // Контейнер для таблицы
+                const tableContainer = document.createElement('div');
+                tableContainer.style.width = '80%';
+                tableContainer.style.height = '80%';
+                tableContainer.style.backgroundColor = '#2d2d2d';
+                tableContainer.style.padding = '20px';
+                tableContainer.style.borderRadius = '10px';
+                tableContainer.style.overflowY = 'auto';
+                tableContainer.style.position = 'relative';
+                tableContainer.style.display = 'flex';
+                tableContainer.style.flexDirection = 'column';
         
-                    // Контейнер для поля ввода и кнопки поиска
-                    const searchContainer = document.createElement('div');
-                    searchContainer.style.display = 'flex';
-                    searchContainer.style.alignItems = 'center';
-                    searchContainer.style.marginBottom = '10px';
-                    searchContainer.style.gap = '10px'; // добавляет промежуток между элементами
+                // Контейнер для поля ввода и кнопки поиска
+                const searchContainer = document.createElement('div');
+                searchContainer.style.display = 'flex';
+                searchContainer.style.alignItems = 'center';
+                searchContainer.style.marginBottom = '10px';
+                searchContainer.style.gap = '10px'; // добавляет промежуток между элементами
 
-                    // Поле ввода для ввода запроса вручную
-                    const searchInput = document.createElement('input');
-                    searchInput.type = 'text';
-                    searchInput.placeholder = 'Поиск по названию';
-                    searchInput.style.marginBottom = '10px';
-                    searchInput.style.padding = '10px';
-                    searchInput.style.borderRadius = '5px';
-                    searchInput.style.border = '1px solid #ddd';
-                    searchInput.style.width = '100%';
-                    searchInput.style.boxSizing = 'border-box';
-                    searchInput.style.flexGrow = '1'; // Расширяет input на всю оставшуюся ширину
-                    searchInput.style.height = '42px'; // Устанавливает высоту поля ввода
+                // Поле ввода для ввода запроса вручную
+                const searchInput = document.createElement('input');
+                searchInput.type = 'text';
+                searchInput.placeholder = 'Поиск по названию';
+                searchInput.style.marginBottom = '10px';
+                searchInput.style.padding = '10px';
+                searchInput.style.borderRadius = '5px';
+                searchInput.style.border = '1px solid #ddd';
+                searchInput.style.width = '100%';
+                searchInput.style.boxSizing = 'border-box';
+                searchInput.style.flexGrow = '1'; // Расширяет input на всю оставшуюся ширину
+                searchInput.style.height = '42px'; // Устанавливает высоту поля ввода
 
-                    // Кнопка для выполнения поиска
-                    const searchButton = document.createElement('button');
-                    searchButton.textContent = 'Поиск';
-                    searchButton.style.padding = '10px 20px';
-                    searchButton.style.backgroundColor = '#1e90ff';
-                    searchButton.style.color = '#fff';
-                    searchButton.style.border = 'none';
-                    searchButton.style.borderRadius = '5px';
-                    searchButton.style.cursor = 'pointer';
-                    searchButton.style.marginLeft = '10px'; // Отступ от поля ввода до кнопки
-                    searchButton.style.height = '42px'; // Устанавливает высоту кнопки
-                    searchButton.style.lineHeight = '22px'; // Выровнять текст по центру
-                    searchButton.style.marginTop = '-10px'; // Поднимаем кнопку на 5px
-                    
-                    // Обработчик события для кнопки поиска
-                    searchButton.addEventListener('click', function () {
-                        const query = searchInput.value.trim();
-                        if (query) {
-                            // Выполняем запрос с новым значением
-                            fetch(`https://toruapi.vercel.app/api/search/title/all?query=${query}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                displayTorrents(data);
-                            })
-                            .catch(error => {
-                                console.error(error);
-                            });
-                        }
-                    });
-
-                    // Поле для фильтрации
-                    const filterInput = document.createElement('input');
-                    filterInput.type = 'text';
-                    filterInput.placeholder = 'Фильтрация по названию';
-                    filterInput.style.marginBottom = '10px';
-                    filterInput.style.padding = '10px';
-                    filterInput.style.borderRadius = '5px';
-                    filterInput.style.border = '1px solid #ddd';
-                    filterInput.style.width = '100%';
-                    filterInput.style.boxSizing = 'border-box';
-                    filterInput.style.flexGrow = '1'; // Позволяет полю фильтрации занимать оставшееся пространство
-                    filterInput.style.marginLeft = '10px'; // Отступ между кнопкой и фильтром
-                    filterInput.style.height = '42px'; // Устанавливает высоту поля фильтрации
-                    filterInput.style.marginLeft = '10px'; // Отступ между кнопкой и фильтром
-
-                    // Функция для фильтрации
-                    filterInput.addEventListener('input', function () {
-                        const filterValue = filterInput.value.toLowerCase();
-                        const rows = tableBody.querySelectorAll('tr');
-                        rows.forEach(row => {
-                            const titleCell = row.querySelectorAll('td')[1];
-                            if (titleCell) {
-                                const titleText = titleCell.textContent.toLowerCase();
-                                if (titleText.includes(filterValue)) {
-                                    row.style.display = '';
-                                } else {
-                                    row.style.display = 'none';
-                                }
-                            }
-                        });
-                    });
-
-                    // Создаем таблицу
-                    const table = document.createElement('table');
-                    table.id = 'torrent-table';
-                    table.style.width = '100%';
-                    table.style.borderCollapse = 'collapse';
-                    table.style.color = '#fff';
-        
-                    // Заголовки таблицы
-                    const tableHead = document.createElement('thead');
-                    tableHead.innerHTML = `
-                        <tr style="background-color: #444;">
-                            <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Трекер</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Название</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Размер</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Сиды</th>
-                            <th style="padding: 10px; border-bottom: 1px солид #555; cursor: pointer;">Пиры</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Дата</th>
-                            <th style="padding: 10px; border-bottom: 1px солид #555; cursor: pointer;">Торрент</th>
-                        </tr>
-                    `;
-                    table.appendChild(tableHead);
-
-                    // Функция сортировки
-                    function sortTable(columnIndex, ascending) {
-                        const rows = Array.from(tableBody.querySelectorAll('tr'));
-                        rows.sort((a, b) => {
-                            let cellA = a.querySelectorAll('td')[columnIndex].textContent.toLowerCase();
-                            let cellB = b.querySelectorAll('td')[columnIndex].textContent.toLowerCase();
-                            // Числовые значения
-                            if (!isNaN(cellA) && !isNaN(cellB)) {
-                                cellA = parseFloat(cellA);
-                                cellB = parseFloat(cellB);
-                            // Размер файла
-                            } else if (cellA.includes('mb') || cellA.includes('gb')) {
-                                cellA = parseFileSize(cellA);
-                                cellB = parseFileSize(cellB);
-                            }
-                            // Формат даты
-                            else if (isDate(cellA) && isDate(cellB)) {
-                                cellA = parseDate(cellA);
-                                cellB = parseDate(cellB);
-                            }
-                            if (cellA < cellB) {
-                                return ascending ? -1 : 1;
-                            } else if (cellA > cellB) {
-                                return ascending ? 1 : -1;
-                            } else {
-                                return 0;
-                            }
-                        });
-                        // Удаление существующих строк и добавление отсортированных
-                        rows.forEach(row => tableBody.appendChild(row));
-                    }
-                    
-                    // Функция для преобразования размера файла в числовое значение в байтах
-                    function parseFileSize(size) {
-                        const units = {
-                            'b':  1,
-                            'kb': 1024,
-                            'mb': 1024 ** 2,
-                            'gb': 1024 ** 3
-                        };
-                        const match = size.match(/(\d+(\.\d+)?)(\s*)([kmgt]?b)/i);
-                        if (match) {
-                            const value = parseFloat(match[1]);
-                            const unit = match[4].toLowerCase();
-                            return value * (units[unit] || 1);
-                        }
-                        return 0;
-                    }
-
-                    // Функция для проверки, является ли строка датой в формате dd.mm.yyyy
-                    function isDate(str) {
-                        return /^\d{2}\.\d{2}\.\d{4}$/.test(str);
-                    }
-
-                    // Функция для преобразования даты из формата строки в объект Date
-                    function parseDate(dateStr) {
-                        const [day, month, year] = dateStr.split('.');
-                        return new Date(`${year}-${month}-${day}`);
-                    }
-
-                    // Обработчики клика к заголовкам таблицы для сортировки
-                    const tableHeaders = tableHead.querySelectorAll('th');
-                    tableHeaders.forEach((header, index) => {
-                        // Начинаем с сортировки по возрастанию
-                        let ascending = true;
-                        header.addEventListener('click', () => {
-                            sortTable(index, ascending);
-                            // Переключаем порядок сортировки
-                            ascending = !ascending;
-                        });
-                    });
-        
-                    // Тело таблицы
-                    const tableBody = document.createElement('tbody');
-                    table.appendChild(tableBody);
-                    
-                    // Добавляем элементы в контейнер
-                    searchContainer.appendChild(searchInput);
-                    searchContainer.appendChild(searchButton);
-                    searchContainer.appendChild(filterInput);
-
-                    // Добавляем контейнер в tableContainer
-                    tableContainer.appendChild(searchContainer);
-
-                    // Добавляем таблицу
-                    tableContainer.appendChild(table);
-
-                    // Создаем кнопку для закрытия модального окна
-                    const closeButton = document.createElement('span');
-                    closeButton.textContent = '×';
-                    closeButton.style.position = 'absolute';
-                    closeButton.style.top = '10px';
-                    closeButton.style.right = '20px';
-                    closeButton.style.color = '#fff';
-                    closeButton.style.fontSize = '30px';
-                    closeButton.style.cursor = 'pointer';
-                    closeButton.addEventListener('click', function () {
-                        document.body.removeChild(modal);
-                    });
-                    
-                    // Добавляем контейнер и кнопку закрытия в модальное окно
-                    modal.appendChild(tableContainer);
-                    modal.appendChild(closeButton);
-                    document.body.appendChild(modal);
-        
-                    // Загрузка данных из API
-                    // Использование прокси, который добавляет заголовки CORS к запросам
-                    // const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-                    // const apiUrl = `https://toruapi.vercel.app/api/search/title/all?query=${title}`;
-                    // fetch(corsProxy + apiUrl)
-                    // Локальный сервер
-                    // fetch(`http://localhost:8443/api/search/title/all?query=${title}`)
-                    // Публичный сервер на Vercel
-                    // fetch(`https://toruapi.vercel.app/api/search/title/all?query=${title}`)
-                    // Используем переменную из хранилища
-                    fetch(`${torSrv}/api/search/title/all?query=${title}`)
+                // Кнопка для выполнения поиска
+                const searchButton = document.createElement('button');
+                searchButton.textContent = 'Поиск';
+                searchButton.style.padding = '10px 20px';
+                searchButton.style.backgroundColor = '#1e90ff';
+                searchButton.style.color = '#fff';
+                searchButton.style.border = 'none';
+                searchButton.style.borderRadius = '5px';
+                searchButton.style.cursor = 'pointer';
+                searchButton.style.marginLeft = '10px'; // Отступ от поля ввода до кнопки
+                searchButton.style.height = '42px'; // Устанавливает высоту кнопки
+                searchButton.style.lineHeight = '22px'; // Выровнить текст по центру
+                searchButton.style.marginTop = '-10px'; // Поднимаем кнопку на 5px
+                
+                // Обработчик события для кнопки поиска
+                searchButton.addEventListener('click', function () {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        // Выполняем запрос с новым значением
+                        fetch(`https://toruapi.vercel.app/api/search/title/all?query=${query}`)
                         .then(response => response.json())
                         .then(data => {
                             displayTorrents(data);
@@ -592,17 +412,202 @@ const main = async function (url) {
                         .catch(error => {
                             console.error(error);
                         });
+                    }
+                });
+
+                // Поле для фильтрации
+                const filterInput = document.createElement('input');
+                filterInput.type = 'text';
+                filterInput.placeholder = 'Фильтрация по названию';
+                filterInput.style.marginBottom = '10px';
+                filterInput.style.padding = '10px';
+                filterInput.style.borderRadius = '5px';
+                filterInput.style.border = '1px solid #ddd';
+                filterInput.style.width = '100%';
+                filterInput.style.boxSizing = 'border-box';
+                filterInput.style.flexGrow = '1'; // Позволяет полю фильтрации занимать оставшееся пространство
+                filterInput.style.height = '42px'; // Устанавливает высоту поля фильтрации
+                filterInput.style.marginLeft = '10px'; // Отступ между кнопкой и фильтром
+
+                // Функция для фильтрации
+                filterInput.addEventListener('input', function () {
+                    const filterValue = filterInput.value.toLowerCase();
+                    const rows = tableBody.querySelectorAll('tr');
+                    rows.forEach(row => {
+                        const titleCell = row.querySelectorAll('td')[1];
+                        if (titleCell) {
+                            const titleText = titleCell.textContent.toLowerCase();
+                            if (titleText.includes(filterValue)) {
+                                row.style.display = '';
+                            } else {
+                                row.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+
+                // Создаем таблицу
+                const table = document.createElement('table');
+                table.id = 'torrent-table';
+                table.style.width = '100%';
+                table.style.borderCollapse = 'collapse';
+                table.style.color = '#fff';
+        
+                // Заголовки таблицы
+                const tableHead = document.createElement('thead');
+                tableHead.innerHTML = `
+                    <tr style="background-color: #444;">
+                        <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Трекер</th>
+                        <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Название</th>
+                        <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Размер</th>
+                        <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Сиды</th>
+                        <th style="padding: 10px; border-bottom: 1px солид #555; cursor: pointer;">Пиры</th>
+                        <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Дата</th>
+                        <th style="padding: 10px; border-bottom: 1px солид #555; cursor: pointer;">Торрент</th>
+                    </tr>
+                `;
+                table.appendChild(tableHead);
+
+                // Функция сортировки
+                function sortTable(columnIndex, ascending) {
+                    const rows = Array.from(tableBody.querySelectorAll('tr'));
+                    rows.sort((a, b) => {
+                        let cellA = a.querySelectorAll('td')[columnIndex].textContent.toLowerCase();
+                        let cellB = b.querySelectorAll('td')[columnIndex].textContent.toLowerCase();
+                        // Числовые значения
+                        if (!isNaN(cellA) && !isNaN(cellB)) {
+                            cellA = parseFloat(cellA);
+                            cellB = parseFloat(cellB);
+                        // Размер файла
+                        } else if (cellA.includes('mb') || cellA.includes('gb')) {
+                            cellA = parseFileSize(cellA);
+                            cellB = parseFileSize(cellB);
+                        }
+                        // Формат даты
+                        else if (isDate(cellA) && isDate(cellB)) {
+                            cellA = parseDate(cellA);
+                            cellB = parseDate(cellB);
+                        }
+                        if (cellA < cellB) {
+                            return ascending ? -1 : 1;
+                        } else if (cellA > cellB) {
+                            return ascending ? 1 : -1;
+                        } else {
+                            return 0;
+                        }
+                    });
+                    // Удаление существующих строк и добавление отсортированных
+                    rows.forEach(row => tableBody.appendChild(row));
+                }
+                
+                // Функция для преобразования размера файла в числовое значение в байтах
+                function parseFileSize(size) {
+                    const units = {
+                        'b':  1,
+                        'kb': 1024,
+                        'mb': 1024 ** 2,
+                        'gb': 1024 ** 3
+                    };
+                    const match = size.match(/(\d+(\.\d+)?)(\s*)([kmgt]?b)/i);
+                    if (match) {
+                        const value = parseFloat(match[1]);
+                        const unit = match[4].toLowerCase();
+                        return value * (units[unit] || 1);
+                    }
+                    return 0;
+                }
+
+                // Функция для проверки, является ли строка датой в формате dd.mm.yyyy
+                function isDate(str) {
+                    return /^\d{2}\.\d{2}\.\d{4}$/.test(str);
+                }
+
+                // Функция для преобразования даты из формата строки в объект Date
+                function parseDate(dateStr) {
+                    const [day, month, year] = dateStr.split('.');
+                    return new Date(`${year}-${month}-${day}`);
+                }
+
+                // Обработчики клика к заголовкам таблицы для сортировки
+                const tableHeaders = tableHead.querySelectorAll('th');
+                tableHeaders.forEach((header, index) => {
+                    // Начинаем с сортировки по возрастанию
+                    let ascending = true;
+                    header.addEventListener('click', () => {
+                        sortTable(index, ascending);
+                        // Переключаем порядок сортировки
+                        ascending = !ascending;
+                    });
                 });
         
-                // Добавляем кнопку
-                buttonBlock.parentNode.insertBefore(torrentButton, buttonBlock.nextSibling);
+                // Тело таблицы
+                const tableBody = document.createElement('tbody');
+                table.appendChild(tableBody);
+                
+                // Добавляем элементы в контейнер
+                searchContainer.appendChild(searchInput);
+                searchContainer.appendChild(searchButton);
+                searchContainer.appendChild(filterInput);
+
+                // Добавляем контейнер в tableContainer
+                tableContainer.appendChild(searchContainer);
+
+                // Добавляем таблицу
+                tableContainer.appendChild(table);
+
+                // Создаем кнопку для закрытия модального окна
+                const closeButton = document.createElement('span');
+                closeButton.textContent = '×';
+                closeButton.style.position = 'absolute';
+                closeButton.style.top = '10px';
+                closeButton.style.right = '20px';
+                closeButton.style.color = '#fff';
+                closeButton.style.fontSize = '30px';
+                closeButton.style.cursor = 'pointer';
+                closeButton.addEventListener('click', function () {
+                    document.body.removeChild(modal);
+                });
+                
+                // Добавляем контейнер и кнопку закрытия в модальное окно
+                modal.appendChild(tableContainer);
+                modal.appendChild(closeButton);
+                document.body.appendChild(modal);
+
+                // Обработчик события кнопки Esc для закрытия модального окна
+                document.addEventListener('keydown', function(event) {
+                    if (event.key === 'Escape') {
+                        document.body.removeChild(modal);
+                    }
+                });
+        
+                // Загрузка данных из API
+                // Использование прокси, который добавляет заголовки CORS к запросам
+                // const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+                // const apiUrl = `https://toruapi.vercel.app/api/search/title/all?query=${title}`;
+                // fetch(corsProxy + apiUrl)
+                // Локальный сервер
+                // fetch(`http://localhost:8443/api/search/title/all?query=${title}`)
+                // Публичный сервер на Vercel
+                // fetch(`https://toruapi.vercel.app/api/search/title/all?query=${title}`)
+                // Используем переменную из хранилища
+                fetch(`${torSrv}/api/search/title/all?query=${title}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        displayTorrents(data);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            });
+        
+            // Добавляем кнопку
+            buttonBlock.parentNode.insertBefore(torrentButton, buttonBlock.nextSibling);
         });
         
         // Функция для отображения данных в таблице модального окна
         function displayTorrents(data) {
             const tableBody = document.querySelector('#torrent-table tbody');
             tableBody.innerHTML = ''; // Очистить старые данные
-        
             // Проходим по всем ключам в объекте data
             for (let source in data) {
                 if (data.hasOwnProperty(source)) {
@@ -615,12 +620,16 @@ const main = async function (url) {
                         row.style.padding = '10px';
                         row.innerHTML = `
                             <td style="padding: 10px; border-bottom: 1px solid #555;">${source}</td>
-                            <td style="padding: 10px;"><a href="${item.Url}" target="_blank" style="color: #1e90ff;">${item.Name}</a></td>
+                            <td style="padding: 10px; border-bottom: 1px solid #555;">
+                                <a href="${item.Url}" target="_blank" style="color: #1e90ff; text-decoration: none;">${item.Name}</a>
+                            </td>
                             <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Size}</td>
                             <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Seeds}</td>
                             <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Peers}</td>
                             <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Date.split(' ')[0]}</td>
-                            <td style="padding: 10px;"><a href="${item.Torrent}" target="_blank" style="color: #1e90ff;">Скачать</a></td>
+                            <td style="padding: 10px; border-bottom: 1px solid #555;">
+                                <a href="${item.Torrent}" target="_blank" style="color: #1e90ff; text-decoration: none;">Скачать</a>
+                            </td>
                         `;
                         tableBody.appendChild(row);
                     });

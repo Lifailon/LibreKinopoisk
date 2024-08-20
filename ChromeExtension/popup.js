@@ -30,6 +30,31 @@ document.getElementById('saveButton').addEventListener('click', function() {
     })
 })
 
+// Логика запуска функции открытия модального окна для поиска раздачи
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('showTorrentTableButton').addEventListener('click', function() {
+        chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+            chrome.scripting.executeScript({
+                target: { tabId: tabs[0].id },
+                files: ['torapi.js']
+            }, function() {
+                chrome.scripting.executeScript({
+                    target: { tabId: tabs[0].id },
+                    // Вызываем функцию на целевой кладке
+                    function: () => {
+                        displayTorrentsOnPage()
+                    }
+                })
+            })
+            // Закрытие всплывающего окна расширения
+            setTimeout(() => {
+                window.close()
+            }, 100)
+        })
+    })
+})
+
+
 // Получаем все ссылки на странице
 var links = document.querySelectorAll('a')
 // Добавляем обработчик события для каждой ссылки
