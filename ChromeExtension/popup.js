@@ -1,13 +1,3 @@
-document.addEventListener('DOMContentLoaded', function() {
-    chrome.storage.local.get('torSrv', function(data) {
-        // Проверяем, определено ли значение torSrv в локальном хранилище
-        if (typeof data.torSrv === 'undefined' || data.torSrv === '') {
-            // Если не определено, устанавливаем значение по умолчанию
-            chrome.storage.local.set({ 'torSrv': 'https://toruapi.vercel.app' });
-        }
-    });
-});
-
 document.getElementById('saveButton').addEventListener('click', function() {
     var button = document.getElementById('saveButton')
     var text = document.getElementById('textInput').value
@@ -83,64 +73,32 @@ var TorrentCheckBox = document.getElementById('TorrentCheckBox')
 // При загрузке страницы, загружаем значение из chrome.storage и устанавливаем его для чекбокса
 document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.get('KinoboxCheckBox', function(data) {
-        // Если значение не найдено, устанавливаем значение по умолчанию (включено)
-        if (typeof data.KinoboxCheckBox === 'undefined') {
-            KinoboxCheckBox.checked = true
-            // Сохраняем значение по умолчанию в хранилище
-            chrome.storage.local.set({ 'KinoboxCheckBox': true })
-        } else {
-            KinoboxCheckBox.checked = data.KinoboxCheckBox
-        }
+        KinoboxCheckBox.checked = data.KinoboxCheckBox
     })
 })
 document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.get('YouTubeCheckBox', function(data) {
-        if (typeof data.YouTubeCheckBox === 'undefined') {
-            YouTubeCheckBox.checked = true
-            chrome.storage.local.set({ 'YouTubeCheckBox': true })
-        } else {
-            YouTubeCheckBox.checked = data.YouTubeCheckBox
-        }
+        YouTubeCheckBox.checked = data.YouTubeCheckBox
     })
 })
 document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.get('WikiCheckBox', function(data) {
-        if (typeof data.WikiCheckBox === 'undefined') {
-            WikiCheckBox.checked = true
-            chrome.storage.local.set({ 'WikiCheckBox': true })
-        } else {
-            WikiCheckBox.checked = data.WikiCheckBox
-        }
+        WikiCheckBox.checked = data.WikiCheckBox
     })
 })
 document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.get('DbEnCheckBox', function(data) {
-        if (typeof data.DbEnCheckBox === 'undefined') {
-            DbEnCheckBox.checked = true
-            chrome.storage.local.set({ 'DbEnCheckBox': true })
-        } else {
-            DbEnCheckBox.checked = data.DbEnCheckBox
-        }
+        DbEnCheckBox.checked = data.DbEnCheckBox
     })
 })
 document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.get('DbRuCheckBox', function(data) {
-        if (typeof data.DbRuCheckBox === 'undefined') {
-            DbRuCheckBox.checked = true
-            chrome.storage.local.set({ 'DbRuCheckBox': true })
-        } else {
-            DbRuCheckBox.checked = data.DbRuCheckBox
-        }
+        DbRuCheckBox.checked = data.DbRuCheckBox
     })
 })
 document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.get('TorrentCheckBox', function(data) {
-        if (typeof data.TorrentCheckBox === 'undefined') {
-            TorrentCheckBox.checked = true
-            chrome.storage.local.set({ 'TorrentCheckBox': true })
-        } else {
-            TorrentCheckBox.checked = data.TorrentCheckBox
-        }
+        TorrentCheckBox.checked = data.TorrentCheckBox
     })
 })
 
