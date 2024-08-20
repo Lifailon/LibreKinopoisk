@@ -53,6 +53,8 @@ const main = async function (url) {
     var indexOfBracket = nameElement.indexOf('(')
     if (indexOfBracket !== -1) {
         var name = nameElement.substring(0, indexOfBracket).trim()
+    } else {
+        var name = nameElement
     }
 
     // Задаем исходный язык для Wikipedia
@@ -71,51 +73,11 @@ const main = async function (url) {
         const yearElement = yearElements[0]
         const year = yearElement.textContent
 
-        // Извлекаем содержимое токена из интерфейса расширения (локального хранилища)
-        // chrome.storage.local.get(['saveTokenKinopoisk'], function (result) {
-        //     var Token = result.saveTokenKinopoisk
-        //     // Google CSE (Custom Search Engine)
-        //     // const Token = '' // API-ключ
-        //     const cx = 'e37dd9d94f75f4c8d' // ID поисковой системы для поиска в rutor.org/torrent*
-        //     // const cx = '357fa5a907d2f4437' // ID поисковой системы для поиска в nnmclub.to/forum/viewtopic**
-        //     // const cx = '87cb27565e927482b' // ID поисковой системы для поиска в kinozal.tv/details*
-        //     // Заголовок запроса для RapidAPI
-        //     // const headers = new Headers({
-        //     //     "X-RapidAPI-Key": Token,
-        //     //     "X-RapidAPI-Host": "google-search72.p.rapidapi.com"
-        //     // })
-        //     const urlGoogleSearchTorrent = `https://www.googleapis.com/customsearch/v1?q=intitle:${titleElement.textContent}&key=${Token}&cx=${cx}&lr=lang_${language}&num=10&$start=1`
-        //     // const urlGoogleSearchTMDb = `https://google-search72.p.rapidapi.com/search?q=${titleElement.textContent}`
-        //     // fetch(urlGoogleSearchTMDb, { headers })
-        //     fetch(urlGoogleSearchTorrent)
-        //         .then(response => response.json())
-        //         .then(data => {
-        //             // Проверяем, что массив не пустой (не выводить ошибки в консоль)
-        //             if (data.items && data.items.length > 0) {
-        //                 data.items.forEach(item => {
-        //                     // Проверяем заголовки содержимого поиска (отсеять ложные совпадения)
-        //                     if (item.title.includes(titleElement.textContent)) {
-        //                         let newTitle = item.title.replace(/- rutor\.info/g, '').replace(/rutor\.info ::/g, '').replace(/\.\.\./g, '')
-        //                         let downloadLink = item.link.replace(/torrent/, 'download').replace(/(\d+).*/, '$1')
-        //                         const TorrentGoogleButton = newElementPadding({
-        //                             tag: 'a',
-        //                             id: `Torrent-Google-Button-${item.id}`,
-        //                             href: downloadLink,
-        //                             content: newTitle
-        //                         })
-        //                         buttonBlock.parentNode.insertBefore(TorrentGoogleButton, buttonBlock.nextSibling)
-        //                     }
-        //                 })
-        //             }
-        //         })
-        // })
-
         // Torrent
-        // Проверка включенного CheckBox в настройках
         chrome.storage.local.get(['TorrentCheckBox'], function (result) {
             var TorrentCheckBox = result.TorrentCheckBox
             if (TorrentCheckBox) {
-                // Rezka
+                // HDRezka Tracker 
                 const RezkaButton = newElementPadding({
                     tag: 'a',
                     id: 'Rezka-Button',
@@ -181,21 +143,20 @@ const main = async function (url) {
         })
 
         // Database RU
-        // Проверка включенного CheckBox в настройках
         chrome.storage.local.get(['DbRuCheckBox'], function (result) {
             var DbRuCheckBox = result.DbRuCheckBox
             if (DbRuCheckBox) {
-                // FilmRu
-                const FilmRuButton = newElementPadding({
+
+                // Lostfilm
+                const LostfilmButton = newElementPadding({
                     tag: 'a',
                     id: 'Toramp-Google-Button',
-                    href: `https://www.film.ru/search/result?type=movies&text=${title}`,
-                    // href: `https://www.google.com/search?q=${title}+${year}+site:film.ru&btnI`,
-                    content: 'Film'
+                    href: `https://lostfilm.tv/search/?q=${title}`,
+                    content: 'Lostfilm'
                 })
-                FilmRuButton.setAttribute('target', '_blank')
-                buttonBlock.parentNode.insertBefore(FilmRuButton, buttonBlock.nextSibling)
-
+                LostfilmButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(LostfilmButton, buttonBlock.nextSibling)
+                
                 // MyShows
                 const MyShowsButton = newElementPadding({
                     tag: 'a',
@@ -206,6 +167,17 @@ const main = async function (url) {
                 })
                 MyShowsButton.setAttribute('target', '_blank')
                 buttonBlock.parentNode.insertBefore(MyShowsButton, buttonBlock.nextSibling)
+
+                // FilmRu
+                const FilmRuButton = newElementPadding({
+                    tag: 'a',
+                    id: 'Toramp-Google-Button',
+                    href: `https://www.film.ru/search/result?type=movies&text=${title}`,
+                    // href: `https://www.google.com/search?q=${title}+${year}+site:film.ru&btnI`,
+                    content: 'Film.ru'
+                })
+                FilmRuButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(FilmRuButton, buttonBlock.nextSibling)
 
                 // Toramp 
                 const TorampButton = newElementPadding({
@@ -233,7 +205,6 @@ const main = async function (url) {
         })
 
         // Database EN
-        // Проверка включенного CheckBox в настройках
         chrome.storage.local.get(['DbEnCheckBox'], function (result) {
             var DbEnCheckBox = result.DbEnCheckBox
             if (DbEnCheckBox) {
@@ -279,8 +250,50 @@ const main = async function (url) {
             }
         })
 
+        // Online
+        chrome.storage.local.get(['KinoboxCheckBox'], function (result) {
+            var KinoboxCheckBox = result.KinoboxCheckBox
+            if (KinoboxCheckBox) {
+                // HDRezka
+                const HDRezkaButton = newElementPadding({
+                    tag: 'a',
+                    id: 'HDRezka-Button',
+                    href: `https://hdrezka.ag/search/?do=search&subaction=search&q=${title}+${year}`,
+                    content: 'HDRezka'
+                })
+                HDRezkaButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(HDRezkaButton, buttonBlock.nextSibling)
+
+                // Zetflix
+                let typeZetflix = null
+                if (url?.includes('film')) {
+                    typeZetflix = 'films'
+                }
+                else if (url?.includes('series')) {
+                    typeZetflix = 'serials'
+                }
+                const ZetflixButton = newElementPadding({
+                    tag: 'a',
+                    id: 'Kinobox-Button',
+                    href: `https://online.ztflix.zone/${typeZetflix}/${_title}`,
+                    content: 'Zetflix'
+                })
+                ZetflixButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(ZetflixButton, buttonBlock.nextSibling)
+
+                // Zeflix
+                const Zeflix = newElementPadding({
+                    tag: 'a',
+                    id: 'Zeflix-Button',
+                    href: `https://zeflix.online/index.php?do=search&subaction=search&search_start=0&story=${name}`,
+                    content: 'Зетфликс'
+                })
+                Zeflix.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(Zeflix, buttonBlock.nextSibling)
+            }
+        })
+
         // Wikipedia 
-        // Проверка включенного CheckBox в настройках
         chrome.storage.local.get(['WikiCheckBox'], function (result) {
             var WikiCheckBox = result.WikiCheckBox
             if (WikiCheckBox) {
@@ -288,7 +301,7 @@ const main = async function (url) {
                     tag: 'a',
                     id: 'Wiki-Button',
                     href: `https://${language}.wikipedia.org/w/index.php?search=${title}`,
-                    content: 'Wiki'
+                    content: 'Wikipedia'
                 })
                 WikiGoogleButton.setAttribute('target', '_blank')
                 buttonBlock.parentNode.insertBefore(WikiGoogleButton, buttonBlock.nextSibling)
@@ -296,7 +309,6 @@ const main = async function (url) {
         })
 
         // YouTube
-        // Проверка включенного CheckBox в настройках
         chrome.storage.local.get(['YouTubeCheckBox'], function (result) {
             var YouTubeCheckBox = result.YouTubeCheckBox
             if (YouTubeCheckBox) {
@@ -615,42 +627,6 @@ const main = async function (url) {
                 }
             }
         }
-        
-        
-
-        // Online
-        // Проверка включенного CheckBox в настройках
-        chrome.storage.local.get(['KinoboxCheckBox'], function (result) {
-            var KinoboxCheckBox = result.KinoboxCheckBox
-            if (KinoboxCheckBox) {
-                // Zetflix
-                // let typeZetflix = null
-                // if (url?.includes('film')) {
-                //     typeZetflix = 'films'
-                // }
-                // else if (url?.includes('series')) {
-                //     typeZetflix = 'serials'
-                // }
-                // const ZetflixButton = newElementPadding({
-                //     tag: 'a',
-                //     id: 'Kinobox-Button',
-                //     href: `https://online.ztflix.zone/${typeZetflix}/${_title}`,
-                //     content: 'Zetflix'
-                // })
-                // ZetflixButton.setAttribute('target', '_blank')
-                // buttonBlock.parentNode.insertBefore(ZetflixButton, buttonBlock.nextSibling)
-
-                // HDRezka
-                const HDRezkaButton = newElementPadding({
-                    tag: 'a',
-                    id: 'HDRezka-Button',
-                    href: `https://hdrezka.ag/search/?do=search&subaction=search&q=${title}+${year}`,
-                    content: 'HDRezka'
-                })
-                HDRezkaButton.setAttribute('target', '_blank')
-                buttonBlock.parentNode.insertBefore(HDRezkaButton, buttonBlock.nextSibling)
-            }
-        })
     }
 
     // Kinobox
