@@ -37,7 +37,7 @@ chrome.runtime.onInstalled.addListener(function() {
 // Отключение интерфейса расширения на системных вкладках
 
 function isSystemPage(url) {
-    return url.startsWith("chrome://") || url.startsWith("chrome-extension://") || url.includes("kinopoisk") 
+    return url.startsWith("chrome://") || url.startsWith("chrome-extension://")
 }
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
