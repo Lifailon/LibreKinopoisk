@@ -1,8 +1,8 @@
 // Сохранение адреса сервера в поле ввода интерфейса
 var KinoboxCheckBox = document.getElementById('textInput')
 document.addEventListener('DOMContentLoaded', function() {
-    chrome.storage.local.get('torSrv', function(data) {
-        textInput.value = data.torSrv
+    chrome.storage.local.get('TorApiServer', function(data) {
+        textInput.value = data.TorApiServer
     })
 })
 
@@ -18,7 +18,7 @@ document.getElementById('saveButton').addEventListener('click', function() {
         text = 'https://torapi.vercel.app'
     }
     // Сохраняем текст в локальное хранилище
-    chrome.storage.local.set({ 'torSrv': text }, function() {
+    chrome.storage.local.set({ 'TorApiServer': text }, function() {
         // Оповещаем пользователя о сохранении
         button.innerHTML = 'Адрес сервера сохранен'
         button.style.backgroundColor = '#4CAF50' // Зеленый цвет фона

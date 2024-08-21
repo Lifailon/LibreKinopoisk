@@ -1,7 +1,7 @@
 // Значения по умолчанию при установке расширения
 chrome.runtime.onInstalled.addListener(function() {
     chrome.storage.local.get([
-        'torSrv',
+        'TorApiServer',
         'textInput',
         'KinoboxCheckBox',
         'YouTubeCheckBox', 
@@ -10,8 +10,8 @@ chrome.runtime.onInstalled.addListener(function() {
         'DbRuCheckBox', 
         'TorrentCheckBox'
     ], function(data) {
-        if (typeof data.torSrv === 'undefined') {
-            chrome.storage.local.set({ 'torSrv': 'https://torapi.vercel.app' })
+        if (typeof data.TorApiServer === 'undefined') {
+            chrome.storage.local.set({ 'TorApiServer': 'https://torapi.vercel.app' })
         }
         if (typeof data.KinoboxCheckBox === 'undefined') {
             chrome.storage.local.set({ 'KinoboxCheckBox': true })
@@ -37,7 +37,7 @@ chrome.runtime.onInstalled.addListener(function() {
 // Отключение интерфейса расширения на системных вкладках
 
 function isSystemPage(url) {
-    return url.startsWith("chrome://") || url.startsWith("chrome-extension://")
+    return url.startsWith("chrome://")
 }
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {

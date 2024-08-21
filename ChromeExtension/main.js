@@ -325,8 +325,8 @@ const main = async function (url) {
 
         // TorAPI
         // Source: https://github.com/Lifailon/TorAPI
-        chrome.storage.local.get(['torSrv'], function(result) {
-            var torSrv = result.torSrv
+        chrome.storage.local.get(['TorApiServer'], function(result) {
+            var TorApiServer = result.TorApiServer
             // Создаем кнопку для отображения таблицы раздач
             const torrentButton = newElementPadding({
                 tag: 'a',
@@ -406,7 +406,7 @@ const main = async function (url) {
                     const query = searchInput.value.trim();
                     if (query) {
                         // Выполняем запрос с новым значением
-                        fetch(`${torSrv}/api/search/title/all?query=${query}`)
+                        fetch(`${TorApiServer}/api/search/title/all?query=${query}`)
                         .then(response => response.json())
                         .then(data => {
                             displayTorrents(data);
@@ -594,7 +594,7 @@ const main = async function (url) {
                 // Публичный сервер на Vercel
                 // fetch(`https://torapi.vercel.app/api/search/title/all?query=${title}`)
                 // Используем переменную из хранилища
-                fetch(`${torSrv}/api/search/title/all?query=${title}`)
+                fetch(`${TorApiServer}/api/search/title/all?query=${title}`)
                     .then(response => response.json())
                     .then(data => {
                         displayTorrents(data);

@@ -1,6 +1,6 @@
 function displayTorrentsOnPage() {
-    chrome.storage.local.get(['torSrv'], function(result) {
-        var torSrv = result.torSrv;
+    chrome.storage.local.get(['TorApiServer'], function(result) {
+        var TorApiServer = result.TorApiServer;
 
         // Создаем модальное окно
         const modal = document.createElement('div');
@@ -94,7 +94,7 @@ function displayTorrentsOnPage() {
             const query = searchInput.value.trim();
             if (query) {
                 // Выполняем запрос с новым значением
-                fetch(`${torSrv}/api/search/title/all?query=${query}`)
+                fetch(`${TorApiServer}/api/search/title/all?query=${query}`)
                     .then(response => response.json())
                     .then(data => {
                         displayTorrents(data);
