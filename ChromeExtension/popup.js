@@ -1,5 +1,5 @@
 // Сохранение адреса сервера в поле ввода интерфейса
-var KinoboxCheckBox = document.getElementById('textInput')
+var textInput = document.getElementById('textInput')
 document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.get('TorApiServer', function(data) {
         textInput.value = data.TorApiServer
@@ -99,6 +99,7 @@ homeButton.addEventListener('click', function() {
 
 // Забираем все CheckBox
 var KinoboxCheckBox = document.getElementById('KinoboxCheckBox')
+var OnlineCheckBox = document.getElementById('OnlineCheckBox')
 var YouTubeCheckBox = document.getElementById('YouTubeCheckBox')
 var WikiCheckBox = document.getElementById('WikiCheckBox')
 var DbEnCheckBox = document.getElementById('DbEnCheckBox')
@@ -109,6 +110,11 @@ var TorrentCheckBox = document.getElementById('TorrentCheckBox')
 document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.get('KinoboxCheckBox', function(data) {
         KinoboxCheckBox.checked = data.KinoboxCheckBox
+    })
+})
+document.addEventListener('DOMContentLoaded', function() {
+    chrome.storage.local.get('OnlineCheckBox', function(data) {
+        OnlineCheckBox.checked = data.OnlineCheckBox
     })
 })
 document.addEventListener('DOMContentLoaded', function() {
@@ -140,6 +146,9 @@ document.addEventListener('DOMContentLoaded', function() {
 // При изменении состояния чекбокса сохраняем состояние чекбокса в chrome.storage
 KinoboxCheckBox.addEventListener('change', function() {
     chrome.storage.local.set({ 'KinoboxCheckBox': this.checked })
+})
+OnlineCheckBox.addEventListener('change', function() {
+    chrome.storage.local.set({ 'OnlineCheckBox': this.checked })
 })
 YouTubeCheckBox.addEventListener('change', function() {
     chrome.storage.local.set({ 'YouTubeCheckBox': this.checked })

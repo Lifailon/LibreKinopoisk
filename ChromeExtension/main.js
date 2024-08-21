@@ -251,9 +251,9 @@ const main = async function (url) {
         })
 
         // Online
-        chrome.storage.local.get(['KinoboxCheckBox'], function (result) {
-            var KinoboxCheckBox = result.KinoboxCheckBox
-            if (KinoboxCheckBox) {
+        chrome.storage.local.get(['OnlineCheckBox'], function (result) {
+            var OnlineCheckBox = result.OnlineCheckBox
+            if (OnlineCheckBox) {
                 // HDRezka
                 const HDRezkaButton = newElementPadding({
                     tag: 'a',
@@ -717,6 +717,34 @@ const main = async function (url) {
             buttonBlock.parentNode.insertBefore(KinoboxButton, buttonBlock.nextSibling);
         }
     });
+
+    chrome.storage.local.get(['KinoboxCheckBox'], function(result) {
+        var KinoboxCheckBox = result.KinoboxCheckBox
+        if (!KinoboxCheckBox) {
+            // Извлекаем идентификатора фильма из параметра с URL
+            const kinopoiskID = url?.split('/')?.filter(itm => Number(itm)).pop()
+            // Bedemp2
+            // const Bedemp2Button = newElementPadding({
+            //     tag: 'a',
+            //     id: 'Kinobox-Button',
+            //     href: `https://api.bedemp2.ws/embed/kp/${kinopoiskID}`,
+            //     content: 'Плеер'
+            // })
+            // Bedemp2Button.setAttribute('target', '_blank')
+            // buttonBlock.parentNode.insertBefore(Bedemp2Button, buttonBlock.nextSibling)
+            // Kinobox
+            const KinoboxButton = newElementPadding({
+                tag: 'a',
+                id: 'Kinobox-Button',
+                href: `https://kinomix.web.app/#${kinopoiskID}`,
+                content: 'Смотреть онлайн'
+            })
+            // Открывать ссылку в новой вкладке
+            KinoboxButton.setAttribute('target', '_blank')
+            // Добавляем кнопку после блока кнопок на странице
+            buttonBlock.parentNode.insertBefore(KinoboxButton, buttonBlock.nextSibling)
+        }
+    })
 }
 
 // Функция для отображения кнопок на странице hd.kinopoisk

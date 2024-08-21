@@ -33,7 +33,7 @@
         }
         .container {
             width: 450px;
-            height: 290px;
+            height: 320px;
             margin: 0 auto;
             background-color: #fff;
             padding: 20px;
@@ -207,16 +207,18 @@
         <b>Расширение, которое добавляет кнопки на сайт <a href="https://kinopoisk.ru">Кинопоиск</a> для свободного поиска фильмов и сериалов в открытых источниках.</b>
         <br>
         <br>
-        <button id="showTorrentTableButton">Поиск раздач в торрент трекерах</button>
+        <button id="showTorrentTableButton">🔎 Поиск раздач в торрент трекерах</button>
         <br>
         <br>
-        <b>Поиск реализован с помощью сервера <a href="https://github.com/Lifailon/TorAPI">TorAPI</a> в стиле <a href="https://github.com/Jackett/Jackett">🧥 Jackett</a>, который вы можете установить самостоятельно.</b>
+        <b>Поиск реализован с помощью сервера <a href="https://github.com/Lifailon/TorAPI">TorAPI</a> в стиле 🧥 <a href="https://github.com/Jackett/Jackett">Jackett</a>, который вы можете установить самостоятельно.</b>
         <h3>Изменить адрес сервера:</h3>
         <div class="input-container">
             <input type="text" id="textInput" placeholder="Введите адрес сервера">
             <button id="saveButton">Сохранить</button>
         </div>        
         <div id="messageBox" style="display: none;"></div>
+        <br>
+        <br>
         <p>© 2024 Lifailon | <a href="https://github.com/Lifailon">GitHub</a></p>
         <div class="bottom-buttons-container">
             <hr>
@@ -232,7 +234,7 @@
         <div class="checkbox-container">
             <input type="checkbox" id="KinoboxCheckBox" class="checkbox-input">
             <label for="KinoboxCheckBox" class="checkbox-label"></label>
-            <span>Просмотр онлайн (Kinobox, Zetflix, HDRezka)</span>
+            <span>Использовать плеер Kinobox на текущей странице</span>
         </div>
         <br>
         <div class="checkbox-container">
@@ -245,6 +247,12 @@
             <input type="checkbox" id="WikiCheckBox" class="checkbox-input">
             <label for="WikiCheckBox" class="checkbox-label"></label>
             <span>Wikipedia</span>
+        </div>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="OnlineCheckBox" class="checkbox-input">
+            <label for="OnlineCheckBox" class="checkbox-label"></label>
+            <span>Просмотр онлайн (Zetflix, HDRezka)</span>
         </div>
         <br>
         <div class="checkbox-container">

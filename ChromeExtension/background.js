@@ -3,7 +3,8 @@ chrome.runtime.onInstalled.addListener(function() {
     chrome.storage.local.get([
         'TorApiServer',
         'textInput',
-        'KinoboxCheckBox',
+        'OnlineCheckBox',
+        'OnlineCheckBox',
         'YouTubeCheckBox', 
         'WikiCheckBox', 
         'DbEnCheckBox', 
@@ -13,8 +14,8 @@ chrome.runtime.onInstalled.addListener(function() {
         if (typeof data.TorApiServer === 'undefined') {
             chrome.storage.local.set({ 'TorApiServer': 'https://torapi.vercel.app' })
         }
-        if (typeof data.KinoboxCheckBox === 'undefined') {
-            chrome.storage.local.set({ 'KinoboxCheckBox': true })
+        if (typeof data.OnlineCheckBox === 'undefined') {
+            chrome.storage.local.set({ 'OnlineCheckBox': true })
         }
         if (typeof data.YouTubeCheckBox === 'undefined') {
             chrome.storage.local.set({ 'YouTubeCheckBox': true })
