@@ -2,9 +2,10 @@
     <img src="image/kinopoisk-buttons.jpg" alt="Image alt">
 </p>
 
-<h2 align="center">
-     🎞️ Libre Kinopoisk Chrome Extension 🎞️
-</h2>
+<h1 align="center">
+  <img src="ChromeExtension/icons/icon128.png" width="30" />
+  Libre Kinopoisk Chrome Extension
+</h1>
 
 Расширение Google Chrome, которое добавляет кнопки на сайт [Кинопоиск](http://kinopoisk.ru) для свободного поиска фильмов и сериалов в открытых источниках.
 
