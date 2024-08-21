@@ -15,7 +15,7 @@ document.getElementById('saveButton').addEventListener('click', function() {
     button.onmouseleave = null
     // Если поле ввода пустое, обновить на значение по умолчанию
     if (text === 'undefined' || text === '' || text === null) {
-        text = 'https://toruapi.vercel.app'
+        text = 'https://torapi.vercel.app'
     }
     // Сохраняем текст в локальное хранилище
     chrome.storage.local.set({ 'torSrv': text }, function() {

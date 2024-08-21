@@ -1,6 +1,6 @@
 function displayTorrentsOnPage() {
     chrome.storage.local.get(['torSrv'], function(result) {
-        var torSrv = result.torSrv
+        var torSrv = result.torSrv;
 
         // Создаем модальное окно
         const modal = document.createElement('div');
@@ -15,7 +15,9 @@ function displayTorrentsOnPage() {
         modal.style.flexDirection = 'column';
         modal.style.alignItems = 'center';
         modal.style.justifyContent = 'center';
-    
+        modal.style.fontFamily = 'Lato, sans-serif'; // Устанавливаем шрифт для модального окна
+        modal.style.fontSize = '18px'; // Размер шрифта
+
         // Контейнер для таблицы
         const tableContainer = document.createElement('div');
         tableContainer.style.width = '90%';
@@ -27,13 +29,32 @@ function displayTorrentsOnPage() {
         tableContainer.style.position = 'relative';
         tableContainer.style.display = 'flex';
         tableContainer.style.flexDirection = 'column';
-    
+        tableContainer.style.fontFamily = 'Lato, sans-serif';
+        tableContainer.style.fontSize = '18px';
+
         // Контейнер для поля ввода и кнопки поиска
         const searchContainer = document.createElement('div');
         searchContainer.style.display = 'flex';
         searchContainer.style.alignItems = 'center';
         searchContainer.style.marginBottom = '10px';
         searchContainer.style.gap = '10px';
+        searchContainer.style.fontFamily = 'Lato, sans-serif';
+        searchContainer.style.fontSize = '18px';
+
+        // Стили для placeholder
+        const styleElement = document.createElement('style');
+        styleElement.textContent = `
+            input::placeholder {
+                font-family: 'Lato', sans-serif;
+                color: #888888;
+                font-size: 18px;
+            }
+            input[type="text"]::placeholder {
+                color: #888888;
+                font-size: 18px;
+            }
+        `;
+        document.head.appendChild(styleElement);
 
         // Поле ввода для ввода запроса вручную
         const searchInput = document.createElement('input');
@@ -47,13 +68,17 @@ function displayTorrentsOnPage() {
         searchInput.style.boxSizing = 'border-box';
         searchInput.style.flexGrow = '1';
         searchInput.style.height = '42px';
+        searchInput.style.backgroundColor = '#333';
+        searchInput.style.color = '#ffffff';
+        searchInput.style.fontFamily = 'Lato, sans-serif';
+        searchInput.style.fontSize = '18px';
 
         // Кнопка для выполнения поиска
         const searchButton = document.createElement('button');
         searchButton.textContent = 'Поиск';
         searchButton.style.padding = '10px 20px';
         searchButton.style.backgroundColor = '#1e90ff';
-        searchButton.style.color = '#fff';
+        searchButton.style.color = '#ffffff';
         searchButton.style.border = 'none';
         searchButton.style.borderRadius = '5px';
         searchButton.style.cursor = 'pointer';
@@ -61,24 +86,26 @@ function displayTorrentsOnPage() {
         searchButton.style.height = '42px';
         searchButton.style.lineHeight = '22px';
         searchButton.style.marginTop = '-10px';
-        
+        searchButton.style.fontFamily = 'Lato, sans-serif';
+        searchButton.style.fontSize = '18px';
+
         // Обработчик события для кнопки поиска
-        searchButton.addEventListener('click', function () {
+        searchButton.addEventListener('click', function() {
             const query = searchInput.value.trim();
             if (query) {
                 // Выполняем запрос с новым значением
-                fetch(`https://toruapi.vercel.app/api/search/title/all?query=${query}`)
-                .then(response => response.json())
-                .then(data => {
-                    displayTorrents(data);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+                fetch(`${torSrv}/api/search/title/all?query=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        displayTorrents(data);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
             }
         });
 
-        // Поле для фильтрации
+        // Поле ввода для фильтрации
         const filterInput = document.createElement('input');
         filterInput.type = 'text';
         filterInput.placeholder = 'Фильтрация по названию';
@@ -91,9 +118,13 @@ function displayTorrentsOnPage() {
         filterInput.style.flexGrow = '1';
         filterInput.style.height = '42px';
         filterInput.style.marginLeft = '10px';
+        filterInput.style.backgroundColor = '#333';
+        filterInput.style.color = '#ffffff';
+        filterInput.style.fontFamily = 'Lato, sans-serif';
+        filterInput.style.fontSize = '18px';
 
         // Функция для фильтрации
-        filterInput.addEventListener('input', function () {
+        filterInput.addEventListener('input', function() {
             const filterValue = filterInput.value.toLowerCase();
             const rows = tableBody.querySelectorAll('tr');
             rows.forEach(row => {
@@ -114,19 +145,21 @@ function displayTorrentsOnPage() {
         table.id = 'torrent-table';
         table.style.width = '100%';
         table.style.borderCollapse = 'collapse';
-        table.style.color = '#fff';
-    
+        table.style.color = '#ffffff';
+        table.style.fontFamily = 'Lato, sans-serif';
+        table.style.fontSize = '18px';
+
         // Заголовки таблицы
         const tableHead = document.createElement('thead');
         tableHead.innerHTML = `
             <tr style="background-color: #444;">
-                <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Трекер</th>
-                <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Название</th>
-                <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Размер</th>
-                <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Сиды</th>
-                <th style="padding: 10px; border-bottom: 1px солид #555; cursor: pointer;">Пиры</th>
-                <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Дата</th>
-                <th style="padding: 10px; border-bottom: 1px солид #555; cursor: pointer;">Торрент</th>
+                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 20px; text-align: center; font-weight: bold;">Трекер</th>
+                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 20px; text-align: center; font-weight: bold;">Название</th>
+                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 20px; text-align: center; font-weight: bold;">Размер</th>
+                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 20px; text-align: center; font-weight: bold;">Сиды</th>
+                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 20px; text-align: center; font-weight: bold;">Пиры</th>
+                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 20px; text-align: center; font-weight: bold;">Дата</th>
+                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 20px; text-align: center; font-weight: bold;">Торрент</th>
             </tr>
         `;
         table.appendChild(tableHead);
@@ -162,7 +195,7 @@ function displayTorrentsOnPage() {
             // Удаление существующих строк и добавление отсортированных
             rows.forEach(row => tableBody.appendChild(row));
         }
-        
+
         // Функция для преобразования размера файла в числовое значение в байтах
         function parseFileSize(size) {
             const units = {
@@ -202,11 +235,11 @@ function displayTorrentsOnPage() {
                 ascending = !ascending;
             });
         });
-    
+
         // Тело таблицы
         const tableBody = document.createElement('tbody');
         table.appendChild(tableBody);
-        
+
         // Добавляем элементы в контейнер
         searchContainer.appendChild(searchInput);
         searchContainer.appendChild(searchButton);
@@ -222,15 +255,16 @@ function displayTorrentsOnPage() {
         const closeButton = document.createElement('span');
         closeButton.textContent = '×';
         closeButton.style.position = 'absolute';
-        closeButton.style.top = '10px';
+        closeButton.style.top = '5px';
         closeButton.style.right = '20px';
-        closeButton.style.color = '#fff';
-        closeButton.style.fontSize = '30px';
+        closeButton.style.color = '#ffffff';
         closeButton.style.cursor = 'pointer';
-        closeButton.addEventListener('click', function () {
+        closeButton.style.fontFamily = 'Lato, sans-serif';
+        closeButton.style.fontSize = '40px';
+        closeButton.addEventListener('click', function() {
             document.body.removeChild(modal);
         });
-        
+
         // Добавляем контейнер и кнопку закрытия в модальное окно
         modal.appendChild(tableContainer);
         modal.appendChild(closeButton);
@@ -253,19 +287,31 @@ function displayTorrentsOnPage() {
                 const torrents = data[source];
                 torrents.forEach(item => {
                     const row = document.createElement('tr');
-                    row.style.backgroundColor = '#333';
-                    row.style.borderBottom = '1px solid #555';
+                    row.style.backgroundColor = '#333333';
+                    row.style.borderBottom = '1px solid #555555';
                     row.style.padding = '10px';
+                    row.style.fontFamily = 'Lato, sans-serif';
+                    row.style.fontSize = '18px';
                     row.innerHTML = `
-                        <td style="padding: 10px; border-bottom: 1px solid #555;">${source}</td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555;">
+                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; vertical-align: middle;">
+                            ${source}
+                        </td>
+                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; vertical-align: middle;">
                             <a href="${item.Url}" target="_blank" style="color: #1e90ff; text-decoration: none;">${item.Name}</a>
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Size}</td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Seeds}</td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Peers}</td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Date.split(' ')[0]}</td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555;">
+                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; vertical-align: middle;">
+                            ${item.Size}
+                        </td>
+                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; vertical-align: middle;">
+                            ${item.Seeds}
+                        </td>
+                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; vertical-align: middle;">
+                            ${item.Peers}
+                        </td>
+                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; vertical-align: middle;">
+                            ${item.Date.split(' ')[0]}
+                        </td>
+                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; vertical-align: middle;">
                             <a href="${item.Torrent}" target="_blank" style="color: #1e90ff; text-decoration: none;">Скачать</a>
                         </td>
                     `;

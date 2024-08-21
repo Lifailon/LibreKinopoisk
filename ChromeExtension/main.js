@@ -384,6 +384,8 @@ const main = async function (url) {
                 searchInput.style.boxSizing = 'border-box';
                 searchInput.style.flexGrow = '1'; // Расширяет input на всю оставшуюся ширину
                 searchInput.style.height = '42px'; // Устанавливает высоту поля ввода
+                searchInput.style.backgroundColor = '#333';
+                searchInput.style.color = '#fff';
 
                 // Кнопка для выполнения поиска
                 const searchButton = document.createElement('button');
@@ -404,7 +406,7 @@ const main = async function (url) {
                     const query = searchInput.value.trim();
                     if (query) {
                         // Выполняем запрос с новым значением
-                        fetch(`https://toruapi.vercel.app/api/search/title/all?query=${query}`)
+                        fetch(`${torSrv}/api/search/title/all?query=${query}`)
                         .then(response => response.json())
                         .then(data => {
                             displayTorrents(data);
@@ -415,7 +417,7 @@ const main = async function (url) {
                     }
                 });
 
-                // Поле для фильтрации
+                // Поле ввода для фильтрации
                 const filterInput = document.createElement('input');
                 filterInput.type = 'text';
                 filterInput.placeholder = 'Фильтрация по названию';
@@ -428,6 +430,8 @@ const main = async function (url) {
                 filterInput.style.flexGrow = '1'; // Позволяет полю фильтрации занимать оставшееся пространство
                 filterInput.style.height = '42px'; // Устанавливает высоту поля фильтрации
                 filterInput.style.marginLeft = '10px'; // Отступ между кнопкой и фильтром
+                filterInput.style.backgroundColor = '#333';
+                filterInput.style.color = '#fff';
 
                 // Функция для фильтрации
                 filterInput.addEventListener('input', function () {
@@ -461,9 +465,9 @@ const main = async function (url) {
                         <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Название</th>
                         <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Размер</th>
                         <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Сиды</th>
-                        <th style="padding: 10px; border-bottom: 1px солид #555; cursor: pointer;">Пиры</th>
+                        <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Пиры</th>
                         <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Дата</th>
-                        <th style="padding: 10px; border-bottom: 1px солид #555; cursor: pointer;">Торрент</th>
+                        <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Торрент</th>
                     </tr>
                 `;
                 table.appendChild(tableHead);
@@ -583,12 +587,12 @@ const main = async function (url) {
                 // Загрузка данных из API
                 // Использование прокси, который добавляет заголовки CORS к запросам
                 // const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-                // const apiUrl = `https://toruapi.vercel.app/api/search/title/all?query=${title}`;
+                // const apiUrl = `https://torapi.vercel.app/api/search/title/all?query=${title}`;
                 // fetch(corsProxy + apiUrl)
                 // Локальный сервер
                 // fetch(`http://localhost:8443/api/search/title/all?query=${title}`)
                 // Публичный сервер на Vercel
-                // fetch(`https://toruapi.vercel.app/api/search/title/all?query=${title}`)
+                // fetch(`https://torapi.vercel.app/api/search/title/all?query=${title}`)
                 // Используем переменную из хранилища
                 fetch(`${torSrv}/api/search/title/all?query=${title}`)
                     .then(response => response.json())
@@ -690,10 +694,10 @@ const main = async function (url) {
                 const closeButton = document.createElement('span');
                 closeButton.textContent = '×';
                 closeButton.style.position = 'absolute';
-                closeButton.style.top = '10px';
+                closeButton.style.top = '5px';
                 closeButton.style.right = '20px';
                 closeButton.style.color = '#fff';
-                closeButton.style.fontSize = '30px';
+                closeButton.style.fontSize = '40px';
                 closeButton.style.cursor = 'pointer';
                 closeButton.addEventListener('click', function () {
                     document.body.removeChild(modal);

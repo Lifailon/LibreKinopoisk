@@ -10,7 +10,7 @@ chrome.runtime.onInstalled.addListener(function() {
         'TorrentCheckBox'
     ], function(data) {
         if (typeof data.torSrv === 'undefined') {
-            chrome.storage.local.set({ 'torSrv': 'https://toruapi.vercel.app' })
+            chrome.storage.local.set({ 'torSrv': 'https://torapi.vercel.app' })
         }
         if (typeof data.KinoboxCheckBox === 'undefined') {
             chrome.storage.local.set({ 'KinoboxCheckBox': true })
