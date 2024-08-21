@@ -46,9 +46,9 @@ const main = async function (url) {
     // Забираем второй элемент из массива заголовков
     var secondTitleElement = titleElements[1]
     // Получаем первый элемент из массива secondTitleElement
-    var firstTitleElement = secondTitleElement.querySelector('[class^="styles_title__"]')
+    // var firstTitleElement = secondTitleElement.querySelector('[class^="styles_title__"]')
     // Получаем все дочерние элементы span, забираем только первый и его содержимое
-    var nameElement = firstTitleElement.querySelectorAll('span')[0].textContent
+    var nameElement = secondTitleElement.querySelectorAll('span')[0].textContent
     // Обрезаем строку до скобки и удаляем пробелы в начале и в конце
     var indexOfBracket = nameElement.indexOf('(')
     if (indexOfBracket !== -1) {
@@ -77,16 +77,6 @@ const main = async function (url) {
         chrome.storage.local.get(['TorrentCheckBox'], function (result) {
             var TorrentCheckBox = result.TorrentCheckBox
             if (TorrentCheckBox) {
-                // HDRezka Tracker 
-                const RezkaButton = newElementPadding({
-                    tag: 'a',
-                    id: 'Rezka-Button',
-                    href: `https://rezka.cc/ajax_search?q=${title}+${year}`,
-                    content: 'Rezka'
-                })
-                RezkaButton.setAttribute('target', '_blank')
-                buttonBlock.parentNode.insertBefore(RezkaButton, buttonBlock.nextSibling)
-
                 // NoName-Club
                 let urlNoNameClub = null
                 if (url?.includes('series')) {
@@ -232,7 +222,7 @@ const main = async function (url) {
                     id: 'TMDb-Google-Button',
                     href: `https://www.themoviedb.org/search?query=${title}`,
                     // href: `https://www.google.com/search?q=${title}+${year}+site:themoviedb.org&btnI`,
-                    content: 'TMDb'
+                    content: 'TMDB'
                 })
                 TMDbButton.setAttribute('target', '_blank')
                 buttonBlock.parentNode.insertBefore(TMDbButton, buttonBlock.nextSibling)
@@ -254,6 +244,16 @@ const main = async function (url) {
         chrome.storage.local.get(['OnlineCheckBox'], function (result) {
             var OnlineCheckBox = result.OnlineCheckBox
             if (OnlineCheckBox) {
+                // HDRezka Tracker 
+                const RezkaButton = newElementPadding({
+                    tag: 'a',
+                    id: 'Rezka-Button',
+                    href: `https://rezka.cc/ajax_search?q=${title}+${year}`,
+                    content: 'HDRezka Tracker'
+                })
+                RezkaButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(RezkaButton, buttonBlock.nextSibling)
+
                 // HDRezka
                 const HDRezkaButton = newElementPadding({
                     tag: 'a',
@@ -264,32 +264,42 @@ const main = async function (url) {
                 HDRezkaButton.setAttribute('target', '_blank')
                 buttonBlock.parentNode.insertBefore(HDRezkaButton, buttonBlock.nextSibling)
 
-                // Zetflix
-                let typeZetflix = null
-                if (url?.includes('film')) {
-                    typeZetflix = 'films'
-                }
-                else if (url?.includes('series')) {
-                    typeZetflix = 'serials'
-                }
-                const ZetflixButton = newElementPadding({
-                    tag: 'a',
-                    id: 'Kinobox-Button',
-                    href: `https://online.ztflix.zone/${typeZetflix}/${_title}`,
-                    content: 'Zetflix'
-                })
-                ZetflixButton.setAttribute('target', '_blank')
-                buttonBlock.parentNode.insertBefore(ZetflixButton, buttonBlock.nextSibling)
-
                 // Zeflix
                 const Zeflix = newElementPadding({
                     tag: 'a',
                     id: 'Zeflix-Button',
                     href: `https://zeflix.online/index.php?do=search&subaction=search&search_start=0&story=${name}`,
-                    content: 'Зетфликс'
+                    content: 'Zetflix'
                 })
                 Zeflix.setAttribute('target', '_blank')
                 buttonBlock.parentNode.insertBefore(Zeflix, buttonBlock.nextSibling)
+
+                // Zetflix
+                // let typeZetflix = null
+                // if (url?.includes('film')) {
+                //     typeZetflix = 'films'
+                // }
+                // else if (url?.includes('series')) {
+                //     typeZetflix = 'serials'
+                // }
+                // const ZetflixButton = newElementPadding({
+                //     tag: 'a',
+                //     id: 'Zetflix-Button',
+                //     href: `https://online.ztflix.zone/${typeZetflix}/${_title}`,
+                //     content: 'Zetflix'
+                // })
+                // ZetflixButton.setAttribute('target', '_blank')
+                // buttonBlock.parentNode.insertBefore(ZetflixButton, buttonBlock.nextSibling)
+
+                // Zona
+                const Zona = newElementPadding({
+                    tag: 'a',
+                    id: 'Zona-Button',
+                    href: `https://g1.zona.plus/search/${name}`,
+                    content: 'Zona'
+                })
+                Zona.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(Zona, buttonBlock.nextSibling)
             }
         })
 
