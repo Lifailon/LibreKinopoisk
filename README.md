@@ -3,8 +3,7 @@
 </p>
 
 <h1 align="center">
-  <img src="ChromeExtension/icons/icon128.png" width="30" />
-  Libre Kinopoisk
+    Libre <img src="ChromeExtension/icons/icon128.png" width="30" />inopoisk
 </h1>
 
 Расширение Google Chrome, которое добавляет кнопки на сайт [Кинопоиск](http://kinopoisk.ru) для быстрого поиска фильмов и сериалов в открытых источниках.
