@@ -12,8 +12,8 @@
 
 ### ✨ Реализовано:
 
-- [x] Онлайн просмотр выбранного фильма или сериала в интегрированном плеере ▶ [Kinobox](https://kinomix.web.app) через модальное окно (не покидая текущую страницу в браузере).
-- [x] Интерфейс для одновременного поиска раздач в нескольких торрент трекерах через [TorAPI](https://github.com/Lifailon/TorAPI) с поддержкой фильтрации и сортировки в стиле [Jackett](https://github.com/Jackett/Jackett), без необходимости устанавливать серверную часть и использвать VPN или Proxy для поиска.
+- [x] Онлайн просмотр выбранного фильма или сериала в интегрированном плеере ▶ [Kinobox](https://kinobox.tv) через модальное окно (не покидая текущую страницу в браузере) или на сайте [Kinomix](https://kinomix.web.app) (можно изменить в настройках расширения).
+- [x] Интерфейс для одновременного поиска раздач в нескольких торрент трекерах через [TorAPI](https://github.com/Lifailon/TorAPI) с поддержкой фильтрации и сортировки в стиле [Jackett](https://github.com/Jackett/Jackett), без необходимости устанавливать серверную часть и использовать VPN или Proxy для поиска. Для загрузки торрент файлов, достаточно воспользоваться любым расширением VPN для браузера, например, [Browsec](https://browsec.com/ru).
 - [x] Интерфейс для настройки расширения.
 - [x] Кнопки для быстрого поиска во внешних источниках:
 - Трейлеры на [YouTube](https://youtube.com).
@@ -21,9 +21,9 @@
 - Просмотр онлайн на [Zone](https://g1.zona.plus), [Zetflix](https://zeflix.online) и [HDRezka](https://hdrezka.ag).
 - Зарубежные базы данных [IMDb](https://imdb.com) и [TMDB](https://themoviedb.org).
 - Русскоязычные базы данных [Кинориум](https://ru.kinorium.com), [Торамп](https://www.toramp.com), [Film.ru](https://www.film.ru), [MyShows](https://myshows.me) и [Lostfilm](https://lostfilm.tv) с распианием даты выхода сериалов.
-- Торрент трекеры [Кинозал](https://kinozal.tv), [RuTrucker](https://rutracker.org), [RuTor](https://rutor.info), [NoName-Club](https://nnmclub.to) и [HDRezka Tracker](https://rezka.cc) с фильтрацией по оригинальному названию и году выхода.
-
-\* Для загрузки торрент файлов через интерфейс поиска раздач, достаточно воспользоваться любым VPN расширением в браузере, например, [Browsec](https://browsec.com/ru).
+- Торрент трекеры [Кинозал](https://kinozal.tv), [RuTrucker](https://rutracker.org), [RuTor](https://rutor.info) и [NoName-Club](https://nnmclub.to) с фильтрацией по оригинальному названию и году выхода.
+- [ ] Добавить кнопки для версии сайта [Кинопоиск HD](https://hd.kinopoisk.ru) (на текущий момент добавлена только одна кнопка для просмотра онлайн).
+- [ ] Добавить кнопки получения магнитных ссылок, для загрузки содержимого раздачи через любой торрент клиент.
 
 <h1 align="center">
     <img src="image/kinobox-player.jpg" width="400"/></a> <img src="image/torapi-search.jpg" width="400"></a>

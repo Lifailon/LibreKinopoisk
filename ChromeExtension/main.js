@@ -757,20 +757,45 @@ const main = async function (url) {
     })
 }
 
-// Функция для отображения кнопок на странице hd.kinopoisk
-const hd = async function () {
-    const buttonBlock = document.querySelector('div[class^="ContentActions_root__"], div[class^="ContentActions_buttons__"]')
-    if (!buttonBlock) {
-        return
+// Функция добавления кнопок на странице hd.kinopoisk
+const hd = async function (buttonBlock) {
+    // Забираем название фильма
+    const filmName = document.querySelector("#__next > div.styles_root__S2643 > div.styles_body__XTb_o.main-view.with-transition > div > div > main > div.FilmContent_wrapper__EicQU > div > div > section > div > div.ContentWrapper_title__uVspG.ContentWrapper_title_compact__nO1AL > h1 > img").getAttribute('alt').replace('Смотреть','').trim().replace(/ /g,'+')
+    let url = ''
+    if (filmName) {
+        url = `https://kinomix.web.app/#${filmName}`
+    } else {
+        url = `https://kinomix.web.app`
     }
     const KinoboxButton = newElementPadding({
         tag: 'a',
         id: 'Kinobox-Button',
-        href: `https://kinomix.web.app`,
-        content: 'Смотреть онлайн'
+        href: url,
+        content: '▶ Смотреть онлайн'
     })
+    KinoboxButton.style.borderRadius = '40px'; // Увеличиваем скругление углов
+    KinoboxButton.style.padding = '30px'; // Увеличиваем внутренний отступ
+    KinoboxButton.style.fontSize = '26px'; // Увеличиваем размер шрифта
     KinoboxButton.setAttribute('target', '_blank')
     buttonBlock.parentNode.insertBefore(KinoboxButton, buttonBlock.nextSibling)
+}
+
+// Функция наблюдения за DOM
+function observeDOM() {
+    const observer = new MutationObserver((mutations, observer) => {
+        const buttonBlock = document.querySelector("#__next > div.styles_root__S2643 > div.styles_body__XTb_o.main-view.with-transition > div > div > main > div.FilmContent_wrapper__EicQU > div > div > section > div > div.ContentWrapper_content__J_a5d > section > div.ContentOverview_actions__wFERv.ContentOverview_align_top__d4BAW > div > div")
+        // Запускаем функцию добавления кнопок, когда элемент найден
+        if (buttonBlock) {
+            hd(buttonBlock)
+            // Останавливаем наблюдение
+            observer.disconnect()
+        }
+    })
+    // Начинаем наблюдение за изменениями в DOM
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    })
 }
 
 // Ожидать полной загрузки страницы
@@ -780,7 +805,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const url = window.location.href
     // Запускаем функция для версии сайта Кинопоиск HD
     if (url?.includes('hd.kinopoisk.ru/film')) {
-        hd()
+        observeDOM()
     }
     // Запускаем основную функцию, только если url содержит фильм или сериал
     else if (url?.includes('film') || url?.includes('series')) {
