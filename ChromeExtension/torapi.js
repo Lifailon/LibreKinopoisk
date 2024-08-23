@@ -160,6 +160,7 @@ function displayTorrentsOnPage() {
                 <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Пиры</th>
                 <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Дата</th>
                 <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Торрент</th>
+                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Магнит</th>
             </tr>
         `;
         table.appendChild(tableHead);
@@ -314,7 +315,29 @@ function displayTorrentsOnPage() {
                         <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             <a href="${item.Torrent}" target="_blank" style="color: #1e90ff; text-decoration: none;">Скачать</a>
                         </td>
+                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                            <button style="padding: 5px 10px; background-color: #1e90ff; color: #ffffff; border: none; border-radius: 5px; cursor: pointer;">Скачать</button>
+                        </td>
                     `;
+                    // Обработчик для получения Magnet link
+                    const magnetButton = row.querySelector('button');
+                    magnetButton.addEventListener('click', function() {
+                        fetch(`https://toruapi.vercel.app/api/search/id/${source.toLowerCase()}?query=${item.Id}`)
+                            .then(response => response.json())
+                            .then(magnetData => {
+                                const magnetLink = magnetData[0].Magnet;
+                                if (magnetLink) {
+                                    // Открываем Magnet ссылку в новой вкладке
+                                    window.open(magnetLink, '_blank');
+                                } else {
+                                    alert('Magnet ссылка не найдена.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error(error);
+                                alert('Ошибка при получении Magnet ссылки.');
+                            });
+                    });
                     tableBody.appendChild(row);
                 });
             }
