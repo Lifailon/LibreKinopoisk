@@ -478,6 +478,7 @@ const main = async function (url) {
                         <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Пиры</th>
                         <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Дата</th>
                         <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Торрент</th>
+                        <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Магнит</th>
                     </tr>
                 `;
                 table.appendChild(tableHead);
@@ -644,8 +645,39 @@ const main = async function (url) {
                             <td style="padding: 10px; border-bottom: 1px solid #555;">
                                 <a href="${item.Torrent}" target="_blank" style="color: #1e90ff; text-decoration: none;">Скачать</a>
                             </td>
+                            <td style="padding: 10px; border-bottom: 1px solid #555555;">
+                                <button style="padding: 5px 10px; background-color: #1e90ff; color: #ffffff; border: none; border-radius: 5px; cursor: pointer;">Скачать</button>
+                            </td>
                         `;
-                        tableBody.appendChild(row);
+                    // Обработчик для получения Magnet link
+                    const magnetButton = row.querySelector('button');
+                    magnetButton.addEventListener('click', function() {
+                        fetch(`https://toruapi.vercel.app/api/search/id/${source.toLowerCase()}?query=${item.Id}`)
+                            .then(response => response.json())
+                            .then(magnetData => {
+                                const magnetLink = magnetData[0].Magnet;
+                                if (magnetLink) {
+                                    chrome.storage.local.get(['MagnetCheckBox'], function (result) {
+                                        var MagnetCheckBox = result.MagnetCheckBox;
+                                        if (MagnetCheckBox) {
+                                            window.open(magnetLink, '_blank');
+                                        } else {
+                                            const infoHash = magnetData[0].Hash
+                                            if (infoHash) {
+                                                alert(`info hash: ${infoHash}`);
+                                            }
+                                        }
+                                    })
+                                } else {
+                                    alert('Магнитная ссылка не найдена');
+                                }
+                            })
+                            .catch(error => {
+                                console.error(error);
+                                alert('Ошибка при получении магнитной ссылки');
+                            });
+                    });
+                    tableBody.appendChild(row);
                     });
                 }
             }

@@ -327,15 +327,24 @@ function displayTorrentsOnPage() {
                             .then(magnetData => {
                                 const magnetLink = magnetData[0].Magnet;
                                 if (magnetLink) {
-                                    // Открываем Magnet ссылку в новой вкладке
-                                    window.open(magnetLink, '_blank');
+                                    chrome.storage.local.get(['MagnetCheckBox'], function (result) {
+                                        var MagnetCheckBox = result.MagnetCheckBox;
+                                        if (MagnetCheckBox) {
+                                            window.open(magnetLink, '_blank');
+                                        } else {
+                                            const infoHash = magnetData[0].Hash
+                                            if (infoHash) {
+                                                alert(`info hash: ${infoHash}`);
+                                            }
+                                        }
+                                    })
                                 } else {
-                                    alert('Magnet ссылка не найдена.');
+                                    alert('Магнитная ссылка не найдена');
                                 }
                             })
                             .catch(error => {
                                 console.error(error);
-                                alert('Ошибка при получении Magnet ссылки.');
+                                alert('Ошибка при получении магнитной ссылки');
                             });
                     });
                     tableBody.appendChild(row);

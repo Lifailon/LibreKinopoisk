@@ -98,6 +98,7 @@ homeButton.addEventListener('click', function() {
 })
 
 // Забираем все CheckBox
+var MagnetCheckBox = document.getElementById('MagnetCheckBox')
 var KinoboxCheckBox = document.getElementById('KinoboxCheckBox')
 var OnlineCheckBox = document.getElementById('OnlineCheckBox')
 var YouTubeCheckBox = document.getElementById('YouTubeCheckBox')
@@ -107,6 +108,11 @@ var DbRuCheckBox = document.getElementById('DbRuCheckBox')
 var TorrentCheckBox = document.getElementById('TorrentCheckBox')
 
 // При загрузке страницы, загружаем значение из chrome.storage и устанавливаем его для чекбокса
+document.addEventListener('DOMContentLoaded', function() {
+    chrome.storage.local.get('MagnetCheckBox', function(data) {
+        MagnetCheckBox.checked = data.MagnetCheckBox
+    })
+})
 document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.get('KinoboxCheckBox', function(data) {
         KinoboxCheckBox.checked = data.KinoboxCheckBox
@@ -144,6 +150,9 @@ document.addEventListener('DOMContentLoaded', function() {
 })
 
 // При изменении состояния чекбокса сохраняем состояние чекбокса в chrome.storage
+MagnetCheckBox.addEventListener('change', function() {
+    chrome.storage.local.set({ 'MagnetCheckBox': this.checked })
+})
 KinoboxCheckBox.addEventListener('change', function() {
     chrome.storage.local.set({ 'KinoboxCheckBox': this.checked })
 })

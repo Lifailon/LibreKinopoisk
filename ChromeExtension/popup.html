@@ -205,21 +205,23 @@
         <div class="title">Libre Kinopoisk</div>
     </header>
     <div class="container" id="homeState">
-        <b>Расширение, которое добавляет кнопки на сайт <a href="https://kinopoisk.ru">Кинопоиск</a> для быстрого поиска фильмов и сериалов в открытых источниках.</b>
+        <b>Расширение, которое добавляет кнопки на сайт <a href="https://kinopoisk.ru">Кинопоиск</a> и предоставляет интерфейс <a href="https://github.com/Lifailon/TorAPI">TorAPI</a> для быстрого поиска фильмов и сериалов в открытых источниках.</b>
         <br>
         <br>
         <button id="showTorrentTableButton">🔎 Поиск раздач в торрент трекерах</button>
         <br>
         <br>
-        <b>Поиск реализован с помощью сервера <a href="https://github.com/Lifailon/TorAPI">TorAPI</a> в стиле 🧥 <a href="https://github.com/Jackett/Jackett">Jackett</a></b>.
-        <br>
-        <br>
-        <b>Вы можете установить API сервер самостоятельно, используя контейнер <a href="https://hub.docker.com/r/lifailon/torapi">Docker</a> или использовать публичную версию на <a href="https://vercel.com/torapi/torapi">Vercel</a>.</b>
+        <div class="checkbox-container">
+            <input type="checkbox" id="MagnetCheckBox" class="checkbox-input">
+            <label for="MagnetCheckBox" class="checkbox-label"></label>
+            <span>Использовать магнитную ссылку или хеш сумму</span>
+        </div>
         <h3>Изменить адрес сервера:</h3>
         <div class="input-container">
             <input type="text" id="textInput" placeholder="Введите адрес сервера">
             <button id="saveButton">Сохранить</button>
-        </div>        
+        </div>
+        <br>
         <div id="messageBox" style="display: none;"></div>
         <p>© 2024 Lifailon | <a href="https://github.com/Lifailon/LibreKinopoisk">GitHub</a></p>
         <div class="bottom-buttons-container">
