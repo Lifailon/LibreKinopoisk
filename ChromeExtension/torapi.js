@@ -44,18 +44,41 @@ function displayTorrentsOnPage() {
         // Стили для placeholder
         const styleElement = document.createElement('style');
         styleElement.textContent = `
-            input::placeholder {
-                font-family: 'Lato', sans-serif;
-                color: #888888;
-                font-size: 16px;
+            #torrent-table {
+                width: 100%; /* Занимает всю ширину экрана */
+                border-collapse: collapse; /* Убирает пробелы между ячейками */
             }
-            input[type="text"]::placeholder {
-                color: #888888;
-                font-size: 16px;
+          
+            #torrent-table th, #torrent-table td {
+                text-align: left; /* Выравнивание текста */
+            }
+            
+            /* Адаптировать интерфейс таблицы под мобильные устройства */
+            @media (max-width: 1000px) {
+                #torrent-table {
+                    display: block; /* Позволяет прокрутку */
+                    overflow-x: auto; /* Включает горизонтальную прокрутку */
+                }
+            
+                #torrent-table thead {
+                    display: none; /* Скрыть заголовки таблицы на маленьких экранах */
+                }
+            
+                #torrent-table tr {
+                    display: flex; /* Используем flexbox для строк */
+                    flex-direction: column; /* Вертикальное расположение ячеек */
+                    margin-bottom: 10px; /* Отступ между строками */
+                }
+            
+                #torrent-table td {
+                    display: flex; /* Используем flexbox для ячеек */
+                    justify-content: space-between; /* Распределение ячеек по ширине */
+                    /* border: 1px solid #1e90ff; */
+                }
             }
         `;
         document.head.appendChild(styleElement);
-
+        
         // Поле ввода для ввода запроса вручную
         const searchInput = document.createElement('input');
         searchInput.type = 'text';
@@ -89,6 +112,12 @@ function displayTorrentsOnPage() {
         searchButton.style.fontFamily = 'Lato, sans-serif';
         searchButton.style.fontSize = '16px';
 
+        // Создаем элемент счетчика (span) для кнопки
+        const countSpan = document.createElement('span');
+        countSpan.style.marginLeft = '5px'; // Отступ слева от счетчика
+        countSpan.textContent = '(0)'; // Начальное значение счетчика по умолчанию
+        searchButton.appendChild(countSpan); // Добавляем счетчик в кнопку
+
         // Обработчик события для кнопки поиска
         searchButton.addEventListener('click', function() {
             const query = searchInput.value.trim();
@@ -98,9 +127,12 @@ function displayTorrentsOnPage() {
                     .then(response => response.json())
                     .then(data => {
                         displayTorrents(data);
+                        // Обновляем счетчик
+                        countSpan.textContent = `(${data.RuTracker.length + data.Kinozal.length + data.RuTor.length + data.NoNameClub.length}`;
                     })
                     .catch(error => {
                         console.error(error);
+                        countSpan.textContent = `(0)`;
                     });
             }
         });
@@ -127,17 +159,21 @@ function displayTorrentsOnPage() {
         filterInput.addEventListener('input', function() {
             const filterValue = filterInput.value.toLowerCase();
             const rows = tableBody.querySelectorAll('tr');
+            let visibleCount = 0; // Счетчик видимых строк
             rows.forEach(row => {
-                const titleCell = row.querySelectorAll('td')[1];
+                const titleCell = row.querySelectorAll('td')[3];
                 if (titleCell) {
                     const titleText = titleCell.textContent.toLowerCase();
                     if (titleText.includes(filterValue)) {
-                        row.style.display = '';
+                        row.style.display = ''; // Показываем строку
+                        visibleCount++; // Увеличиваем счетчик
                     } else {
-                        row.style.display = 'none';
+                        row.style.display = 'none'; // Скрываем строку
                     }
                 }
             });
+            // Обновляем счетчик
+            countSpan.textContent = `(${visibleCount})`;
         });
 
         // Создаем таблицу
@@ -154,13 +190,13 @@ function displayTorrentsOnPage() {
         tableHead.innerHTML = `
             <tr style="background-color: #444;">
                 <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Трекер</th>
+                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: default; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;"></th>
+                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: default; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;"></th>
                 <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Название</th>
                 <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Размер</th>
                 <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Сиды</th>
                 <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Пиры</th>
                 <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Дата</th>
-                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Торрент</th>
-                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Магнит</th>
             </tr>
         `;
         table.appendChild(tableHead);
@@ -237,10 +273,6 @@ function displayTorrentsOnPage() {
             });
         });
 
-        // Тело таблицы
-        const tableBody = document.createElement('tbody');
-        table.appendChild(tableBody);
-
         // Добавляем элементы в контейнер
         searchContainer.appendChild(searchInput);
         searchContainer.appendChild(searchButton);
@@ -248,6 +280,10 @@ function displayTorrentsOnPage() {
 
         // Добавляем контейнер в tableContainer
         tableContainer.appendChild(searchContainer);
+
+        // Тело таблицы
+        const tableBody = document.createElement('tbody');
+        table.appendChild(tableBody);
 
         // Добавляем таблицу
         tableContainer.appendChild(table);
@@ -290,37 +326,43 @@ function displayTorrentsOnPage() {
                     const row = document.createElement('tr');
                     row.style.backgroundColor = '#333333';
                     row.style.borderBottom = '1px solid #555555';
-                    row.style.padding = '10px';
                     row.style.fontFamily = 'Lato, sans-serif';
                     row.style.fontSize = '16px';
                     row.innerHTML = `
-                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${source}
+                        </td>
+                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                            <a href="${item.Torrent}" target="_blank" style="color: #1e90ff; text-decoration: none;">💾</a>
+                        </td>
+                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                            <magnetButton></magnetButton>
                         </td>
                         <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             <a href="${item.Url}" target="_blank" style="color: #1e90ff; text-decoration: none;">${item.Name}</a>
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item.Size}
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item.Seeds}
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item.Peers}
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item.Date.split(' ')[0]}
-                        </td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
-                            <a href="${item.Torrent}" target="_blank" style="color: #1e90ff; text-decoration: none;">Скачать</a>
-                        </td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
-                            <button style="padding: 5px 10px; background-color: #1e90ff; color: #ffffff; border: none; border-radius: 5px; cursor: pointer;">Скачать</button>
                         </td>
                     `;
                     // Обработчик для получения Magnet link
-                    const magnetButton = row.querySelector('button');
+                    const magnetButton = row.querySelector('magnetButton');
+                    magnetButton.style.padding = '0'; // Убираем отступы
+                    magnetButton.style.background = 'none'; // Убираем фон
+                    magnetButton.style.border = 'none'; // Убираем границу
+                    magnetButton.style.fontSize = '16px'; // Увеличиваем размер символа
+                    magnetButton.style.color = '#1e90ff'; // Цвет символа
+                    magnetButton.style.cursor = 'pointer'; // Курсор при наведении 
+                    magnetButton.innerHTML = '🧲';
                     magnetButton.addEventListener('click', function() {
                         fetch(`https://toruapi.vercel.app/api/search/id/${source.toLowerCase()}?query=${item.Id}`)
                             .then(response => response.json())
