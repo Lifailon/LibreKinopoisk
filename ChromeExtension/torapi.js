@@ -122,13 +122,21 @@ function displayTorrentsOnPage() {
         searchButton.addEventListener('click', function() {
             const query = searchInput.value.trim();
             if (query) {
-                // Выполняем запрос с новым значением
+                // Использование прокси (https://github.com/Rob--W/cors-anywhere), который добавляет заголовки CORS к запросам
+                // const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+                // const apiUrl = `https://torapi.vercel.app/api/search/title/all?query=${title}`;
+                // fetch(corsProxy + apiUrl)
+                // Локальный сервер (https://github.com/Lifailon/TorAPI)
+                // fetch(`http://localhost:8443/api/search/title/all?query=${title}`)
+                // Публичный сервер на Vercel
+                // fetch(`https://torapi.vercel.app/api/search/title/all?query=${title}`)
+                // Используем переменную из хранилища
                 fetch(`${TorApiServer}/api/search/title/all?query=${query}`)
                     .then(response => response.json())
                     .then(data => {
                         displayTorrents(data);
                         // Обновляем счетчик
-                        countSpan.textContent = `(${data.RuTracker.length + data.Kinozal.length + data.RuTor.length + data.NoNameClub.length}`;
+                        countSpan.textContent = `(${data.RuTracker.length + data.Kinozal.length + data.RuTor.length + data.NoNameClub.length})`;
                     })
                     .catch(error => {
                         console.error(error);
@@ -158,22 +166,43 @@ function displayTorrentsOnPage() {
         // Функция для фильтрации
         filterInput.addEventListener('input', function() {
             const filterValue = filterInput.value.toLowerCase();
-            const rows = tableBody.querySelectorAll('tr');
-            let visibleCount = 0; // Счетчик видимых строк
-            rows.forEach(row => {
-                const titleCell = row.querySelectorAll('td')[3];
-                if (titleCell) {
-                    const titleText = titleCell.textContent.toLowerCase();
-                    if (titleText.includes(filterValue)) {
-                        row.style.display = ''; // Показываем строку
-                        visibleCount++; // Увеличиваем счетчик
-                    } else {
-                        row.style.display = 'none'; // Скрываем строку
-                    }
+            let filterWords = [];
+            chrome.storage.local.get(['SearchCheckBox'], function (result) {
+                if (result.SearchCheckBox) {
+                    // Разбиваем на слова для неточного поиска
+                    filterWords = filterValue.split(' ').filter(word => word.length > 0);
                 }
+                const rows = tableBody.querySelectorAll('tr');
+                let visibleCount = 0; // Счетчик видимых строк
+                rows.forEach(row => {
+                    const titleCell = row.querySelectorAll('td')[3]; // Используем четвертый столбец для фильтрации
+                    if (titleCell) {
+                        const titleText = titleCell.textContent.toLowerCase();
+                        // Проверяем, содержится ли каждое слово в заголовке
+                        if (result.SearchCheckBox) {
+                            const matches = filterWords.every(word => titleText.includes(word));
+                            if (matches) {
+                                row.style.display = ''; // Показываем строку
+                                visibleCount++; // Увеличиваем счетчик
+                            } else {
+                                row.style.display = 'none'; // Скрываем строку
+                            }
+                        } else {
+                            // Для точного поиска
+                            if (titleText.includes(filterValue)) {
+                                row.style.display = ''; // Показываем строку
+                                visibleCount++; // Увеличиваем счетчик
+                            } else {
+                                row.style.display = 'none'; // Скрываем строку
+                            }
+                        }
+                      
+                    }
+                });
+                // Обновляем счетчик
+                countSpan.textContent = `(${visibleCount})`;
             });
-            // Обновляем счетчик
-            countSpan.textContent = `(${visibleCount})`;
+                                                                                             
         });
 
         // Создаем таблицу
@@ -205,22 +234,24 @@ function displayTorrentsOnPage() {
         function sortTable(columnIndex, ascending) {
             const rows = Array.from(tableBody.querySelectorAll('tr'));
             rows.sort((a, b) => {
-                let cellA = a.querySelectorAll('td')[columnIndex].textContent.toLowerCase();
-                let cellB = b.querySelectorAll('td')[columnIndex].textContent.toLowerCase();
-                // Числовые значения
-                if (!isNaN(cellA) && !isNaN(cellB)) {
-                    cellA = parseFloat(cellA);
-                    cellB = parseFloat(cellB);
-                // Размер файла
-                } else if (cellA.includes('mb') || cellA.includes('gb')) {
-                    cellA = parseFileSize(cellA);
-                    cellB = parseFileSize(cellB);
-                }
-                // Формат даты
-                else if (isDate(cellA) && isDate(cellB)) {
+                let cellA = a.querySelectorAll('td')[columnIndex].textContent.trim().toLowerCase();
+                let cellB = b.querySelectorAll('td')[columnIndex].textContent.trim().toLowerCase();
+                // Проверка формата даты
+                if (isDate(cellA) && isDate(cellB)) {
                     cellA = parseDate(cellA);
                     cellB = parseDate(cellB);
                 }
+                // Проверка размер файла
+                else if (cellA.includes('kb') || cellA.includes('mb') || cellA.includes('gb')) {
+                    cellA = parseFileSize(cellA);
+                    cellB = parseFileSize(cellB);
+                }
+                // Проверка числовых значений (целое или с плавающей точкой)
+                else if (!isNaN(cellA) && !isNaN(cellB)) {
+                    cellA = parseFloat(cellA);
+                    cellB = parseFloat(cellB);
+                }
+                // Сравнение значений
                 if (cellA < cellB) {
                     return ascending ? -1 : 1;
                 } else if (cellA > cellB) {
@@ -236,7 +267,7 @@ function displayTorrentsOnPage() {
         // Функция для преобразования размера файла в числовое значение в байтах
         function parseFileSize(size) {
             const units = {
-                'b':  1,
+                'b': 1,
                 'kb': 1024,
                 'mb': 1024 ** 2,
                 'gb': 1024 ** 3
@@ -255,7 +286,7 @@ function displayTorrentsOnPage() {
             return /^\d{2}\.\d{2}\.\d{4}$/.test(str);
         }
 
-        // Функция для преобразования даты из формата строки в объект Date
+        // Функция для преобразования даты из формата строки в объект Date (формат YYYY-MM-DD)
         function parseDate(dateStr) {
             const [day, month, year] = dateStr.split('.');
             return new Date(`${year}-${month}-${day}`);
@@ -328,9 +359,22 @@ function displayTorrentsOnPage() {
                     row.style.borderBottom = '1px solid #555555';
                     row.style.fontFamily = 'Lato, sans-serif';
                     row.style.fontSize = '16px';
+                    let ico
+                    if (source.toLowerCase().trim() === "rutracker") {
+                        ico = chrome.runtime.getURL('icons/rutracker.ico');
+                    } else if (source.toLowerCase() === "kinozal") {
+                        ico = chrome.runtime.getURL('icons/kinozal.ico');
+                    } else if (source.toLowerCase() === "rutor") {
+                        ico = chrome.runtime.getURL('icons/rutor.ico');
+                    } else if (source.toLowerCase() === "nonameclub") {
+                        ico = chrome.runtime.getURL('icons/nonameclub.ico');
+                    }
                     row.innerHTML = `
-                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
-                            ${source}
+                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: default; font-family: Lato, sans-serif; font-size: 16px;">
+                            <div style="display: flex; align-items: center;">
+                                <img src="${ico}" alt="${source}" style="max-width: 16px; margin-right: 16px;">
+                                <span style="vertical-align: middle;">${source}</span>
+                            </div>
                         </td>
                         <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             <a href="${item.Torrent}" target="_blank" style="color: #1e90ff; text-decoration: none;">💾</a>
@@ -351,7 +395,7 @@ function displayTorrentsOnPage() {
                             ${item.Peers}
                         </td>
                         <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
-                            ${item.Date.split(' ')[0]}
+                            ${item.Date.split(' ')[0].includes(':') ? item.Date.split(':')[0].slice(0, -2) : item.Date.split(' ')[0]}
                         </td>
                     `;
                     // Обработчик для получения Magnet link
@@ -364,14 +408,13 @@ function displayTorrentsOnPage() {
                     magnetButton.style.cursor = 'pointer'; // Курсор при наведении 
                     magnetButton.innerHTML = '🧲';
                     magnetButton.addEventListener('click', function() {
-                        fetch(`https://toruapi.vercel.app/api/search/id/${source.toLowerCase()}?query=${item.Id}`)
+                        fetch(`https://torapi.vercel.app/api/search/id/${source.toLowerCase()}?query=${item.Id}`)
                             .then(response => response.json())
                             .then(magnetData => {
                                 const magnetLink = magnetData[0].Magnet;
                                 if (magnetLink) {
                                     chrome.storage.local.get(['MagnetCheckBox'], function (result) {
-                                        var MagnetCheckBox = result.MagnetCheckBox;
-                                        if (MagnetCheckBox) {
+                                        if (result.MagnetCheckBox) {
                                             window.open(magnetLink, '_blank');
                                         } else {
                                             const infoHash = magnetData[0].Hash
