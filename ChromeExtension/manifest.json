@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Свободный поиск кино",
-  "version": "5.6.2",
+  "version": "5.7.0",
   "author": "Lifailon",
+  "homepage_url": "https://github.com/Lifailon/LibreKinopoisk",
   "description": "Расширение, которое добавляет кнопки на сайт Кинопоиск и предоставляет интерфейс TorAPI для быстрого поиска фильмов и сериалов в открытых источниках.",
   "icons": {
     "32": "icons/icon32.png",
@@ -41,14 +42,11 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "assets/icons/*",
+        "icons/*",
         "kinobox.min.js"
       ],
       "matches": [
-        "https://kinopoisk.ru/*",
-        "https://www.kinopoisk.ru/*",
-        "https://hd.kinopoisk.ru/*",
-        "https://www.hd.kinopoisk.ru/*"
+        "<all_urls>"
       ]
     }
   ],
@@ -57,7 +55,8 @@
     "scripting",
     "activeTab",
     "tabs",
-    "webNavigation"
+    "webNavigation",
+    "contextMenus"
   ],
   "host_permissions": [
     "https://kinopoisk.ru/*",
