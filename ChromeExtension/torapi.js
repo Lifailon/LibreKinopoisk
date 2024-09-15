@@ -419,7 +419,11 @@ function displayTorrentsOnPage() {
                                         } else {
                                             const infoHash = magnetData[0].Hash
                                             if (infoHash) {
-                                                alert(`info hash: ${infoHash}`);
+                                                navigator.clipboard.writeText(infoHash).then(() => {
+                                                    alert(`Info hash (${infoHash}) скопирован в буфер обмена`);
+                                                }).catch(error => {
+                                                    alert(`Ошибка копирования (${error})`);
+                                                });
                                             }
                                         }
                                     })
@@ -428,8 +432,7 @@ function displayTorrentsOnPage() {
                                 }
                             })
                             .catch(error => {
-                                console.error(error);
-                                alert('Ошибка при получении магнитной ссылки');
+                                alert(`Ошибка при получении магнитной ссылки (${error})`);
                             });
                     });
                     tableBody.appendChild(row);
