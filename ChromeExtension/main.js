@@ -88,7 +88,7 @@ const main = async function (url) {
                     tag: 'a',
                     id: 'NoNameClub-Button',
                     href: urlNoNameClub,
-                    content: 'NNM-Club'
+                    content: 'NoName-Club'
                 })
                 NoNameClubButton.setAttribute('target', '_blank')
                 buttonBlock.parentNode.insertBefore(NoNameClubButton, buttonBlock.nextSibling)
@@ -138,14 +138,14 @@ const main = async function (url) {
             if (DbRuCheckBox) {
 
                 // Lostfilm
-                const LostfilmButton = newElementPadding({
+                const LostFilmButton = newElementPadding({
                     tag: 'a',
                     id: 'Toramp-Google-Button',
                     href: `https://lostfilm.tv/search/?q=${title}`,
-                    content: 'Lostfilm'
+                    content: 'LostFilm'
                 })
-                LostfilmButton.setAttribute('target', '_blank')
-                buttonBlock.parentNode.insertBefore(LostfilmButton, buttonBlock.nextSibling)
+                LostFilmButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(LostFilmButton, buttonBlock.nextSibling)
                 
                 // MyShows
                 const MyShowsButton = newElementPadding({
@@ -194,27 +194,63 @@ const main = async function (url) {
             }
         })
 
+        // Online
+        chrome.storage.local.get(['OnlineCheckBox'], function (result) {
+            var OnlineCheckBox = result.OnlineCheckBox
+            if (OnlineCheckBox) {
+                // HDRezka
+                const HDRezkaButton = newElementPadding({
+                    tag: 'a',
+                    id: 'HDRezka-Button',
+                    href: `https://hdrezka.ag/search/?do=search&subaction=search&q=${title}+${year}`,
+                    content: 'HDRezka'
+                })
+                HDRezkaButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(HDRezkaButton, buttonBlock.nextSibling)
+
+                // Zona
+                const Zona = newElementPadding({
+                    tag: 'a',
+                    id: 'Zona-Button',
+                    href: `https://g1.zona.plus/search/${name}`,
+                    content: 'Zona'
+                })
+                Zona.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(Zona, buttonBlock.nextSibling)
+
+                // Zeflix
+                const Zeflix = newElementPadding({
+                    tag: 'a',
+                    id: 'Zeflix-Button',
+                    href: `https://zeflix.online/index.php?do=search&subaction=search&search_start=0&story=${name}`,
+                    content: 'Zetflix'
+                })
+                Zeflix.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(Zeflix, buttonBlock.nextSibling)
+            }
+        })
+
         // Database EN
         chrome.storage.local.get(['DbEnCheckBox'], function (result) {
             var DbEnCheckBox = result.DbEnCheckBox
             if (DbEnCheckBox) {
                 // Plex
-                // let typePlex = null
-                // if (url?.includes('film')) {
-                //     typePlex = 'movie'
-                // }
-                // else if (url?.includes('series')) {
-                //     typePlex = 'show'
-                // }
-                // const PlexButton = newElementPadding({
-                //     tag: 'a',
-                //     id: 'Plex-Button',
-                //     href: `https://watch.plex.tv/${typePlex}/${_title}`,
-                //     // href: `https://www.google.com/search?q=${title}+${year}+site:plex.tv/${typePlex}&btnI`,
-                //     content: 'Plex'
-                // })
-                // PlexButton.setAttribute('target', '_blank')
-                // buttonBlock.parentNode.insertBefore(PlexButton, buttonBlock.nextSibling)
+                let typePlex = null
+                if (url?.includes('film')) {
+                    typePlex = 'movie'
+                }
+                else if (url?.includes('series')) {
+                    typePlex = 'show'
+                }
+                const PlexButton = newElementPadding({
+                    tag: 'a',
+                    id: 'Plex-Button',
+                    href: `https://watch.plex.tv/${typePlex}/${_title}`,
+                    // href: `https://www.google.com/search?q=${title}+${year}+site:plex.tv/${typePlex}&btnI`,
+                    content: 'Plex'
+                })
+                PlexButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(PlexButton, buttonBlock.nextSibling)
 
                 // TMDb 
                 const TMDbButton = newElementPadding({
@@ -240,69 +276,6 @@ const main = async function (url) {
             }
         })
 
-        // Online
-        chrome.storage.local.get(['OnlineCheckBox'], function (result) {
-            var OnlineCheckBox = result.OnlineCheckBox
-            if (OnlineCheckBox) {
-                // HDRezka Tracker 
-                const RezkaButton = newElementPadding({
-                    tag: 'a',
-                    id: 'Rezka-Button',
-                    href: `https://rezka.cc/ajax_search?q=${title}+${year}`,
-                    content: 'HDRezka Tracker'
-                })
-                RezkaButton.setAttribute('target', '_blank')
-                buttonBlock.parentNode.insertBefore(RezkaButton, buttonBlock.nextSibling)
-
-                // HDRezka
-                const HDRezkaButton = newElementPadding({
-                    tag: 'a',
-                    id: 'HDRezka-Button',
-                    href: `https://hdrezka.ag/search/?do=search&subaction=search&q=${title}+${year}`,
-                    content: 'HDRezka'
-                })
-                HDRezkaButton.setAttribute('target', '_blank')
-                buttonBlock.parentNode.insertBefore(HDRezkaButton, buttonBlock.nextSibling)
-
-                // Zeflix
-                const Zeflix = newElementPadding({
-                    tag: 'a',
-                    id: 'Zeflix-Button',
-                    href: `https://zeflix.online/index.php?do=search&subaction=search&search_start=0&story=${name}`,
-                    content: 'Zetflix'
-                })
-                Zeflix.setAttribute('target', '_blank')
-                buttonBlock.parentNode.insertBefore(Zeflix, buttonBlock.nextSibling)
-
-                // Zetflix
-                // let typeZetflix = null
-                // if (url?.includes('film')) {
-                //     typeZetflix = 'films'
-                // }
-                // else if (url?.includes('series')) {
-                //     typeZetflix = 'serials'
-                // }
-                // const ZetflixButton = newElementPadding({
-                //     tag: 'a',
-                //     id: 'Zetflix-Button',
-                //     href: `https://online.ztflix.zone/${typeZetflix}/${_title}`,
-                //     content: 'Zetflix'
-                // })
-                // ZetflixButton.setAttribute('target', '_blank')
-                // buttonBlock.parentNode.insertBefore(ZetflixButton, buttonBlock.nextSibling)
-
-                // Zona
-                const Zona = newElementPadding({
-                    tag: 'a',
-                    id: 'Zona-Button',
-                    href: `https://g1.zona.plus/search/${name}`,
-                    content: 'Zona'
-                })
-                Zona.setAttribute('target', '_blank')
-                buttonBlock.parentNode.insertBefore(Zona, buttonBlock.nextSibling)
-            }
-        })
-
         // Wikipedia 
         chrome.storage.local.get(['WikiCheckBox'], function (result) {
             var WikiCheckBox = result.WikiCheckBox
@@ -320,368 +293,39 @@ const main = async function (url) {
 
         // YouTube
         chrome.storage.local.get(['YouTubeCheckBox'], function (result) {
-            var YouTubeCheckBox = result.YouTubeCheckBox
+            var YouTubeCheckBox = result.YouTubeCheckBox;
             if (YouTubeCheckBox) {
                 const YouTubeButton = newElementPadding({
                     tag: 'a',
                     id: 'YouTube-Button',
-                    href: `https://www.youtube.com/results?search_query=${title}+${year}+трейлер`,
-                    content: 'Трейлеры'
-                })
-                YouTubeButton.setAttribute('target', '_blank')
-                buttonBlock.parentNode.insertBefore(YouTubeButton, buttonBlock.nextSibling)
+                    href: `https://youtube.com/results?search_query=${title}+${year}+трейлер`,
+                    // content: `
+                    //     <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px; vertical-align: middle;">
+                    //         <title>YouTube</title>
+                    //         <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    //     </svg>
+                    //     YouTube
+                    // `
+                    // content: `
+                    //     <img src="https://youtube.com/s/desktop/59ec15cc/img/favicon.ico" alt="Кинозал" style="width: 20px; height: 20px; vertical-align: middle;"/> 
+                    //     YouTube
+                    // `
+                    content: 'YouTube'
+                });
+                YouTubeButton.setAttribute('target', '_blank');
+                buttonBlock.parentNode.insertBefore(YouTubeButton, buttonBlock.nextSibling);
+
+                const kinopoiskID = url?.split('/')?.filter(itm => Number(itm)).pop()
+                const TrailerButton = newElementPadding({
+                    tag: 'a',
+                    id: 'YouTube-Button',
+                    href: `https://widgets.kinopoisk.ru/discovery/film/${kinopoiskID}`,
+                    content: 'Трейлер'
+                });
+                TrailerButton.setAttribute('target', '_blank');
+                buttonBlock.parentNode.insertBefore(TrailerButton, buttonBlock.nextSibling);
             }
-        })
-
-        // TorAPI
-        // Source: https://github.com/Lifailon/TorAPI
-        chrome.storage.local.get(['TorApiServer'], function(result) {
-            var TorApiServer = result.TorApiServer
-            // Создаем кнопку для отображения таблицы раздач
-            const torrentButton = newElementPadding({
-                tag: 'a',
-                id: 'TorAPI-Button',
-                href: '#',
-                content: 'Раздачи'
-            });
-        
-            // Добавляем обработчик события для кнопки
-            torrentButton.addEventListener('click', function (event) {
-                event.preventDefault();
-        
-                // Создаем модальное окно
-                const modal = document.createElement('div');
-                modal.style.position = 'fixed';
-                modal.style.top = '0';
-                modal.style.left = '0';
-                modal.style.width = '100%';
-                modal.style.height = '100%';
-                modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
-                modal.style.zIndex = '10000';
-                modal.style.display = 'flex';
-                modal.style.flexDirection = 'column';
-                modal.style.alignItems = 'center';
-                modal.style.justifyContent = 'center';
-        
-                // Контейнер для таблицы
-                const tableContainer = document.createElement('div');
-                tableContainer.style.width = '80%';
-                tableContainer.style.height = '80%';
-                tableContainer.style.backgroundColor = '#2d2d2d';
-                tableContainer.style.padding = '20px';
-                tableContainer.style.borderRadius = '10px';
-                tableContainer.style.overflowY = 'auto';
-                tableContainer.style.position = 'relative';
-                tableContainer.style.display = 'flex';
-                tableContainer.style.flexDirection = 'column';
-        
-                // Контейнер для поля ввода и кнопки поиска
-                const searchContainer = document.createElement('div');
-                searchContainer.style.display = 'flex';
-                searchContainer.style.alignItems = 'center';
-                searchContainer.style.marginBottom = '10px';
-                searchContainer.style.gap = '10px'; // добавляет промежуток между элементами
-
-                // Поле ввода для ввода запроса вручную
-                const searchInput = document.createElement('input');
-                searchInput.type = 'text';
-                searchInput.placeholder = 'Поиск по названию';
-                searchInput.style.marginBottom = '10px';
-                searchInput.style.padding = '10px';
-                searchInput.style.borderRadius = '5px';
-                searchInput.style.border = '1px solid #ddd';
-                searchInput.style.width = '100%';
-                searchInput.style.boxSizing = 'border-box';
-                searchInput.style.flexGrow = '1'; // Расширяет input на всю оставшуюся ширину
-                searchInput.style.height = '42px'; // Устанавливает высоту поля ввода
-                searchInput.style.backgroundColor = '#333';
-                searchInput.style.color = '#fff';
-
-                // Кнопка для выполнения поиска
-                const searchButton = document.createElement('button');
-                searchButton.textContent = 'Поиск';
-                searchButton.style.padding = '10px 20px';
-                searchButton.style.backgroundColor = '#1e90ff';
-                searchButton.style.color = '#fff';
-                searchButton.style.border = 'none';
-                searchButton.style.borderRadius = '5px';
-                searchButton.style.cursor = 'pointer';
-                searchButton.style.marginLeft = '10px'; // Отступ от поля ввода до кнопки
-                searchButton.style.height = '42px'; // Устанавливает высоту кнопки
-                searchButton.style.lineHeight = '22px'; // Выровнить текст по центру
-                searchButton.style.marginTop = '-10px'; // Поднимаем кнопку на 5px
-                
-                // Обработчик события для кнопки поиска
-                searchButton.addEventListener('click', function () {
-                    const query = searchInput.value.trim();
-                    if (query) {
-                        // Выполняем запрос с новым значением
-                        fetch(`${TorApiServer}/api/search/title/all?query=${query}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            displayTorrents(data);
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
-                    }
-                });
-
-                // Поле ввода для фильтрации
-                const filterInput = document.createElement('input');
-                filterInput.type = 'text';
-                filterInput.placeholder = 'Фильтрация по названию';
-                filterInput.style.marginBottom = '10px';
-                filterInput.style.padding = '10px';
-                filterInput.style.borderRadius = '5px';
-                filterInput.style.border = '1px solid #ddd';
-                filterInput.style.width = '100%';
-                filterInput.style.boxSizing = 'border-box';
-                filterInput.style.flexGrow = '1'; // Позволяет полю фильтрации занимать оставшееся пространство
-                filterInput.style.height = '42px'; // Устанавливает высоту поля фильтрации
-                filterInput.style.marginLeft = '10px'; // Отступ между кнопкой и фильтром
-                filterInput.style.backgroundColor = '#333';
-                filterInput.style.color = '#fff';
-
-                // Функция для фильтрации
-                filterInput.addEventListener('input', function () {
-                    const filterValue = filterInput.value.toLowerCase();
-                    const rows = tableBody.querySelectorAll('tr');
-                    rows.forEach(row => {
-                        const titleCell = row.querySelectorAll('td')[1];
-                        if (titleCell) {
-                            const titleText = titleCell.textContent.toLowerCase();
-                            if (titleText.includes(filterValue)) {
-                                row.style.display = '';
-                            } else {
-                                row.style.display = 'none';
-                            }
-                        }
-                    });
-                });
-
-                // Создаем таблицу
-                const table = document.createElement('table');
-                table.id = 'torrent-table';
-                table.style.width = '100%';
-                table.style.borderCollapse = 'collapse';
-                table.style.color = '#fff';
-        
-                // Заголовки таблицы
-                const tableHead = document.createElement('thead');
-                tableHead.innerHTML = `
-                    <tr style="background-color: #444;">
-                        <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Трекер</th>
-                        <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Название</th>
-                        <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Размер</th>
-                        <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Сиды</th>
-                        <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Пиры</th>
-                        <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Дата</th>
-                        <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Торрент</th>
-                        <th style="padding: 10px; border-bottom: 1px solid #555; cursor: pointer;">Магнит</th>
-                    </tr>
-                `;
-                table.appendChild(tableHead);
-
-                // Функция сортировки
-                function sortTable(columnIndex, ascending) {
-                    const rows = Array.from(tableBody.querySelectorAll('tr'));
-                    rows.sort((a, b) => {
-                        let cellA = a.querySelectorAll('td')[columnIndex].textContent.toLowerCase();
-                        let cellB = b.querySelectorAll('td')[columnIndex].textContent.toLowerCase();
-                        // Числовые значения
-                        if (!isNaN(cellA) && !isNaN(cellB)) {
-                            cellA = parseFloat(cellA);
-                            cellB = parseFloat(cellB);
-                        // Размер файла
-                        } else if (cellA.includes('mb') || cellA.includes('gb')) {
-                            cellA = parseFileSize(cellA);
-                            cellB = parseFileSize(cellB);
-                        }
-                        // Формат даты
-                        else if (isDate(cellA) && isDate(cellB)) {
-                            cellA = parseDate(cellA);
-                            cellB = parseDate(cellB);
-                        }
-                        if (cellA < cellB) {
-                            return ascending ? -1 : 1;
-                        } else if (cellA > cellB) {
-                            return ascending ? 1 : -1;
-                        } else {
-                            return 0;
-                        }
-                    });
-                    // Удаление существующих строк и добавление отсортированных
-                    rows.forEach(row => tableBody.appendChild(row));
-                }
-                
-                // Функция для преобразования размера файла в числовое значение в байтах
-                function parseFileSize(size) {
-                    const units = {
-                        'b':  1,
-                        'kb': 1024,
-                        'mb': 1024 ** 2,
-                        'gb': 1024 ** 3
-                    };
-                    const match = size.match(/(\d+(\.\d+)?)(\s*)([kmgt]?b)/i);
-                    if (match) {
-                        const value = parseFloat(match[1]);
-                        const unit = match[4].toLowerCase();
-                        return value * (units[unit] || 1);
-                    }
-                    return 0;
-                }
-
-                // Функция для проверки, является ли строка датой в формате dd.mm.yyyy
-                function isDate(str) {
-                    return /^\d{2}\.\d{2}\.\d{4}$/.test(str);
-                }
-
-                // Функция для преобразования даты из формата строки в объект Date
-                function parseDate(dateStr) {
-                    const [day, month, year] = dateStr.split('.');
-                    return new Date(`${year}-${month}-${day}`);
-                }
-
-                // Обработчики клика к заголовкам таблицы для сортировки
-                const tableHeaders = tableHead.querySelectorAll('th');
-                tableHeaders.forEach((header, index) => {
-                    // Начинаем с сортировки по возрастанию
-                    let ascending = true;
-                    header.addEventListener('click', () => {
-                        sortTable(index, ascending);
-                        // Переключаем порядок сортировки
-                        ascending = !ascending;
-                    });
-                });
-        
-                // Тело таблицы
-                const tableBody = document.createElement('tbody');
-                table.appendChild(tableBody);
-                
-                // Добавляем элементы в контейнер
-                searchContainer.appendChild(searchInput);
-                searchContainer.appendChild(searchButton);
-                searchContainer.appendChild(filterInput);
-
-                // Добавляем контейнер в tableContainer
-                tableContainer.appendChild(searchContainer);
-
-                // Добавляем таблицу
-                tableContainer.appendChild(table);
-
-                // Создаем кнопку для закрытия модального окна
-                const closeButton = document.createElement('span');
-                closeButton.textContent = '×';
-                closeButton.style.position = 'absolute';
-                closeButton.style.top = '10px';
-                closeButton.style.right = '20px';
-                closeButton.style.color = '#fff';
-                closeButton.style.fontSize = '30px';
-                closeButton.style.cursor = 'pointer';
-                closeButton.addEventListener('click', function () {
-                    document.body.removeChild(modal);
-                });
-                
-                // Добавляем контейнер и кнопку закрытия в модальное окно
-                modal.appendChild(tableContainer);
-                modal.appendChild(closeButton);
-                document.body.appendChild(modal);
-
-                // Обработчик события кнопки Esc для закрытия модального окна
-                document.addEventListener('keydown', function(event) {
-                    if (event.key === 'Escape') {
-                        document.body.removeChild(modal);
-                    }
-                });
-        
-                // Загрузка данных из API
-                // Использование прокси, который добавляет заголовки CORS к запросам
-                // const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-                // const apiUrl = `https://torapi.vercel.app/api/search/title/all?query=${title}`;
-                // fetch(corsProxy + apiUrl)
-                // Локальный сервер
-                // fetch(`http://localhost:8443/api/search/title/all?query=${title}`)
-                // Публичный сервер на Vercel
-                // fetch(`https://torapi.vercel.app/api/search/title/all?query=${title}`)
-                // Используем переменную из хранилища
-                fetch(`${TorApiServer}/api/search/title/all?query=${title}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        displayTorrents(data);
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            });
-        
-            // Добавляем кнопку
-            buttonBlock.parentNode.insertBefore(torrentButton, buttonBlock.nextSibling);
         });
-        
-        // Функция для отображения данных в таблице модального окна
-        function displayTorrents(data) {
-            const tableBody = document.querySelector('#torrent-table tbody');
-            tableBody.innerHTML = ''; // Очистить старые данные
-            // Проходим по всем ключам в объекте data
-            for (let source in data) {
-                if (data.hasOwnProperty(source)) {
-                    const torrents = data[source]; // Получаем массив данных для каждого источника
-                    // Проходим по каждому элементу в массиве
-                    torrents.forEach(item => {
-                        const row = document.createElement('tr');
-                        row.style.backgroundColor = '#333';
-                        row.style.borderBottom = '1px solid #555';
-                        row.style.padding = '10px';
-                        row.innerHTML = `
-                            <td style="padding: 10px; border-bottom: 1px solid #555;">${source}</td>
-                            <td style="padding: 10px; border-bottom: 1px solid #555;">
-                                <a href="${item.Url}" target="_blank" style="color: #1e90ff; text-decoration: none;">${item.Name}</a>
-                            </td>
-                            <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Size}</td>
-                            <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Seeds}</td>
-                            <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Peers}</td>
-                            <td style="padding: 10px; border-bottom: 1px solid #555;">${item.Date.split(' ')[0]}</td>
-                            <td style="padding: 10px; border-bottom: 1px solid #555;">
-                                <a href="${item.Torrent}" target="_blank" style="color: #1e90ff; text-decoration: none;">Скачать</a>
-                            </td>
-                            <td style="padding: 10px; border-bottom: 1px solid #555555;">
-                                <button style="padding: 5px 10px; background-color: #1e90ff; color: #ffffff; border: none; border-radius: 5px; cursor: pointer;">Скачать</button>
-                            </td>
-                        `;
-                    // Обработчик для получения Magnet link
-                    const magnetButton = row.querySelector('button');
-                    magnetButton.addEventListener('click', function() {
-                        fetch(`https://toruapi.vercel.app/api/search/id/${source.toLowerCase()}?query=${item.Id}`)
-                            .then(response => response.json())
-                            .then(magnetData => {
-                                const magnetLink = magnetData[0].Magnet;
-                                if (magnetLink) {
-                                    chrome.storage.local.get(['MagnetCheckBox'], function (result) {
-                                        var MagnetCheckBox = result.MagnetCheckBox;
-                                        if (MagnetCheckBox) {
-                                            window.open(magnetLink, '_blank');
-                                        } else {
-                                            const infoHash = magnetData[0].Hash
-                                            if (infoHash) {
-                                                alert(`info hash: ${infoHash}`);
-                                            }
-                                        }
-                                    })
-                                } else {
-                                    alert('Магнитная ссылка не найдена');
-                                }
-                            })
-                            .catch(error => {
-                                console.error(error);
-                                alert('Ошибка при получении магнитной ссылки');
-                            });
-                    });
-                    tableBody.appendChild(row);
-                    });
-                }
-            }
-        }
     }
 
     // Kinobox
