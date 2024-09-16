@@ -75,19 +75,28 @@ const main = async function (url) {
 
         // Torrent
         chrome.storage.local.get(['TorrentCheckBox'], function (result) {
-            var TorrentCheckBox = result.TorrentCheckBox
-            if (TorrentCheckBox) {
-                // NoName-Club
-                let urlNoNameClub = null
+            if (result.TorrentCheckBox) {
+                // BitRu
+                let urlBitRu = null
                 if (url?.includes('series')) {
-                    urlNoNameClub = `https://nnmclub.to/forum/tracker.php?nm=${title}+${year}+сезон`
+                    urlBitRu = `https://bitru.org/browse.php?tmp=serial&s=${title}+${year}`
                 } else {
-                    urlNoNameClub = `https://nnmclub.to/forum/tracker.php?nm=${title}+${year}`
+                    urlBitRu = `https://bitru.org/browse.php?tmp=movie&s=${title}+${year}`
                 }
+                const BitRuButton = newElementPadding({
+                    tag: 'a',
+                    id: 'NoNameClub-Button',
+                    href: urlBitRu,
+                    content: 'BitRu'
+                })
+                BitRuButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(BitRuButton, buttonBlock.nextSibling)
+
+                // NoName-Club
                 const NoNameClubButton = newElementPadding({
                     tag: 'a',
                     id: 'NoNameClub-Button',
-                    href: urlNoNameClub,
+                    href: `https://nnmclub.to/forum/tracker.php?nm=${title}+${year}`,
                     content: 'NoName-Club'
                 })
                 NoNameClubButton.setAttribute('target', '_blank')
@@ -105,26 +114,26 @@ const main = async function (url) {
                 buttonBlock.parentNode.insertBefore(RuTorButton, buttonBlock.nextSibling)
 
                 // RuTracker
-                let urlRuTracker = null
-                if (url?.includes('series')) {
-                    urlRuTracker = `https://rutracker.org/forum/tracker.php?nm=${title}+${year}+сезон`
-                } else {
-                    urlRuTracker = `https://rutracker.org/forum/tracker.php?nm=${title}+${year}`
-                }
                 const RuTrackerButton = newElementPadding({
                     tag: 'a',
                     id: 'RuTracker-Button',
-                    href: urlRuTracker,
+                    href: `https://rutracker.org/forum/tracker.php?nm=${title}+${year}`,
                     content: 'RuTracker'
                 })
                 RuTrackerButton.setAttribute('target', '_blank')
                 buttonBlock.parentNode.insertBefore(RuTrackerButton, buttonBlock.nextSibling)
 
                 // Kinozal
+                let urlKinozal = null
+                if (url?.includes('series')) {
+                    urlKinozal = `https://kinozal.tv/browse.php?s=${title}&d=${year}&c=1001`
+                } else {
+                    urlKinozal = `https://kinozal.tv/browse.php?s=${title}&d=${year}&c=1002`
+                }
                 const KinozalButton = newElementPadding({
                     tag: 'a',
                     id: 'Kinozal-Button',
-                    href: `https://kinozal.tv/browse.php?s=${title}&d=${year}`,
+                    href: urlKinozal,
                     content: 'Кинозал'
                 })
                 KinozalButton.setAttribute('target', '_blank')
@@ -134,8 +143,7 @@ const main = async function (url) {
 
         // Database RU
         chrome.storage.local.get(['DbRuCheckBox'], function (result) {
-            var DbRuCheckBox = result.DbRuCheckBox
-            if (DbRuCheckBox) {
+            if (result.DbRuCheckBox) {
 
                 // Lostfilm
                 const LostFilmButton = newElementPadding({
@@ -194,46 +202,9 @@ const main = async function (url) {
             }
         })
 
-        // Online
-        chrome.storage.local.get(['OnlineCheckBox'], function (result) {
-            var OnlineCheckBox = result.OnlineCheckBox
-            if (OnlineCheckBox) {
-                // HDRezka
-                const HDRezkaButton = newElementPadding({
-                    tag: 'a',
-                    id: 'HDRezka-Button',
-                    href: `https://hdrezka.ag/search/?do=search&subaction=search&q=${title}+${year}`,
-                    content: 'HDRezka'
-                })
-                HDRezkaButton.setAttribute('target', '_blank')
-                buttonBlock.parentNode.insertBefore(HDRezkaButton, buttonBlock.nextSibling)
-
-                // Zona
-                const Zona = newElementPadding({
-                    tag: 'a',
-                    id: 'Zona-Button',
-                    href: `https://g1.zona.plus/search/${name}`,
-                    content: 'Zona'
-                })
-                Zona.setAttribute('target', '_blank')
-                buttonBlock.parentNode.insertBefore(Zona, buttonBlock.nextSibling)
-
-                // Zeflix
-                const Zeflix = newElementPadding({
-                    tag: 'a',
-                    id: 'Zeflix-Button',
-                    href: `https://zeflix.online/index.php?do=search&subaction=search&search_start=0&story=${name}`,
-                    content: 'Zetflix'
-                })
-                Zeflix.setAttribute('target', '_blank')
-                buttonBlock.parentNode.insertBefore(Zeflix, buttonBlock.nextSibling)
-            }
-        })
-
         // Database EN
         chrome.storage.local.get(['DbEnCheckBox'], function (result) {
-            var DbEnCheckBox = result.DbEnCheckBox
-            if (DbEnCheckBox) {
+            if (result.DbEnCheckBox) {
                 // Plex
                 let typePlex = null
                 if (url?.includes('film')) {
@@ -276,10 +247,44 @@ const main = async function (url) {
             }
         })
 
+        // Online
+        chrome.storage.local.get(['OnlineCheckBox'], function (result) {
+            if (result.OnlineCheckBox) {
+                // HDRezka
+                const HDRezkaButton = newElementPadding({
+                    tag: 'a',
+                    id: 'HDRezka-Button',
+                    href: `https://hdrezka.ag/search/?do=search&subaction=search&q=${title}+${year}`,
+                    content: 'HDRezka'
+                })
+                HDRezkaButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(HDRezkaButton, buttonBlock.nextSibling)
+
+                // Zona
+                const Zona = newElementPadding({
+                    tag: 'a',
+                    id: 'Zona-Button',
+                    href: `https://g1.zona.plus/search/${name}`,
+                    content: 'Zona'
+                })
+                Zona.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(Zona, buttonBlock.nextSibling)
+
+                // Zeflix
+                const Zeflix = newElementPadding({
+                    tag: 'a',
+                    id: 'Zeflix-Button',
+                    href: `https://zeflix.online/index.php?do=search&subaction=search&search_start=0&story=${name}`,
+                    content: 'Zetflix'
+                })
+                Zeflix.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(Zeflix, buttonBlock.nextSibling)
+            }
+        })
+
         // Wikipedia 
         chrome.storage.local.get(['WikiCheckBox'], function (result) {
-            var WikiCheckBox = result.WikiCheckBox
-            if (WikiCheckBox) {
+            if (result.WikiCheckBox) {
                 const WikiGoogleButton = newElementPadding({
                     tag: 'a',
                     id: 'Wiki-Button',
@@ -293,8 +298,7 @@ const main = async function (url) {
 
         // YouTube
         chrome.storage.local.get(['YouTubeCheckBox'], function (result) {
-            var YouTubeCheckBox = result.YouTubeCheckBox;
-            if (YouTubeCheckBox) {
+            if (result.YouTubeCheckBox) {
                 const YouTubeButton = newElementPadding({
                     tag: 'a',
                     id: 'YouTube-Button',
@@ -331,9 +335,8 @@ const main = async function (url) {
     // Kinobox
     // Source: https://kinobox.tv
     chrome.storage.local.get(['KinoboxCheckBox'], function (result) {
-        var KinoboxCheckBox = result.KinoboxCheckBox;
         // Проверка включенного CheckBox в настройках
-        if (KinoboxCheckBox) {
+        if (result.KinoboxCheckBox) {
             // Извлекаем ID фильма из URL
             const kinopoiskID = url?.split('/')?.filter(itm => Number(itm)).pop();
 
@@ -361,12 +364,6 @@ const main = async function (url) {
                 modal.style.display = 'flex';
                 modal.style.alignItems = 'center';
                 modal.style.justifyContent = 'center';
-
-                // const iframe = document.createElement('iframe')
-                // iframe.src = `https://kinomix.web.app/#${kinopoiskID}`
-                // iframe.style.width = '80%'
-                // iframe.style.height = '80%'
-                // iframe.style.border = 'none'
 
                 // Создаем контейнер для плеера Kinobox
                 const playerContainer = document.createElement('div');
@@ -399,14 +396,8 @@ const main = async function (url) {
                     kbox('.kinobox_player', { search: { kinopoisk: kinopoiskID } });
                 })();
             });
-
-            buttonBlock.parentNode.insertBefore(KinoboxButton, buttonBlock.nextSibling);
-        }
-    });
-
-    chrome.storage.local.get(['KinoboxCheckBox'], function(result) {
-        var KinoboxCheckBox = result.KinoboxCheckBox
-        if (!KinoboxCheckBox) {
+            buttonBlock.parentNode.insertBefore(KinoboxButton, buttonBlock.nextSibling)
+        } else {
             // Извлекаем идентификатора фильма из параметра с URL
             const kinopoiskID = url?.split('/')?.filter(itm => Number(itm)).pop()
             // Bedemp2
@@ -418,6 +409,7 @@ const main = async function (url) {
             // })
             // Bedemp2Button.setAttribute('target', '_blank')
             // buttonBlock.parentNode.insertBefore(Bedemp2Button, buttonBlock.nextSibling)
+
             // Kinobox
             const KinoboxButton = newElementPadding({
                 tag: 'a',
@@ -427,10 +419,9 @@ const main = async function (url) {
             })
             // Открывать ссылку в новой вкладке
             KinoboxButton.setAttribute('target', '_blank')
-            // Добавляем кнопку после блока кнопок на странице
             buttonBlock.parentNode.insertBefore(KinoboxButton, buttonBlock.nextSibling)
         }
-    })
+    });
 }
 
 // Функция добавления кнопок на странице hd.kinopoisk
