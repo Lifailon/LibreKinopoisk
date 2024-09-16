@@ -32,9 +32,11 @@ function displayTorrentsOnPage() {
         tableContainer.style.fontFamily = 'Lato, sans-serif';
         tableContainer.style.fontSize = '16px';
 
-        // Контейнер для поля ввода и кнопки поиска
+        // Контейнер для полей ввода (поиск и фильтрация) и кнопки поиска
         const searchContainer = document.createElement('div');
+        searchContainer.id = 'torrent-search-container';
         searchContainer.style.display = 'flex';
+        // searchContainer.style.flexDirection = 'column';
         searchContainer.style.alignItems = 'center';
         searchContainer.style.marginBottom = '10px';
         searchContainer.style.gap = '10px';
@@ -75,12 +77,27 @@ function displayTorrentsOnPage() {
                     justify-content: space-between; /* Распределение ячеек по ширине */
                     /* border: 1px solid #1e90ff; */
                 }
+
+                #torrent-search-container {
+                    display: flex;
+                    flex-direction: column; /* Вертикальное расположение элементов */
+                }
+
+                #torrent-search-button {
+                    width: 100%; /* Занимает всю ширину контейнера */
+                    margin-right: 10px; /* Убрать отступ слева */
+                }
+                    
+                #torrent-filter-input {
+                    margin-right: 10px; /* Убрать отступ слева */
+                }
             }
         `;
         document.head.appendChild(styleElement);
         
         // Поле ввода для ввода запроса вручную
         const searchInput = document.createElement('input');
+        searchInput.id = 'torrent-search-input';
         searchInput.type = 'text';
         searchInput.placeholder = 'Поиск по названию';
         searchInput.style.marginBottom = '10px';
@@ -98,6 +115,7 @@ function displayTorrentsOnPage() {
 
         // Кнопка для выполнения поиска
         const searchButton = document.createElement('button');
+        searchButton.id = 'torrent-search-button';
         searchButton.textContent = 'Поиск';
         searchButton.style.padding = '10px 20px';
         searchButton.style.backgroundColor = '#1e90ff';
@@ -147,6 +165,7 @@ function displayTorrentsOnPage() {
 
         // Поле ввода для фильтрации
         const filterInput = document.createElement('input');
+        filterInput.id = 'torrent-filter-input';
         filterInput.type = 'text';
         filterInput.placeholder = 'Фильтрация по названию';
         filterInput.style.marginBottom = '10px';
