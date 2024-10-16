@@ -144,7 +144,15 @@ function displayTorrentsOnPage() {
         searchInput.style.fontFamily = 'Lato, sans-serif';
         searchInput.style.fontSize = '16px';
 
-        // Кнопка для выполнения поиска 🔎
+        // Слушатель события для поиска при нажатии Enter в поле ввода
+        searchInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Отключаем стандартное поведение Enter
+                searchButton.click(); // Имитируем нажатие на кнопку поиска
+            }
+        });
+
+        // Кнопка для выполнения быстрого поиска 🔎
         const searchButton = document.createElement('button');
         searchButton.id = 'torrent-search-button';
         searchButton.style.display = 'flex'; // Используем flexbox для центрирования
@@ -299,6 +307,14 @@ function displayTorrentsOnPage() {
         filterInput.style.fontFamily = 'Lato, sans-serif';
         filterInput.style.fontSize = '16px';
 
+        // Функция для выделения текста при фильтрации
+        function highlightText(text, words) {
+            if (!words.length) return text; // Если нет слов для поиска, возвращаем оригинальный текст
+            const regex = new RegExp(`(${words.join('|')})`, 'gi'); // Создаем регулярное выражение для поиска
+            // Добавляем обертку для текста с фоном
+            return text.replace(regex, '<span style="background-color: yellow;">$1</span>'); // Оборачиваем найденные слова в тег span с желтым фоном
+        }
+
         // Функция для фильтрации
         filterInput.addEventListener('input', function() {
             const filterValue = filterInput.value.toLowerCase();
@@ -319,34 +335,33 @@ function displayTorrentsOnPage() {
                     const titleCell = row.querySelectorAll('td')[3]; // Используем четвертый столбец для фильтрации
                     const providerCell = row.querySelectorAll('td')[0]; // Используем первый столбец для провайдера
                     if (titleCell && providerCell) {
-                        const titleText = titleCell.textContent.toLowerCase();
+                        const linkElement = titleCell.querySelector('a'); // Ищем ссылку внутри ячейки
+                        const titleText = linkElement ? linkElement.textContent.toLowerCase() : titleCell.textContent.toLowerCase();
                         const providerText = providerCell.textContent.trim(); // Получаем текст провайдера
-                        // Проверяем, содержится ли каждое слово в заголовке
+                        let matches = false;
                         if (result.SearchCheckBox) {
-                            const matches = filterWords.every(word => titleText.includes(word));
-                            if (matches) {
-                                row.style.display = ''; // Показываем строку
-                                visibleCount++; // Увеличиваем счетчик
-                                // Увеличиваем счетчик для соответствующего провайдера
-                                if (providerText === 'RuTracker') countRuTracker++;
-                                if (providerText === 'Kinozal') countKinozal++;
-                                if (providerText === 'RuTor') countRuTor++;
-                                if (providerText === 'NoNameClub') countNoNameClub++;
-                            } else {
-                                row.style.display = 'none'; // Скрываем строку
-                            }
+                            // Проверяем, содержится ли каждое слово в заголовке
+                            matches = filterWords.every(word => titleText.includes(word));
                         } else {
                             // Для точного поиска
-                            if (titleText.includes(filterValue)) {
-                                row.style.display = ''; // Показываем строку
-                                visibleCount++; // Увеличиваем счетчик
-                                // Увеличиваем счетчик для соответствующего провайдера
-                                if (providerText === 'RuTracker') countRuTracker++;
-                                if (providerText === 'Kinozal') countKinozal++;
-                                if (providerText === 'RuTor') countRuTor++;
-                                if (providerText === 'NoNameClub') countNoNameClub++;
-                            } else {
-                                row.style.display = 'none'; // Скрываем строку
+                            matches = titleText.includes(filterValue);
+                        }
+                        if (matches) {
+                            row.style.display = ''; // Показываем строку
+                            visibleCount++; // Увеличиваем счетчик
+                            // Увеличиваем счетчик для соответствующего провайдера
+                            if (providerText === 'RuTracker') countRuTracker++;
+                            if (providerText === 'Kinozal') countKinozal++;
+                            if (providerText === 'RuTor') countRuTor++;
+                            if (providerText === 'NoNameClub') countNoNameClub++;
+                            // Выделяем найденный текст в ссылке
+                            if (linkElement) {
+                                linkElement.innerHTML = highlightText(linkElement.textContent, filterWords);
+                            }
+                        } else {
+                            row.style.display = 'none'; // Скрываем строку
+                            if (linkElement) {
+                                linkElement.innerHTML = linkElement.textContent; // Сбрасываем выделение
                             }
                         }
                     }
@@ -373,6 +388,7 @@ function displayTorrentsOnPage() {
                 <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;"></th>
                 <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;"></th>
                 <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Название</th>
+                <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Категория</th>
                 <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Размер</th>
                 <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Сиды</th>
                 <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Пиры</th>
@@ -545,6 +561,9 @@ function displayTorrentsOnPage() {
                         </td>
                         <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             <a href="${item.Url}" target="_blank" style="color: ${buttonBackgroundColor}; text-decoration: none;">${item.Name}</a>
+                        </td>
+                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                            ${item?.Category || 'Разное'}
                         </td>
                         <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item.Size}
