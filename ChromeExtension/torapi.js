@@ -1,4 +1,23 @@
 function displayTorrentsOnPage() {
+
+    let tableBackgroundColor = '#dddddd'; // мягкий светло-серый фон контейнера таблицы и статуса счетчиков
+    let inputBackgroundColor = '#f0f0f0'; // немного темнее для поля ввода и таблицы
+    let tableHeadBackgroundColor = '#e8e8e8'; // более светлый серый для заголовков столбцов
+    let buttonBackgroundColor = '#0078d4'; // фон кнопок, ссылок в таблице (менее яркий синий)
+    let buttonColor = '#000000'; // цвет текста на кнопке и в таблице
+    let tableBorderBottomColor = "#dddddd"; // мягкий светло-серый для нижней границы таблицы
+
+    chrome.storage.local.get(['darkModeBox'], function (result) {
+        if (result.darkModeBox) {
+            tableBackgroundColor = '#2d2d2d'; // фон контейнера таблицы и статуса счетчиков
+            inputBackgroundColor = '#333'// фон поля ввода и таблицы
+            tableHeadBackgroundColor = '#444'// фон заголовков столбцов таблицы
+            buttonBackgroundColor = '#1e90ff'; // фон кнопок, ссылок в таблице
+            buttonColor = '#ffffff'; // цвет букв на кнопке и в таблице
+            tableBorderBottomColor = "#555555"
+        }
+    })
+
     chrome.storage.local.get(['TorApiServer'], function(result) {
         var TorApiServer = result.TorApiServer;
 
@@ -22,7 +41,7 @@ function displayTorrentsOnPage() {
         const tableContainer = document.createElement('div');
         tableContainer.style.width = '80%';
         tableContainer.style.height = '80%';
-        tableContainer.style.backgroundColor = '#2d2d2d';
+        tableContainer.style.backgroundColor = tableBackgroundColor;
         tableContainer.style.padding = '20px';
         tableContainer.style.borderRadius = '10px';
         tableContainer.style.overflowY = 'auto';
@@ -81,7 +100,7 @@ function displayTorrentsOnPage() {
                 #torrent-table td {
                     display: flex; /* Используем flexbox для ячеек */
                     justify-content: space-between; /* Распределение ячеек по ширине */
-                    /* border: 1px solid #1e90ff; */
+                    /* border: 1px solid ${buttonBackgroundColor}; */
                 }
 
                 #torrent-search-container {
@@ -120,8 +139,8 @@ function displayTorrentsOnPage() {
         searchInput.style.boxSizing = 'border-box';
         searchInput.style.flexGrow = '1';
         searchInput.style.height = '42px';
-        searchInput.style.backgroundColor = '#333';
-        searchInput.style.color = '#ffffff';
+        searchInput.style.backgroundColor = inputBackgroundColor;
+        searchInput.style.color = buttonColor;
         searchInput.style.fontFamily = 'Lato, sans-serif';
         searchInput.style.fontSize = '16px';
 
@@ -131,24 +150,25 @@ function displayTorrentsOnPage() {
         searchButton.style.display = 'flex'; // Используем flexbox для центрирования
         searchButton.style.alignItems = 'center'; // Выравниваем по вертикали
         searchButton.style.padding = '10px 20px';
-        searchButton.style.backgroundColor = '#1e90ff';
-        searchButton.style.color = '#ffffff';
+        searchButton.style.backgroundColor = buttonBackgroundColor;
+        searchButton.style.color = buttonColor;
         searchButton.style.border = 'none';
         searchButton.style.borderRadius = '5px';
         searchButton.style.cursor = 'pointer';
-        searchButton.style.marginLeft = '10px';
+        searchButton.style.marginLeft = '5px'; // отступы после предыдущего элемента (searchInput)
         searchButton.style.height = '42px';
         searchButton.style.lineHeight = '22px';
         searchButton.style.marginTop = '-10px';
         searchButton.style.fontFamily = 'Lato, sans-serif';
         searchButton.style.fontSize = '18px';
+        searchButton.style.whiteSpace = 'nowrap';
 
         // Индикатор загрузки
         const loadingSpinner = document.createElement('div');
         loadingSpinner.style.width = '25px'; // Увеличиваем ширину
         loadingSpinner.style.height = '25px'; // Увеличиваем высоту
-        loadingSpinner.style.border = '4px solid #ffffff'; // Увеличиваем толщину границы
-        loadingSpinner.style.borderTop = '4px solid #1e90ff'; // Цвет верхней части
+        loadingSpinner.style.border = '4px solid #05cc63'; // Увеличиваем толщину границы
+        loadingSpinner.style.borderTop = '4px solid #ffffff'; // Цвет верхней части
         loadingSpinner.style.borderRadius = '50%';
         loadingSpinner.style.animation = 'spin 1s linear infinite'; // Анимация
         loadingSpinner.style.display = 'none'; // Скрыт по умолчанию
@@ -196,29 +216,30 @@ function displayTorrentsOnPage() {
         searchAllPageButton.style.display = 'flex';
         searchAllPageButton.style.alignItems = 'center';
         searchAllPageButton.style.padding = '10px 20px';
-        searchAllPageButton.style.backgroundColor = '#1e90ff';
-        searchAllPageButton.style.color = '#ffffff';
+        searchAllPageButton.style.backgroundColor = buttonBackgroundColor;
+        searchAllPageButton.style.color = buttonColor;
         searchAllPageButton.style.border = 'none';
         searchAllPageButton.style.borderRadius = '5px';
         searchAllPageButton.style.cursor = 'pointer';
-        searchAllPageButton.style.marginLeft = '10px';
+        searchAllPageButton.style.marginLeft = '5px';
         searchAllPageButton.style.height = '42px';
         searchAllPageButton.style.lineHeight = '22px';
         searchAllPageButton.style.marginTop = '-10px';
         searchAllPageButton.style.fontFamily = 'Lato, sans-serif';
         searchAllPageButton.style.fontSize = '18px';
+        searchAllPageButton.style.whiteSpace = 'nowrap';
 
         // Индикатор загрузки
         const loadingSpinnerAllPage = document.createElement('div');
         loadingSpinnerAllPage.style.width = '25px';
         loadingSpinnerAllPage.style.height = '25px';
-        loadingSpinnerAllPage.style.border = '4px solid #ffffff';
-        loadingSpinnerAllPage.style.borderTop = '4px solid #1e90ff';
+        loadingSpinnerAllPage.style.border = '4px solid #05cc63';
+        loadingSpinnerAllPage.style.borderTop = '4px solid #ffffff';
         loadingSpinnerAllPage.style.borderRadius = '50%';
-        loadingSpinnerAllPage.style.animation = 'spin 1s linear infinite';
+        loadingSpinnerAllPage.style.animation = 'spin 2s linear infinite';
         loadingSpinnerAllPage.style.display = 'none';
         searchAllPageButton.appendChild(loadingSpinnerAllPage);
-        searchAllPageButton.appendChild(document.createTextNode('Расширенный'));
+        searchAllPageButton.appendChild(document.createTextNode('Найти все'));
         
         // Обработчик события для кнопки поиска
         searchAllPageButton.addEventListener('click', function() {
@@ -267,9 +288,9 @@ function displayTorrentsOnPage() {
         filterInput.style.boxSizing = 'border-box';
         filterInput.style.flexGrow = '1';
         filterInput.style.height = '42px';
-        filterInput.style.marginLeft = '10px';
-        filterInput.style.backgroundColor = '#333';
-        filterInput.style.color = '#ffffff';
+        filterInput.style.marginLeft = '5px';
+        filterInput.style.backgroundColor = inputBackgroundColor;
+        filterInput.style.color = buttonColor;
         filterInput.style.fontFamily = 'Lato, sans-serif';
         filterInput.style.fontSize = '16px';
 
@@ -335,22 +356,22 @@ function displayTorrentsOnPage() {
         table.id = 'torrent-table';
         table.style.width = '100%';
         table.style.borderCollapse = 'collapse';
-        table.style.color = '#ffffff';
+        table.style.color = buttonColor;
         table.style.fontFamily = 'Lato, sans-serif';
         table.style.fontSize = '18px';
 
         // Заголовки таблицы
         const tableHead = document.createElement('thead');
         tableHead.innerHTML = `
-            <tr style="background-color: #444;">
-                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Трекер</th>
-                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: default; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;"></th>
-                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: default; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;"></th>
-                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Название</th>
-                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Размер</th>
-                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Сиды</th>
-                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Пиры</th>
-                <th style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Дата</th>
+            <tr style="background-color: ${tableHeadBackgroundColor};">
+                <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Трекер</th>
+                <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;"></th>
+                <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;"></th>
+                <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Название</th>
+                <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Размер</th>
+                <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Сиды</th>
+                <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Пиры</th>
+                <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Дата</th>
             </tr>
         `;
         table.appendChild(tableHead);
@@ -441,10 +462,11 @@ function displayTorrentsOnPage() {
         // Тест счетчика над таблицей
         const textBox = document.createElement('div');
         textBox.innerHTML = 'Количество найденных раздач: <strong>0</strong> (RuTracker: <strong>0</strong>, Kinozal: <strong>0</strong>, RuTor: <strong>0</strong>, NoName-Club: <strong>0</strong>)';
-        textBox.style.paddingBottom = '20px'; // Отступ снизу (установлен в 0)
-        textBox.style.width = '100%'; // Ширина полосы
-        tableContainer.appendChild(textBox); // Добавляем текстовую полосу в контейнер
-
+        textBox.style.backgroundColor = tableBackgroundColor;
+        textBox.style.color = buttonColor;
+        textBox.style.paddingBottom = '20px'; // Отступ снизу
+        textBox.style.width = '100%';
+        tableContainer.appendChild(textBox);
 
         // Тело таблицы
         const tableBody = document.createElement('tbody');
@@ -489,8 +511,8 @@ function displayTorrentsOnPage() {
                 const torrents = data[source];
                 torrents.forEach(item => {
                     const row = document.createElement('tr');
-                    row.style.backgroundColor = '#333333';
-                    row.style.borderBottom = '1px solid #555555';
+                    row.style.backgroundColor = inputBackgroundColor;
+                    row.style.borderBottom = `1px solid ${tableBorderBottomColor}`;
                     row.style.fontFamily = 'Lato, sans-serif';
                     row.style.fontSize = '16px';
                     let ico
@@ -504,31 +526,31 @@ function displayTorrentsOnPage() {
                         ico = chrome.runtime.getURL('icons/nonameclub.ico');
                     }
                     row.innerHTML = `
-                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: default; font-family: Lato, sans-serif; font-size: 16px;">
+                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px;">
                             <div style="display: flex; align-items: center;">
                                 <img src="${ico}" alt="${source}" style="max-width: 16px; margin-right: 16px;">
                                 <span style="vertical-align: middle;">${source}</span>
                             </div>
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
-                            <a href="${item.Torrent}" target="_blank" style="color: #1e90ff; text-decoration: none;">💾</a>
+                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                            <a href="${item.Torrent}" target="_blank" style="color: ${buttonBackgroundColor}; text-decoration: none;">💾</a>
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             <magnetButton></magnetButton>
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
-                            <a href="${item.Url}" target="_blank" style="color: #1e90ff; text-decoration: none;">${item.Name}</a>
+                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                            <a href="${item.Url}" target="_blank" style="color: ${buttonBackgroundColor}; text-decoration: none;">${item.Name}</a>
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item.Size}
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item.Seeds}
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item.Peers}
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid #555555; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item.Date.split(' ')[0].includes(':') ? item.Date.split(':')[0].slice(0, -2) : item.Date.split(' ')[0]}
                         </td>
                     `;
@@ -538,7 +560,7 @@ function displayTorrentsOnPage() {
                     magnetButton.style.background = 'none'; // Убираем фон
                     magnetButton.style.border = 'none'; // Убираем границу
                     magnetButton.style.fontSize = '16px'; // Увеличиваем размер символа
-                    magnetButton.style.color = '#1e90ff'; // Цвет символа
+                    magnetButton.style.color = buttonBackgroundColor; // Цвет символа
                     magnetButton.style.cursor = 'pointer'; // Курсор при наведении 
                     magnetButton.innerHTML = '🧲';
                     magnetButton.addEventListener('click', function() {
@@ -554,7 +576,7 @@ function displayTorrentsOnPage() {
                                             const infoHash = magnetData[0].Hash
                                             if (infoHash) {
                                                 navigator.clipboard.writeText(infoHash).then(() => {
-                                                    alert(`Info hash (${infoHash}) скопирован в буфер обмена`);
+                                                    alert(`Хеш ${infoHash} скопирован в буфер обмена`);
                                                 }).catch(error => {
                                                     alert(`Ошибка копирования (${error})`);
                                                 });
