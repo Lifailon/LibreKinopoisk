@@ -86,6 +86,12 @@ function displayTorrentsOnPage() {
                 #torrent-search-button {
                     width: 100%; /* Занимает всю ширину контейнера */
                     margin-right: 10px; /* Убрать отступ слева */
+                    margin-bottom: 10px; /* Добавить отступ снизу */
+                }
+
+                #torrent-search-all-page-button {
+                    width: 100%; /* Занимает всю ширину контейнера */
+                    margin-right: 10px; /* Убрать отступ слева */
                 }
                     
                 #torrent-filter-input {
@@ -150,6 +156,41 @@ function displayTorrentsOnPage() {
                 // fetch(`https://torapi.vercel.app/api/search/title/all?query=${title}`)
                 // Используем переменную из хранилища
                 fetch(`${TorApiServer}/api/search/title/all?query=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        displayTorrents(data);
+                        // Обновляем счетчик
+                        countSpan.textContent = `(${data.RuTracker.length + data.Kinozal.length + data.RuTor.length + data.NoNameClub.length})`;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        countSpan.textContent = `(0)`;
+                    });
+            }
+        });
+
+        // Кнопка для выполнения поиска по всем страницам
+        const searchAllPageButton = document.createElement('button');
+        searchAllPageButton.id = 'torrent-search-all-page-button';
+        searchAllPageButton.textContent = 'Расширенный';
+        searchAllPageButton.style.padding = '10px 20px';
+        searchAllPageButton.style.backgroundColor = '#1e90ff';
+        searchAllPageButton.style.color = '#ffffff';
+        searchAllPageButton.style.border = 'none';
+        searchAllPageButton.style.borderRadius = '5px';
+        searchAllPageButton.style.cursor = 'pointer';
+        searchAllPageButton.style.marginLeft = '10px';
+        searchAllPageButton.style.height = '42px';
+        searchAllPageButton.style.lineHeight = '22px';
+        searchAllPageButton.style.marginTop = '-10px';
+        searchAllPageButton.style.fontFamily = 'Lato, sans-serif';
+        searchAllPageButton.style.fontSize = '16px';
+
+        // Обработчик события для кнопки поиска
+        searchAllPageButton.addEventListener('click', function() {
+            const query = searchInput.value.trim();
+            if (query) {
+                fetch(`${TorApiServer}/api/search/title/all?query=${query}&page=all`)
                     .then(response => response.json())
                     .then(data => {
                         displayTorrents(data);
@@ -326,6 +367,7 @@ function displayTorrentsOnPage() {
         // Добавляем элементы в контейнер
         searchContainer.appendChild(searchInput);
         searchContainer.appendChild(searchButton);
+        searchContainer.appendChild(searchAllPageButton);
         searchContainer.appendChild(filterInput);
 
         // Добавляем контейнер в tableContainer
