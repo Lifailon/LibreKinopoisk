@@ -32,8 +32,8 @@
             transform: translateY(-50%);
         }
         .container {
-            width: 450px;
-            height: 330px;
+            width: 455px;
+            height: 370px;
             margin: 0 auto;
             background-color: #fff;
             padding: 20px;
@@ -212,15 +212,21 @@
         <br>
         <br>
         <div class="checkbox-container">
-            <input type="checkbox" id="MagnetCheckBox" class="checkbox-input">
-            <label for="MagnetCheckBox" class="checkbox-label"></label>
-            <span>Включить переход по магнитной ссылки вместо info hash</span>
+            <input type="checkbox" id="darkModeBox" class="checkbox-input">
+            <label for="darkModeBox" class="checkbox-label"></label>
+            <span>Включить темный режим</span>
         </div>
         <br>
         <div class="checkbox-container">
             <input type="checkbox" id="SearchCheckBox" class="checkbox-input">
             <label for="SearchCheckBox" class="checkbox-label"></label>
             <span>Использовать неточный поиск при фильтрации</span>
+        </div>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="MagnetCheckBox" class="checkbox-input">
+            <label for="MagnetCheckBox" class="checkbox-label"></label>
+            <span>Переход по магнитной ссылки вместо получения хеш-суммы</span>
         </div>
         <br>
         <b>Изменить адрес сервера (backend):</b>
@@ -240,7 +246,7 @@
         </div>        
     </div>
     <div class="container" id="settingsState" style="display: none">
-        <b>Настройка отображения кнопок на странице:</b>
+        <b>Настройка отображения кнопок на странице Кинопоиска:</b>
         <br>
         <br>
         <div class="checkbox-container">
@@ -250,9 +256,15 @@
         </div>
         <br>
         <div class="checkbox-container">
+            <input type="checkbox" id="TrailerCheckBox" class="checkbox-input">
+            <label for="TrailerCheckBox" class="checkbox-label"></label>
+            <span>Трейлеры</span>
+        </div>
+        <br>
+        <div class="checkbox-container">
             <input type="checkbox" id="YouTubeCheckBox" class="checkbox-input">
             <label for="YouTubeCheckBox" class="checkbox-label"></label>
-            <span>Трейлеры (Кинопоиск и YouTube)</span>
+            <span>YouTube</span>
         </div>
         <br>
         <div class="checkbox-container">

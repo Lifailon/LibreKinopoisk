@@ -1,19 +1,21 @@
 // Значения по умолчанию при установке расширения
 chrome.runtime.onInstalled.addListener(function() {
     chrome.storage.local.get([
-        'TorApiServer',
+        'darkModeBox',
         'MagnetCheckBox',
         'SearchCheckBox',
+        'TorApiServer',
         'KinoboxCheckBox',
-        'OnlineCheckBox',
+        'TrailerCheckBox', 
         'YouTubeCheckBox', 
         'WikiCheckBox', 
+        'OnlineCheckBox',
         'DbEnCheckBox', 
         'DbRuCheckBox', 
         'TorrentCheckBox'
     ], function(data) {
-        if (typeof data.TorApiServer === 'undefined') {
-            chrome.storage.local.set({ 'TorApiServer': 'https://torapi.vercel.app' })
+        if (typeof data.darkModeBox === 'undefined') {
+            chrome.storage.local.set({ 'darkModeBox': true })
         }
         if (typeof data.MagnetCheckBox === 'undefined') {
             chrome.storage.local.set({ 'MagnetCheckBox': true })
@@ -21,17 +23,23 @@ chrome.runtime.onInstalled.addListener(function() {
         if (typeof data.SearchCheckBox === 'undefined') {
             chrome.storage.local.set({ 'SearchCheckBox': true })
         }
+        if (typeof data.TorApiServer === 'undefined') {
+            chrome.storage.local.set({ 'TorApiServer': 'https://torapi.vercel.app' })
+        }
         if (typeof data.KinoboxCheckBox === 'undefined') {
             chrome.storage.local.set({ 'KinoboxCheckBox': true })
         }
-        if (typeof data.OnlineCheckBox === 'undefined') {
-            chrome.storage.local.set({ 'OnlineCheckBox': true })
+        if (typeof data.TrailerCheckBox === 'undefined') {
+            chrome.storage.local.set({ 'TrailerCheckBox': true })
         }
         if (typeof data.YouTubeCheckBox === 'undefined') {
             chrome.storage.local.set({ 'YouTubeCheckBox': true })
         }
         if (typeof data.WikiCheckBox === 'undefined') {
             chrome.storage.local.set({ 'WikiCheckBox': true })
+        }
+        if (typeof data.OnlineCheckBox === 'undefined') {
+            chrome.storage.local.set({ 'OnlineCheckBox': true })
         }
         if (typeof data.DbEnCheckBox === 'undefined') {
             chrome.storage.local.set({ 'DbEnCheckBox': true })

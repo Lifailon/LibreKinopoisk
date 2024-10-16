@@ -318,7 +318,12 @@ const main = async function (url) {
                 });
                 YouTubeButton.setAttribute('target', '_blank');
                 buttonBlock.parentNode.insertBefore(YouTubeButton, buttonBlock.nextSibling);
+            }
+        });
 
+        // Trailer
+        chrome.storage.local.get(['TrailerCheckBox'], function (result) {
+            if (result.TrailerCheckBox) {
                 const kinopoiskID = url?.split('/')?.filter(itm => Number(itm)).pop()
                 const TrailerButton = newElementPadding({
                     tag: 'a',

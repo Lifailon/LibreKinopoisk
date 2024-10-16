@@ -99,16 +99,23 @@ homeButton.addEventListener('click', function() {
 
 // Забираем все CheckBox
 var MagnetCheckBox = document.getElementById('MagnetCheckBox')
+var darkModeBox = document.getElementById('darkModeBox')
 var SearchCheckBox = document.getElementById('SearchCheckBox')
 var KinoboxCheckBox = document.getElementById('KinoboxCheckBox')
-var OnlineCheckBox = document.getElementById('OnlineCheckBox')
+var TrailerCheckBox = document.getElementById('TrailerCheckBox')
 var YouTubeCheckBox = document.getElementById('YouTubeCheckBox')
 var WikiCheckBox = document.getElementById('WikiCheckBox')
+var OnlineCheckBox = document.getElementById('OnlineCheckBox')
 var DbEnCheckBox = document.getElementById('DbEnCheckBox')
 var DbRuCheckBox = document.getElementById('DbRuCheckBox')
 var TorrentCheckBox = document.getElementById('TorrentCheckBox')
 
 // При загрузке страницы, загружаем значение из chrome.storage и устанавливаем его для чекбокса
+document.addEventListener('DOMContentLoaded', function() {
+    chrome.storage.local.get('darkModeBox', function(data) {
+        darkModeBox.checked = data.darkModeBox
+    })
+})
 document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.get('MagnetCheckBox', function(data) {
         MagnetCheckBox.checked = data.MagnetCheckBox
@@ -125,8 +132,8 @@ document.addEventListener('DOMContentLoaded', function() {
     })
 })
 document.addEventListener('DOMContentLoaded', function() {
-    chrome.storage.local.get('OnlineCheckBox', function(data) {
-        OnlineCheckBox.checked = data.OnlineCheckBox
+    chrome.storage.local.get('TrailerCheckBox', function(data) {
+        TrailerCheckBox.checked = data.TrailerCheckBox
     })
 })
 document.addEventListener('DOMContentLoaded', function() {
@@ -137,6 +144,11 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.get('WikiCheckBox', function(data) {
         WikiCheckBox.checked = data.WikiCheckBox
+    })
+})
+document.addEventListener('DOMContentLoaded', function() {
+    chrome.storage.local.get('OnlineCheckBox', function(data) {
+        OnlineCheckBox.checked = data.OnlineCheckBox
     })
 })
 document.addEventListener('DOMContentLoaded', function() {
@@ -156,6 +168,9 @@ document.addEventListener('DOMContentLoaded', function() {
 })
 
 // При изменении состояния чекбокса сохраняем состояние чекбокса в chrome.storage
+darkModeBox.addEventListener('change', function() {
+    chrome.storage.local.set({ 'darkModeBox': this.checked })
+})
 MagnetCheckBox.addEventListener('change', function() {
     chrome.storage.local.set({ 'MagnetCheckBox': this.checked })
 })
@@ -165,14 +180,17 @@ SearchCheckBox.addEventListener('change', function() {
 KinoboxCheckBox.addEventListener('change', function() {
     chrome.storage.local.set({ 'KinoboxCheckBox': this.checked })
 })
-OnlineCheckBox.addEventListener('change', function() {
-    chrome.storage.local.set({ 'OnlineCheckBox': this.checked })
+TrailerCheckBox.addEventListener('change', function() {
+    chrome.storage.local.set({ 'TrailerCheckBox': this.checked })
 })
 YouTubeCheckBox.addEventListener('change', function() {
     chrome.storage.local.set({ 'YouTubeCheckBox': this.checked })
 })
 WikiCheckBox.addEventListener('change', function() {
     chrome.storage.local.set({ 'WikiCheckBox': this.checked })
+})
+OnlineCheckBox.addEventListener('change', function() {
+    chrome.storage.local.set({ 'OnlineCheckBox': this.checked })
 })
 DbEnCheckBox.addEventListener('change', function() {
     chrome.storage.local.set({ 'DbEnCheckBox': this.checked })
