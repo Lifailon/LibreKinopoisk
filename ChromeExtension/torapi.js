@@ -46,6 +46,12 @@ function displayTorrentsOnPage() {
         // Стили для placeholder
         const styleElement = document.createElement('style');
         styleElement.textContent = `
+            /* Анимация кнопки загрузки */
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+
             #torrent-table {
                 width: 100%; /* Занимает всю ширину экрана */
                 border-collapse: collapse; /* Убирает пробелы между ячейками */
@@ -119,10 +125,11 @@ function displayTorrentsOnPage() {
         searchInput.style.fontFamily = 'Lato, sans-serif';
         searchInput.style.fontSize = '16px';
 
-        // Кнопка для выполнения поиска
+        // Кнопка для выполнения поиска 🔎
         const searchButton = document.createElement('button');
         searchButton.id = 'torrent-search-button';
-        searchButton.textContent = 'Поиск';
+        searchButton.style.display = 'flex'; // Используем flexbox для центрирования
+        searchButton.style.alignItems = 'center'; // Выравниваем по вертикали
         searchButton.style.padding = '10px 20px';
         searchButton.style.backgroundColor = '#1e90ff';
         searchButton.style.color = '#ffffff';
@@ -134,45 +141,60 @@ function displayTorrentsOnPage() {
         searchButton.style.lineHeight = '22px';
         searchButton.style.marginTop = '-10px';
         searchButton.style.fontFamily = 'Lato, sans-serif';
-        searchButton.style.fontSize = '16px';
+        searchButton.style.fontSize = '18px';
 
-        // Создаем элемент счетчика (span) для кнопки
-        const countSpan = document.createElement('span');
-        countSpan.style.marginLeft = '5px'; // Отступ слева от счетчика
-        countSpan.textContent = '(0)'; // Начальное значение счетчика по умолчанию
-        searchButton.appendChild(countSpan); // Добавляем счетчик в кнопку
-
+        // Индикатор загрузки
+        const loadingSpinner = document.createElement('div');
+        loadingSpinner.style.width = '25px'; // Увеличиваем ширину
+        loadingSpinner.style.height = '25px'; // Увеличиваем высоту
+        loadingSpinner.style.border = '4px solid #ffffff'; // Увеличиваем толщину границы
+        loadingSpinner.style.borderTop = '4px solid #1e90ff'; // Цвет верхней части
+        loadingSpinner.style.borderRadius = '50%';
+        loadingSpinner.style.animation = 'spin 1s linear infinite'; // Анимация
+        loadingSpinner.style.display = 'none'; // Скрыт по умолчанию
+        searchButton.appendChild(loadingSpinner); // Добавляем спиннер в кнопку
+        searchButton.appendChild(document.createTextNode('Поиск')); // Добавляем текст кнопки
+        
         // Обработчик события для кнопки поиска
         searchButton.addEventListener('click', function() {
             const query = searchInput.value.trim();
             if (query) {
-                // Использование прокси (https://github.com/Rob--W/cors-anywhere), который добавляет заголовки CORS к запросам
-                // const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-                // const apiUrl = `https://torapi.vercel.app/api/search/title/all?query=${title}`;
-                // fetch(corsProxy + apiUrl)
-                // Локальный сервер (https://github.com/Lifailon/TorAPI)
-                // fetch(`http://localhost:8443/api/search/title/all?query=${title}`)
-                // Публичный сервер на Vercel
-                // fetch(`https://torapi.vercel.app/api/search/title/all?query=${title}`)
+                loadingSpinner.style.display = 'block'; // Показываем спиннер
+                const originalText = searchButton.childNodes[1].textContent; // Сохраняем оригинальный текст
+                searchButton.childNodes[1].textContent = ''; // Очищаем текст кнопки
+                searchButton.disabled = true; // Делаем кнопку неактивной
+                searchButton.style.cursor = 'default'; // Отключаем курсор
+                searchAllPageButton.disabled = true;
+                searchAllPageButton.style.cursor = 'default';
                 // Используем переменную из хранилища
                 fetch(`${TorApiServer}/api/search/title/all?query=${query}`)
                     .then(response => response.json())
                     .then(data => {
                         displayTorrents(data);
                         // Обновляем счетчик
-                        countSpan.textContent = `(${data.RuTracker.length + data.Kinozal.length + data.RuTor.length + data.NoNameClub.length})`;
+                        const count = data.RuTracker.length + data.Kinozal.length + data.RuTor.length + data.NoNameClub.length;
+                        textBox.innerHTML = `Количество найденных раздач: <strong>${count}</strong> (RuTracker: <strong>${data.RuTracker.length}</strong>, Kinozal: <strong>${data.Kinozal.length}</strong>, RuTor: <strong>${data.RuTor.length}</strong>, NoName-Club: <strong>${data.NoNameClub.length}</strong>)`;
                     })
                     .catch(error => {
                         console.error(error);
-                        countSpan.textContent = `(0)`;
+                        textBox.innerHTML = 'Количество найденных раздач: <strong>0</strong> (RuTracker: <strong>0</strong>, Kinozal: <strong>0</strong>, RuTor: <strong>0</strong>, NoName-Club: <strong>0</strong>)';
+                    })
+                    .finally(() => {
+                        loadingSpinner.style.display = 'none'; // Скрываем спиннер
+                        searchButton.childNodes[1].textContent = originalText; // Восстанавливаем текст кнопки
+                        searchButton.disabled = false; // Активируем кнопку снова
+                        searchButton.style.cursor = 'pointer'; // Активируем курсор
+                        searchAllPageButton.disabled = false;
+                        searchAllPageButton.style.cursor = 'pointer';
                     });
             }
         });
 
-        // Кнопка для выполнения поиска по всем страницам
+        // Кнопка для выполнения расширенного поиска по всем страницам
         const searchAllPageButton = document.createElement('button');
         searchAllPageButton.id = 'torrent-search-all-page-button';
-        searchAllPageButton.textContent = 'Расширенный';
+        searchAllPageButton.style.display = 'flex';
+        searchAllPageButton.style.alignItems = 'center';
         searchAllPageButton.style.padding = '10px 20px';
         searchAllPageButton.style.backgroundColor = '#1e90ff';
         searchAllPageButton.style.color = '#ffffff';
@@ -184,22 +206,50 @@ function displayTorrentsOnPage() {
         searchAllPageButton.style.lineHeight = '22px';
         searchAllPageButton.style.marginTop = '-10px';
         searchAllPageButton.style.fontFamily = 'Lato, sans-serif';
-        searchAllPageButton.style.fontSize = '16px';
+        searchAllPageButton.style.fontSize = '18px';
 
+        // Индикатор загрузки
+        const loadingSpinnerAllPage = document.createElement('div');
+        loadingSpinnerAllPage.style.width = '25px';
+        loadingSpinnerAllPage.style.height = '25px';
+        loadingSpinnerAllPage.style.border = '4px solid #ffffff';
+        loadingSpinnerAllPage.style.borderTop = '4px solid #1e90ff';
+        loadingSpinnerAllPage.style.borderRadius = '50%';
+        loadingSpinnerAllPage.style.animation = 'spin 1s linear infinite';
+        loadingSpinnerAllPage.style.display = 'none';
+        searchAllPageButton.appendChild(loadingSpinnerAllPage);
+        searchAllPageButton.appendChild(document.createTextNode('Расширенный'));
+        
         // Обработчик события для кнопки поиска
         searchAllPageButton.addEventListener('click', function() {
             const query = searchInput.value.trim();
             if (query) {
+                loadingSpinnerAllPage.style.display = 'block';
+                const originalText = searchAllPageButton.childNodes[1].textContent;
+                searchAllPageButton.childNodes[1].textContent = ''
+                searchAllPageButton.disabled = true;
+                searchAllPageButton.style.cursor = 'default';
+                searchButton.disabled = true;
+                searchButton.style.cursor = 'default';
                 fetch(`${TorApiServer}/api/search/title/all?query=${query}&page=all`)
                     .then(response => response.json())
                     .then(data => {
                         displayTorrents(data);
                         // Обновляем счетчик
-                        countSpan.textContent = `(${data.RuTracker.length + data.Kinozal.length + data.RuTor.length + data.NoNameClub.length})`;
+                        const count = data.RuTracker.length + data.Kinozal.length + data.RuTor.length + data.NoNameClub.length;
+                        textBox.innerHTML = `Количество найденных раздач: <strong>${count}</strong> (RuTracker: <strong>${data.RuTracker.length}</strong>, Kinozal: <strong>${data.Kinozal.length}</strong>, RuTor: <strong>${data.RuTor.length}</strong>, NoName-Club: <strong>${data.NoNameClub.length}</strong>)`;
                     })
                     .catch(error => {
                         console.error(error);
-                        countSpan.textContent = `(0)`;
+                        textBox.innerHTML = 'Количество найденных раздач: <strong>0</strong> (RuTracker: <strong>0</strong>, Kinozal: <strong>0</strong>, RuTor: <strong>0</strong>, NoName-Club: <strong>0</strong>)';
+                    })
+                    .finally(() => {
+                        loadingSpinnerAllPage.style.display = 'none';
+                        searchAllPageButton.childNodes[1].textContent = originalText;
+                        searchAllPageButton.disabled = false;
+                        searchAllPageButton.style.cursor = 'pointer';
+                        searchButton.disabled = false;
+                        searchButton.style.cursor = 'pointer';
                     });
             }
         });
@@ -234,16 +284,28 @@ function displayTorrentsOnPage() {
                 }
                 const rows = tableBody.querySelectorAll('tr');
                 let visibleCount = 0; // Счетчик видимых строк
+                // Счетчики для каждого провайдера
+                let countRuTracker = 0;
+                let countKinozal = 0;
+                let countRuTor = 0;
+                let countNoNameClub = 0;
                 rows.forEach(row => {
                     const titleCell = row.querySelectorAll('td')[3]; // Используем четвертый столбец для фильтрации
-                    if (titleCell) {
+                    const providerCell = row.querySelectorAll('td')[0]; // Используем первый столбец для провайдера
+                    if (titleCell && providerCell) {
                         const titleText = titleCell.textContent.toLowerCase();
+                        const providerText = providerCell.textContent.trim(); // Получаем текст провайдера
                         // Проверяем, содержится ли каждое слово в заголовке
                         if (result.SearchCheckBox) {
                             const matches = filterWords.every(word => titleText.includes(word));
                             if (matches) {
                                 row.style.display = ''; // Показываем строку
                                 visibleCount++; // Увеличиваем счетчик
+                                // Увеличиваем счетчик для соответствующего провайдера
+                                if (providerText === 'RuTracker') countRuTracker++;
+                                if (providerText === 'Kinozal') countKinozal++;
+                                if (providerText === 'RuTor') countRuTor++;
+                                if (providerText === 'NoNameClub') countNoNameClub++;
                             } else {
                                 row.style.display = 'none'; // Скрываем строку
                             }
@@ -252,17 +314,20 @@ function displayTorrentsOnPage() {
                             if (titleText.includes(filterValue)) {
                                 row.style.display = ''; // Показываем строку
                                 visibleCount++; // Увеличиваем счетчик
+                                // Увеличиваем счетчик для соответствующего провайдера
+                                if (providerText === 'RuTracker') countRuTracker++;
+                                if (providerText === 'Kinozal') countKinozal++;
+                                if (providerText === 'RuTor') countRuTor++;
+                                if (providerText === 'NoNameClub') countNoNameClub++;
                             } else {
                                 row.style.display = 'none'; // Скрываем строку
                             }
                         }
-                      
                     }
                 });
                 // Обновляем счетчик
-                countSpan.textContent = `(${visibleCount})`;
+                textBox.innerHTML = `Количество найденных раздач: <strong>${visibleCount}</strong> (RuTracker: <strong>${countRuTracker}</strong>, Kinozal: <strong>${countKinozal}</strong>, RuTor: <strong>${countRuTor}</strong>, NoName-Club: <strong>${countNoNameClub}</strong>)`;
             });
-                                                                                             
         });
 
         // Создаем таблицу
@@ -372,6 +437,14 @@ function displayTorrentsOnPage() {
 
         // Добавляем контейнер в tableContainer
         tableContainer.appendChild(searchContainer);
+
+        // Тест счетчика над таблицей
+        const textBox = document.createElement('div');
+        textBox.innerHTML = 'Количество найденных раздач: <strong>0</strong> (RuTracker: <strong>0</strong>, Kinozal: <strong>0</strong>, RuTor: <strong>0</strong>, NoName-Club: <strong>0</strong>)';
+        textBox.style.paddingBottom = '20px'; // Отступ снизу (установлен в 0)
+        textBox.style.width = '100%'; // Ширина полосы
+        tableContainer.appendChild(textBox); // Добавляем текстовую полосу в контейнер
+
 
         // Тело таблицы
         const tableBody = document.createElement('tbody');
