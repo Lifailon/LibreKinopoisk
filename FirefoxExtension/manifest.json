@@ -1,0 +1,69 @@
+{
+  "manifest_version": 2,
+  "name": "Свободный поиск кино",
+  "version": "5.7.1",
+  "author": "Lifailon",
+  "homepage_url": "https://github.com/Lifailon/LibreKinopoisk",
+  "description": "Расширение для быстрого поиска фильмов и сериалов в открытых источниках.",
+  "icons": {
+    "32": "icons/icon32.png",
+    "64": "icons/icon64.png",
+    "128": "icons/icon128.png",
+    "256": "icons/icon256.png",
+    "512": "icons/icon512.png"
+  },
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "Настройки расширения Libre Kinopoisk",
+    "default_icon": {
+      "32": "icons/icon32.png",
+      "64": "icons/icon64.png",
+      "128": "icons/icon128.png",
+      "256": "icons/icon256.png",
+      "512": "icons/icon512.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.kinopoisk.ru/*",
+        "https://kinopoisk.ru/*",
+        "https://hd.kinopoisk.ru/*",
+        "https://www.hd.kinopoisk.ru/*"
+      ],
+      "js": [
+        "main.js",
+        "kinobox.min.js"
+      ],
+      "all_frames": false,
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    "icons/icon32.png",
+    "icons/icon64.png",
+    "icons/icon128.png",
+    "icons/icon256.png",
+    "icons/icon512.png",
+    "kinobox.min.js"
+  ],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs",
+    "webNavigation",
+    "contextMenus",
+    "https://*/*",
+    "http://*/*"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "applications": {
+    "gecko": {
+      "id": "your-extension-id@domain.com",
+      "strict_min_version": "91.0"
+    }
+  }
+}

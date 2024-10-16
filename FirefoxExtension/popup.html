@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libre Kinopoisk</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1A355B;
+            margin: 1;
+            padding: 0;
+        }
+        header {
+            background-color: #1A355B;
+            padding: 10px 20px;
+            position: relative;
+        }
+        .logo {
+            background-image: url('icons/icon128.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            width: 100px;
+            height: 40px;
+        }
+        .title {
+            color: #fff;
+            font-size: 24px;
+            position: absolute;
+            left: 70px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .container {
+            width: 455px;
+            height: 370px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .input-container {
+            display: flex; /* Используем Flexbox для расположения элементов в строку */
+            align-items: center; /* Выравнивание по вертикали по центру (!) */
+            gap: 5px; /* Расстояние между элементами */
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            margin: 0; /* Убираем отступы для корректного выравнивания (!) */
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #ff6600cb;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #ff6600;
+        }
+        p {
+            font-size: 14px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        b {
+            font-size: 14px;
+            text-align: left;
+            margin-top: 20px;
+            font-weight: normal;
+        }
+        #messageBox {
+            display: none;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 10px;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        /* Кнопки Начало и Настройки */
+        .bottom-buttons-container {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 10px;
+            z-index: 999;
+            text-align: center; /* Центрируем кнопку */
+        }
+        .bottom-buttons-container hr {
+            width: 96%; /* Линия занимает всю ширину родительского контейнера */
+            border: none;
+            height: 2px; /* Толщина линии */
+            background-color: #ccc; /* Цвет линии */
+        }
+        .bottom-buttons {
+            position: relative; /* Чтобы кнопка оставалась в потоке */
+            display: inline-block; /* Чтобы кнопка была в строке с линией */
+            margin-bottom: 5px; /* Поднимаем кнопку на 5px вверх */
+        }
+        .small-button {
+            width: 100px;
+            height: 30px;
+            padding: 5px 10px;
+            font-size: 14px;
+            margin: 0 5px;
+            background-color: #557096;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .small-button:hover {
+            background-color: #1A355B;
+        }
+        /* Скрыть настоящий чекбокс */
+        .checkbox-input {
+            display: none;
+        }
+        /* Стилизация контейнера чекбокса */
+        .checkbox-container {
+            display: flex;
+            position: relative;
+            width: 48px; /* Ширина контейнера */
+            height: 24px; /* Высота контейнера */
+            align-items: center; /* Выравнивание элементов по вертикали */
+        }
+        /* Стилизация фона чекбокса */
+        .checkbox-label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #d1cdcd; /* Цвет фона чекбокса */
+            border-radius: 17px; /* Радиус скругления */
+            border: 1px solid #ccc; /* Граница чекбокса */
+            cursor: pointer;
+            transition: background-color 0.3s; /* Плавный переход цвета */
+        }
+        /* Стилизация ползунка при выключенном состоянии */
+        .checkbox-input:not(:checked) + .checkbox-label::after {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            width: 20px; /* Ширина ползунка */
+            height: 20px; /* Высота ползунка */
+            background-color: #fff; /* Цвет выключенного ползунка (белый) */
+            border: 1px solid #ccc; /* Граница ползунка */
+            border-radius: 50%; /* Круглый ползунок */
+            transition: left 0.3s, background-color 0.3s; /* Плавное смещение */
+        }
+        /* Стилизация ползунка при включенном состоянии */
+        .checkbox-input:checked + .checkbox-label::after {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            width: 20px; /* Ширина ползунка */
+            height: 20px; /* Высота ползунка */
+            background-color: #fff; /* Цвет выключенного ползунка (белый) */
+            border: 1px solid #ccc; /* Граница ползунка */
+            border-radius: 50%; /* Круглый ползунок */
+            transition: left 0.3s, background-color 0.3s; /* Плавное смещение */
+        }
+        /* Плавное смещение ползунка вправо */
+        .checkbox-input:checked + .checkbox-label::after {
+            left: calc(100% - 23px);
+        }
+        /* Новый цвет фона внутри контейнера чекбокса при активации */
+        .checkbox-input:checked + .checkbox-label {
+            background-color: #4CAF50;
+        }
+        /* Текст справа от чекбоксов */
+        .checkbox-container span {
+            margin-left: 60px; /* Отступ между чекбоксом и текстом */
+            white-space: nowrap; /* Запрещает перенос текста на новую строку */
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"></div>
+        <div class="title">Libre Kinopoisk</div>
+    </header>
+    <div class="container" id="homeState">
+        <b>Расширение, которое добавляет кнопки на сайт <a href="https://kinopoisk.ru">Кинопоиск</a> и в контекстное меню браузера, а также реализует интерфейс <a href="https://github.com/Lifailon/TorAPI">TorAPI</a> для быстрого поиска фильмов и сериалов в открытых источниках.</b>
+        <br>
+        <br>
+        <button id="showTorrentTableButton">🔎 Поиск раздач в торрент трекерах</button>
+        <br>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="darkModeBox" class="checkbox-input">
+            <label for="darkModeBox" class="checkbox-label"></label>
+            <span>Включить темный режим</span>
+        </div>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="SearchCheckBox" class="checkbox-input">
+            <label for="SearchCheckBox" class="checkbox-label"></label>
+            <span>Использовать неточный поиск при фильтрации</span>
+        </div>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="MagnetCheckBox" class="checkbox-input">
+            <label for="MagnetCheckBox" class="checkbox-label"></label>
+            <span>Переход по магнитной ссылки вместо получения хеш-суммы</span>
+        </div>
+        <br>
+        <b>Изменить адрес сервера (backend):</b>
+        <br>
+        <br>
+        <div class="input-container">
+            <input type="text" id="textInput" placeholder="Введите адрес сервера">
+            <button id="saveButton">Сохранить</button>
+        </div>
+        <div id="messageBox" style="display: none;"></div>
+        <p>© 2024 Lifailon | <a href="https://github.com/Lifailon/LibreKinopoisk">GitHub</a></p>
+        <div class="bottom-buttons-container">
+            <hr>
+            <div class="bottom-buttons">
+                <button id="settingsButton" class="small-button">Настройки</button>
+            </div>
+        </div>        
+    </div>
+    <div class="container" id="settingsState" style="display: none">
+        <b>Настройка отображения кнопок на странице Кинопоиска:</b>
+        <br>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="KinoboxCheckBox" class="checkbox-input">
+            <label for="KinoboxCheckBox" class="checkbox-label"></label>
+            <span>Использовать плеер Kinobox на текущей странице</span>
+        </div>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="TrailerCheckBox" class="checkbox-input">
+            <label for="TrailerCheckBox" class="checkbox-label"></label>
+            <span>Трейлеры</span>
+        </div>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="YouTubeCheckBox" class="checkbox-input">
+            <label for="YouTubeCheckBox" class="checkbox-label"></label>
+            <span>YouTube</span>
+        </div>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="WikiCheckBox" class="checkbox-input">
+            <label for="WikiCheckBox" class="checkbox-label"></label>
+            <span>Wikipedia</span>
+        </div>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="OnlineCheckBox" class="checkbox-input">
+            <label for="OnlineCheckBox" class="checkbox-label"></label>
+            <span>Просмотр онлайн (Zetflix, Zona, HDRezka)</span>
+        </div>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="DbEnCheckBox" class="checkbox-input">
+            <label for="DbEnCheckBox" class="checkbox-label"></label>
+            <span>Заребужные базы данных (IMDb, TMDb, Plex)</span>
+        </div>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="DbRuCheckBox" class="checkbox-input">
+            <label for="DbRuCheckBox" class="checkbox-label"></label>
+            <span>Базы данных (Кинориум, Торамп, Film.ru, MyShows, Lostfilm)</span>
+        </div>
+        <br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="TorrentCheckBox" class="checkbox-input">
+            <label for="TorrentCheckBox" class="checkbox-label"></label>
+            <span>Торрент трекеры (Кинозал, RuTracker, RuTor, NoName-Club)</span>
+        </div>
+        <div class="bottom-buttons-container">
+            <hr>
+            <div class="bottom-buttons">
+                <button id="homeButton" class="small-button">Начало</button>
+            </div>
+        </div>
+        
+    </div>
+    <script src="popup.js" defer></script>
+</body>
+</html>
