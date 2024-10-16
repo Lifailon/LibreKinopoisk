@@ -186,6 +186,11 @@ function displayTorrentsOnPage() {
                 searchButton.style.cursor = 'default'; // Отключаем курсор
                 searchAllPageButton.disabled = true;
                 searchAllPageButton.style.cursor = 'default';
+                // Использовать прокси CORS Anywhere (https://github.com/Rob--W/cors-anywhere), который добавляет заголовки CORS к запросам
+                // const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+                // Thing Proxy (https://github.com/Freeboard/thingproxy)
+                // const corsProxy = 'https://thingproxy.freeboard.io/fetch/';
+                // fetch(corsProxy + apiUrl)
                 // Используем переменную из хранилища
                 fetch(`${TorApiServer}/api/search/title/all?query=${query}`)
                     .then(response => response.json())

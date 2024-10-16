@@ -64,7 +64,6 @@ document.addEventListener('DOMContentLoaded', function() {
     })
 })
 
-
 // Получаем все ссылки на странице
 var links = document.querySelectorAll('a')
 // Добавляем обработчик события для каждой ссылки
