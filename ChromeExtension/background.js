@@ -281,3 +281,26 @@ chrome.contextMenus.onClicked.addListener(function (clickData) {
         }
     }
 })
+
+// Открытие модального окна при нажатии Ctrl+Shift+F
+chrome.commands.onCommand.addListener((command) => {
+    if (command === "toggle-interface") {
+        // Загружаем скрипт
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            chrome.scripting.executeScript({
+                target: { tabId: tabs[0].id },
+                files: ['torapi.js']
+            }, () => {
+                // После загрузки скрипта выполняем функцию displayTorrentsOnPage
+                chrome.scripting.executeScript({
+                    target: { tabId: tabs[0].id },
+                    function: () => {
+                        if (typeof displayTorrentsOnPage === 'function') {
+                            displayTorrentsOnPage()
+                        }
+                    }
+                })
+            })
+        })
+    }
+})

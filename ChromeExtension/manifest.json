@@ -66,5 +66,13 @@
   ],
   "background": {
     "service_worker": "background.js"
+  },
+  "commands": {
+    "toggle-interface": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F"
+      },
+      "description": "Toggle the extension interface"
+    }
   }
 }
