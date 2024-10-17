@@ -4,7 +4,7 @@
   "version": "5.7.2",
   "author": "Lifailon",
   "homepage_url": "https://github.com/Lifailon/LibreKinopoisk",
-  "description": "Расширение Google Chrome, которое добавляет кнопки на сайт Кинопоиск и в контекстное меню браузера, а также реализует интерфейс TorAPI для быстрого поиска фильмов и сериалов в открытых источниках.",
+  "description": "Расширение для быстрого поиска фильмов и сериалов в открытых источниках.",
   "icons": {
     "32": "icons/icon32.png",
     "64": "icons/icon64.png",
@@ -14,7 +14,7 @@
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Настройки расшрения Libre Kinopoisk",
+    "default_title": "Настройки расширения Libre Kinopoisk",
     "default_icon": {
       "32": "icons/icon32.png",
       "64": "icons/icon64.png",
