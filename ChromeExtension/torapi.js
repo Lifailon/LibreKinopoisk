@@ -159,14 +159,6 @@ function displayTorrentsOnPage() {
         searchInput.style.fontFamily = 'Lato, sans-serif';
         searchInput.style.fontSize = '16px';
 
-        // Слушатель события для поиска при нажатии Enter в поле ввода
-        searchInput.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // Отключаем стандартное поведение Enter
-                searchButton.click(); // Имитируем нажатие на кнопку поиска
-            }
-        });
-
         // Кнопка для выполнения быстрого поиска 🔎
         const searchButton = document.createElement('button');
         searchButton.id = 'torrent-search-button';
@@ -501,6 +493,19 @@ function displayTorrentsOnPage() {
         searchContainer.appendChild(searchButton);
         searchContainer.appendChild(searchAllPageButton);
         searchContainer.appendChild(filterInput);
+
+        // Установить фокус на поле ввода для поиска при запуске
+        setTimeout(() => {
+            searchInput.focus(); 
+        })
+
+        // Слушатель события для поиска при нажатии Enter в поле ввода
+        searchInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Отключаем стандартное поведение Enter
+                searchButton.click(); // Имитируем нажатие на кнопку поиска
+            }
+        });
 
         // Добавляем контейнер в tableContainer
         tableContainer.appendChild(searchContainer);
