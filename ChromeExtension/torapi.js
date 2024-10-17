@@ -101,14 +101,21 @@ function displayTorrentsOnPage() {
 
                 #torrent-table tr {
                     display: flex; /* Используем flexbox для строк */
-                    flex-direction: column; /* Вертикальное расположение ячеек */
-                    margin-bottom: 10px; /* Отступ между строками */
+                    /* Вертикальное расположение ячеек */
+                    /* flex-direction: column; */
+                    flex-wrap: wrap; /* Позволяем обтекание строк */
+                    margin-bottom: 15px; /* Отступ между строками */
                 }
-            
-                #torrent-table td {
-                    display: flex; /* Используем flexbox для ячеек */
-                    justify-content: space-between; /* Распределение ячеек по ширине */
-                    /* border: 1px solid ${buttonBackgroundColor}; */
+                    
+                /* Стили для первых двух ячеек, чтобы они располагались горизонтально */
+                .source-cell, .download-cell, .magnet-cell, .seeds-cell, .peers-cell {
+                    display: flex; /* Позволяет использовать flexbox внутри ячеек */
+                    justify-content: flex-start; /* Выравнивание по левому краю */
+                }
+                    
+                /* Остальные ячейки остаются вертикальными и занимают 100% ширины */
+                .name-cell, .category-cell, .size-cell, .date-cell {
+                    flex: 1 1 100%; /* Занимают 100% ширины */
                 }
 
                 #torrent-search-container {
@@ -675,34 +682,34 @@ function displayTorrentsOnPage() {
                         ico = chrome.runtime.getURL('icons/nonameclub.ico');
                     }
                     row.innerHTML = `
-                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px;">
-                            <div style="display: flex; align-items: center;">
+                        <td class="source-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                            <div style="display: flex; align-items: center; height: 100%;"> <!-- Исключить перенос текста от логотипа на новую строку, высота 100% для выравнивания -->
                                 <img src="${ico}" alt="${source}" style="max-width: 16px; margin-right: 16px;">
-                                <span style="vertical-align: middle;">${source}</span>
+                                <span>${source}</span>
                             </div>
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
-                            <a href="${item.Torrent}" target="_blank" style="color: ${buttonBackgroundColor}; text-decoration: none;">💾</a>
+                        <td class="download-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                                <a href="${item.Torrent}" target="_blank" style="color: ${buttonBackgroundColor}; text-decoration: none;">💾</a>
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
-                            <magnetButton></magnetButton>
+                        <td class="magnet-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                                <magnetButton></magnetButton>
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="name-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             <a href="${item.Url}" target="_blank" style="color: ${buttonBackgroundColor}; text-decoration: none;">${item.Name}</a>
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="category-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item?.Category || 'Без категории'}
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="size-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item.Size}
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="seeds-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item.Seeds}
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="peers-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item.Peers}
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="date-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item.Date.split(' ')[0].includes(':') ? item.Date.split(':')[0].slice(0, -2) : item.Date.split(' ')[0]}
                         </td>
                     `;
