@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Свободный поиск кино",
-  "version": "5.7.1",
+  "version": "5.7.2",
   "author": "Lifailon",
   "homepage_url": "https://github.com/Lifailon/LibreKinopoisk",
   "description": "Расширение для быстрого поиска фильмов и сериалов в открытых источниках.",
@@ -40,12 +40,16 @@
     }
   ],
   "web_accessible_resources": [
-    "icons/icon32.png",
-    "icons/icon64.png",
-    "icons/icon128.png",
-    "icons/icon256.png",
-    "icons/icon512.png",
-    "kinobox.min.js"
+      "icons/icon32.png",
+      "icons/icon64.png",
+      "icons/icon128.png",
+      "icons/icon256.png",
+      "icons/icon512.png",
+      "icons/rutracker.ico",
+      "icons/kinozal.ico",
+      "icons/rutor.ico",
+      "icons/nonameclub.ico",
+      "kinobox.min.js"
   ],
   "permissions": [
     "storage",
@@ -62,8 +66,15 @@
   },
   "applications": {
     "gecko": {
-      "id": "your-extension-id@domain.com",
-      "strict_min_version": "91.0"
+      "id": "Lifailon@yandex.ru"
+    }
+  },
+  "commands": {
+    "toggle-interface": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F"
+      },
+      "description": "Toggle the extension interface"
     }
   }
 }

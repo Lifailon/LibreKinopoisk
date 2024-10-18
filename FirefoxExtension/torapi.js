@@ -39,8 +39,8 @@ function displayTorrentsOnPage() {
 
         // Контейнер для таблицы
         const tableContainer = document.createElement('div');
-        tableContainer.style.width = '80%';
-        tableContainer.style.height = '80%';
+        tableContainer.style.width = '90%';
+        tableContainer.style.height = '85%';
         tableContainer.style.backgroundColor = tableBackgroundColor;
         tableContainer.style.padding = '20px';
         tableContainer.style.borderRadius = '10px';
@@ -90,17 +90,32 @@ function displayTorrentsOnPage() {
                 #torrent-table thead {
                     display: none; /* Скрыть заголовки таблицы на маленьких экранах */
                 }
-            
+
+                #category-counter {
+                    display: none; /* Скрыть список категорий и счетчики */
+                }
+
+                .category-counter {
+                    display: none !important; /* Скрыть список категорий и счетчики глобально по классу */
+                }
+
                 #torrent-table tr {
                     display: flex; /* Используем flexbox для строк */
-                    flex-direction: column; /* Вертикальное расположение ячеек */
-                    margin-bottom: 10px; /* Отступ между строками */
+                    /* Вертикальное расположение ячеек */
+                    /* flex-direction: column; */
+                    flex-wrap: wrap; /* Позволяем обтекание строк */
+                    margin-bottom: 15px; /* Отступ между строками */
                 }
-            
-                #torrent-table td {
-                    display: flex; /* Используем flexbox для ячеек */
-                    justify-content: space-between; /* Распределение ячеек по ширине */
-                    /* border: 1px solid ${buttonBackgroundColor}; */
+                    
+                /* Стили для первых двух ячеек, чтобы они располагались горизонтально */
+                .source-cell, .download-cell, .magnet-cell, .seeds-cell, .peers-cell {
+                    display: flex; /* Позволяет использовать flexbox внутри ячеек */
+                    justify-content: flex-start; /* Выравнивание по левому краю */
+                }
+                    
+                /* Остальные ячейки остаются вертикальными и занимают 100% ширины */
+                .name-cell, .category-cell, .size-cell, .date-cell {
+                    flex: 1 1 100%; /* Занимают 100% ширины */
                 }
 
                 #torrent-search-container {
@@ -144,7 +159,7 @@ function displayTorrentsOnPage() {
         searchInput.style.fontFamily = 'Lato, sans-serif';
         searchInput.style.fontSize = '16px';
 
-        // Кнопка для выполнения поиска 🔎
+        // Кнопка для выполнения быстрого поиска 🔎
         const searchButton = document.createElement('button');
         searchButton.id = 'torrent-search-button';
         searchButton.style.display = 'flex'; // Используем flexbox для центрирования
@@ -299,6 +314,14 @@ function displayTorrentsOnPage() {
         filterInput.style.fontFamily = 'Lato, sans-serif';
         filterInput.style.fontSize = '16px';
 
+        // Функция для выделения текста при фильтрации
+        function highlightText(text, words) {
+            if (!words.length) return text; // Если нет слов для поиска, возвращаем оригинальный текст
+            const regex = new RegExp(`(${words.join('|')})`, 'gi'); // Создаем регулярное выражение для поиска
+            // Добавляем обертку для текста с фоном
+            return text.replace(regex, '<span style="background-color: yellow;">$1</span>'); // Оборачиваем найденные слова в тег span с желтым фоном
+        }
+
         // Функция для фильтрации
         filterInput.addEventListener('input', function() {
             const filterValue = filterInput.value.toLowerCase();
@@ -315,15 +338,30 @@ function displayTorrentsOnPage() {
                 let countKinozal = 0;
                 let countRuTor = 0;
                 let countNoNameClub = 0;
+                // Получаем выбранную категорию
+                const selectedCategory = dropdown.value;
                 rows.forEach(row => {
                     const titleCell = row.querySelectorAll('td')[3]; // Используем четвертый столбец для фильтрации
                     const providerCell = row.querySelectorAll('td')[0]; // Используем первый столбец для провайдера
+                    const categoryCell = row.querySelectorAll('td')[4]; // Используем пятую ячейку для категории
+                    const categoryText = categoryCell ? categoryCell.textContent.trim() : '';
                     if (titleCell && providerCell) {
-                        const titleText = titleCell.textContent.toLowerCase();
+                        const linkElement = titleCell.querySelector('a'); // Ищем ссылку внутри ячейки
+                        const titleText = linkElement ? linkElement.textContent.toLowerCase() : titleCell.textContent.toLowerCase();
                         const providerText = providerCell.textContent.trim(); // Получаем текст провайдера
-                        // Проверяем, содержится ли каждое слово в заголовке
-                        if (result.SearchCheckBox) {
-                            const matches = filterWords.every(word => titleText.includes(word));
+                        let matches = false;
+                        // Проверяем, соответствует ли категория выбранной
+                        if (selectedCategory !== 'Все' && categoryText !== selectedCategory) {
+                            row.style.display = 'none'; // Скрываем строку, если категория не совпадает
+                        } else {
+                            // Проверяем текст
+                            if (result.SearchCheckBox) {
+                                // Проверяем, содержится ли каждое слово в заголовке
+                                matches = filterWords.every(word => titleText.includes(word));
+                            } else {
+                                // Для точного поиска
+                                matches = titleText.includes(filterValue);
+                            }
                             if (matches) {
                                 row.style.display = ''; // Показываем строку
                                 visibleCount++; // Увеличиваем счетчик
@@ -332,21 +370,15 @@ function displayTorrentsOnPage() {
                                 if (providerText === 'Kinozal') countKinozal++;
                                 if (providerText === 'RuTor') countRuTor++;
                                 if (providerText === 'NoNameClub') countNoNameClub++;
+                                // Выделяем найденный текст в ссылке
+                                if (linkElement) {
+                                    linkElement.innerHTML = highlightText(linkElement.textContent, filterWords);
+                                }
                             } else {
                                 row.style.display = 'none'; // Скрываем строку
-                            }
-                        } else {
-                            // Для точного поиска
-                            if (titleText.includes(filterValue)) {
-                                row.style.display = ''; // Показываем строку
-                                visibleCount++; // Увеличиваем счетчик
-                                // Увеличиваем счетчик для соответствующего провайдера
-                                if (providerText === 'RuTracker') countRuTracker++;
-                                if (providerText === 'Kinozal') countKinozal++;
-                                if (providerText === 'RuTor') countRuTor++;
-                                if (providerText === 'NoNameClub') countNoNameClub++;
-                            } else {
-                                row.style.display = 'none'; // Скрываем строку
+                                if (linkElement) {
+                                    linkElement.innerHTML = linkElement.textContent; // Сбрасываем выделение
+                                }
                             }
                         }
                     }
@@ -373,6 +405,7 @@ function displayTorrentsOnPage() {
                 <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;"></th>
                 <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;"></th>
                 <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Название</th>
+                <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Категория</th>
                 <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Размер</th>
                 <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Сиды</th>
                 <th style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 18px; text-align: center; font-weight: bold;">Пиры</th>
@@ -461,17 +494,130 @@ function displayTorrentsOnPage() {
         searchContainer.appendChild(searchAllPageButton);
         searchContainer.appendChild(filterInput);
 
+        // Установить фокус на поле ввода для поиска при запуске
+        setTimeout(() => {
+            searchInput.focus(); 
+        })
+
+        // Слушатель события для поиска при нажатии Enter в поле ввода
+        searchInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Отключаем стандартное поведение Enter
+                searchButton.click(); // Имитируем нажатие на кнопку поиска
+            }
+        });
+
         // Добавляем контейнер в tableContainer
         tableContainer.appendChild(searchContainer);
 
-        // Тест счетчика над таблицей
+        // Контейнер для выпадающего списка и текста с счетчиками резултатов поиска
+        const statusContainer = document.createElement('div');
+        statusContainer.id = 'category-counter';
+        statusContainer.classList.add('category-counter');
+        statusContainer.style.display = 'flex';
+        statusContainer.style.alignItems = 'center';
+        statusContainer.style.backgroundColor = tableBackgroundColor;
+        statusContainer.style.width = '100%';
+        statusContainer.style.paddingBottom = '20px'; // Отступ снизу
+
+        // Скрыть контейнер на маленьких экранах
+        // if (window.innerWidth < 1000) {
+        //     statusContainer.style.display = 'none';
+        // }
+
+        // Текст перед выпадающим списком
+        const filterLabel = document.createElement('span');
+        filterLabel.textContent = 'Фильтрация по категории:';
+        filterLabel.style.fontFamily = 'Lato, sans-serif';
+        filterLabel.style.fontSize = '16px';
+        filterLabel.style.marginRight = '10px'; // Отступ справа
+        filterLabel.style.color = buttonColor;
+            
+        // Добавляем текстовую метку перед выпадающим списком
+        statusContainer.appendChild(filterLabel);
+            
+        // Создаем выпадающий список
+        const dropdown = document.createElement('select');
+        dropdown.style.fontFamily = 'Lato, sans-serif';
+        dropdown.style.fontSize = '16px'; // Размер текста
+        dropdown.style.padding = '3px'; // Ширина окна относительно текста
+        dropdown.style.borderRadius = '5px'; // Скругление
+        dropdown.style.border = `1px solid ${buttonColor}`; // Толщина и цвет окна
+        // dropdown.style.width = 'auto'; // Автоматическая ширина окна
+        dropdown.style.minWidth = '150px'; // Минимальная ширина окна
+        dropdown.style.maxWidth = '150px'; // Максимальная ширина окна
+        dropdown.style.marginRight = '10px'; // Отступ справа
+        dropdown.style.backgroundColor = tableBackgroundColor;
+        dropdown.style.color = buttonColor;
+            
+        // Добавляем опцию по умолчанию
+        const allOption = document.createElement('option');
+        allOption.value = 'Все';
+        allOption.textContent = 'Все';
+        dropdown.appendChild(allOption);
+            
+        // Добавляем выпадающий список в контейнер
+        statusContainer.appendChild(dropdown);
+            
+        // Создаем текст со статусом
         const textBox = document.createElement('div');
         textBox.innerHTML = 'Количество найденных раздач: <strong>0</strong> (RuTracker: <strong>0</strong>, Kinozal: <strong>0</strong>, RuTor: <strong>0</strong>, NoName-Club: <strong>0</strong>)';
-        textBox.style.backgroundColor = tableBackgroundColor;
         textBox.style.color = buttonColor;
-        textBox.style.paddingBottom = '20px'; // Отступ снизу
-        textBox.style.width = '100%';
-        tableContainer.appendChild(textBox);
+            
+        // Добавляем текст со статусом в контейнер
+        statusContainer.appendChild(textBox);
+            
+        // Добавляем контейнер со списком и текстом перед таблицей
+        tableContainer.appendChild(statusContainer);
+
+        // Добавляем обработчик события для изменения значения в выпадающем списке
+        dropdown.addEventListener('change', function() {
+            const selectedCategory = dropdown.value; // Получаем выбранную категорию
+            filterByCategory(selectedCategory); // Вызываем функцию фильтрации по категории
+        });
+
+        // Функция для фильтрации таблицы по выбранной категории
+        function filterByCategory(selectedCategory) {
+            const rows = tableBody.querySelectorAll('tr');
+            let visibleCount = 0; // Счетчик видимых строк
+            // Счетчики для каждого провайдера
+            let countRuTracker = 0;
+            let countKinozal = 0;
+            let countRuTor = 0;
+            let countNoNameClub = 0;
+            rows.forEach(row => {
+                const categoryCell = row.querySelectorAll('td')[4]; // Используем пятую ячейку для категории
+                const providerCell = row.querySelectorAll('td')[0]; // Используем первый столбец для провайдера
+                const categoryText = categoryCell ? categoryCell.textContent.trim() : '';
+                const providerText = providerCell ? providerCell.textContent.trim() : '';
+                // Проверяем, соответствует ли категория выбранной
+                if (selectedCategory === 'Все' || categoryText === selectedCategory) {
+                    row.style.display = ''; // Показываем строку
+                    visibleCount++; // Увеличиваем счетчик видимых строк
+                    // Увеличиваем счетчик для соответствующего провайдера
+                    if (providerText === 'RuTracker') countRuTracker++;
+                    if (providerText === 'Kinozal') countKinozal++;
+                    if (providerText === 'RuTor') countRuTor++;
+                    if (providerText === 'NoNameClub') countNoNameClub++;
+                } else {
+                    row.style.display = 'none'; // Скрываем строку
+                }
+            });
+            // Обновляем счетчик
+            updateVisibleCount(visibleCount, countRuTracker, countKinozal, countRuTor, countNoNameClub);
+        }
+
+        // Функция для обновления текстового блока с количеством найденных раздач
+        function updateVisibleCount(visibleCount, countRuTracker, countKinozal, countRuTor, countNoNameClub) {
+            // Обновляем текст с количеством
+            textBox.innerHTML = `
+                Количество найденных раздач: <strong>${visibleCount}</strong>
+                (RuTracker: <strong>${countRuTracker}</strong>, 
+                Kinozal: <strong>${countKinozal}</strong>, 
+                RuTor: <strong>${countRuTor}</strong>, 
+                NoName-Club: <strong>${countNoNameClub}</strong>)
+            `;
+        }
 
         // Тело таблицы
         const tableBody = document.createElement('tbody');
@@ -511,10 +657,20 @@ function displayTorrentsOnPage() {
     function displayTorrents(data) {
         const tableBody = document.querySelector('#torrent-table tbody');
         tableBody.innerHTML = '';
+        // Очищаем выпадающий список категорий и создаем Set для уникальных значений
+        const dropdown = document.querySelector('select'); // Получаем выпадающий список
+        dropdown.innerHTML = ''; // Очищаем выпадающий список
+        const uniqueCategories = new Set(); // Множество для уникальных категорий
+        uniqueCategories.add('Все');
+        uniqueCategories.add('Без категории');
+        // Заполняем таблицу в цикле
         for (let source in data) {
             if (data.hasOwnProperty(source)) {
                 const torrents = data[source];
                 torrents.forEach(item => {
+                    // Добавляем категорию в Set
+                    uniqueCategories.add(item?.Category || 'Без категории');
+                    // Заполняем строки таблицы
                     const row = document.createElement('tr');
                     row.style.backgroundColor = inputBackgroundColor;
                     row.style.borderBottom = `1px solid ${tableBorderBottomColor}`;
@@ -531,31 +687,34 @@ function displayTorrentsOnPage() {
                         ico = chrome.runtime.getURL('icons/nonameclub.ico');
                     }
                     row.innerHTML = `
-                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px;">
-                            <div style="display: flex; align-items: center;">
+                        <td class="source-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                            <div style="display: flex; align-items: center; height: 100%;"> <!-- Исключить перенос текста от логотипа на новую строку, высота 100% для выравнивания -->
                                 <img src="${ico}" alt="${source}" style="max-width: 16px; margin-right: 16px;">
-                                <span style="vertical-align: middle;">${source}</span>
+                                <span>${source}</span>
                             </div>
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
-                            <a href="${item.Torrent}" target="_blank" style="color: ${buttonBackgroundColor}; text-decoration: none;">💾</a>
+                        <td class="download-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                                <a href="${item.Torrent}" target="_blank" style="color: ${buttonBackgroundColor}; text-decoration: none;">💾</a>
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
-                            <magnetButton></magnetButton>
+                        <td class="magnet-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                                <magnetButton></magnetButton>
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="name-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             <a href="${item.Url}" target="_blank" style="color: ${buttonBackgroundColor}; text-decoration: none;">${item.Name}</a>
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="category-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                            ${item?.Category || 'Без категории'}
+                        </td>
+                        <td class="size-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item.Size}
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="seeds-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item.Seeds}
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="peers-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item.Peers}
                         </td>
-                        <td style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="date-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
                             ${item.Date.split(' ')[0].includes(':') ? item.Date.split(':')[0].slice(0, -2) : item.Date.split(' ')[0]}
                         </td>
                     `;
@@ -600,5 +759,12 @@ function displayTorrentsOnPage() {
                 });
             }
         }
+        // Добавляем уникальные категории в выпадающий список
+        uniqueCategories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category;
+            dropdown.appendChild(option);
+        });
     }
 }
