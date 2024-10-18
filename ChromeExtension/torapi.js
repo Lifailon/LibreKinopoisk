@@ -75,11 +75,26 @@ function displayTorrentsOnPage() {
                 width: 100%; /* Занимает всю ширину экрана */
                 border-collapse: collapse; /* Убирает пробелы между ячейками */
             }
+
+            /* Расположить статус счетчиков рядом с выпадающим списком фильтров */
+            #category-counter {
+                display: flex;
+            }
           
-            #torrent-table th, #torrent-table td {
+            #torrent-table th, #torrent-table td, .source-cell, .source-cell div, .source-cell span {
+                font-size: 18px; /* Определяем размер шрифта в таблице по умолчанию     */
                 text-align: left; /* Выравнивание текста */
+                white-space: normal;   /* Разрешает перенос строк */
+                word-break: normal;    /* Перенос слов только по целым словам */
+                overflow-wrap: normal; /* Разрешает перенос длинных слов */
+                hyphens: manual;       /* Управляет расстановкой дефисов (по умолчанию) */
             }
             
+            #torrent-button-container {
+                display: flex; /* Используем flexbox для размещения кнопок в ряд */
+                gap: 10px; /* Отступ между кнопками */
+            }
+
             /* Адаптировать интерфейс таблицы под мобильные устройства */
             @media (max-width: 1000px) {
                 #torrent-table {
@@ -95,10 +110,6 @@ function displayTorrentsOnPage() {
                     display: none; /* Скрыть список категорий и счетчики */
                 }
 
-                .category-counter {
-                    display: none !important; /* Скрыть список категорий и счетчики глобально по классу */
-                }
-
                 #torrent-table tr {
                     display: flex; /* Используем flexbox для строк */
                     /* Вертикальное расположение ячеек */
@@ -108,14 +119,28 @@ function displayTorrentsOnPage() {
                 }
                     
                 /* Стили для первых двух ячеек, чтобы они располагались горизонтально */
-                .source-cell, .download-cell, .magnet-cell, .seeds-cell, .peers-cell {
+                .source-cell, .download-cell, .magnet-cell, .seeds-cell, .peers-cell, .size-cell, .date-cell {
                     display: flex; /* Позволяет использовать flexbox внутри ячеек */
                     justify-content: flex-start; /* Выравнивание по левому краю */
                 }
                     
                 /* Остальные ячейки остаются вертикальными и занимают 100% ширины */
-                .name-cell, .category-cell, .size-cell, .date-cell {
+                .name-cell, .category-cell {
                     flex: 1 1 100%; /* Занимают 100% ширины */
+                }
+
+                /* Добавление текста эмодзи в ячейки .seeds-cell и .peers-cell */
+                .seeds-cell::before {
+                    content: "⬆️ "; /*✅🔼🆗*/
+                }
+
+                .peers-cell::before {
+                    content: "⬇️ "; /*⏬🔽📶*/
+                }
+
+                /* Уменьшаем размер шрифта в таблице */
+                #torrent-table th, #torrent-table td, .source-cell, .source-cell div, .source-cell span {
+                    font-size: 14px;
                 }
 
                 #torrent-search-container {
@@ -123,19 +148,15 @@ function displayTorrentsOnPage() {
                     flex-direction: column; /* Вертикальное расположение элементов */
                 }
 
-                #torrent-search-button {
-                    width: 100%; /* Занимает всю ширину контейнера */
-                    margin-right: 10px; /* Убрать отступ слева */
-                    margin-bottom: 10px; /* Добавить отступ снизу */
+                #torrent-button-container {
+                    display: flex; /* Кнопки идут в ряд */
+                    width: 100%; /* Занимает всю ширину */
+                    gap: 5px; /* Отступ между кнопками */
                 }
-
+                
+                #torrent-search-button,
                 #torrent-search-all-page-button {
-                    width: 100%; /* Занимает всю ширину контейнера */
-                    margin-right: 10px; /* Убрать отступ слева */
-                }
-                    
-                #torrent-filter-input {
-                    margin-right: 10px; /* Убрать отступ слева */
+                    width: 50%; /* Каждая кнопка занимает 50% ширины контейнера */
                 }
             }
         `;
@@ -146,6 +167,7 @@ function displayTorrentsOnPage() {
         searchInput.id = 'torrent-search-input';
         searchInput.type = 'text';
         searchInput.placeholder = 'Поиск по названию';
+        searchInput.style.marginLeft = '5px'; // Установить отступ слева
         searchInput.style.marginBottom = '10px';
         searchInput.style.padding = '10px';
         searchInput.style.borderRadius = '5px';
@@ -488,10 +510,17 @@ function displayTorrentsOnPage() {
             });
         });
 
-        // Добавляем элементы в контейнер
+        // Создаем контейнер для кнопок
+        const buttonContainer = document.createElement('div');
+        buttonContainer.id = 'torrent-button-container';
+
+        // Добавляем кнопки в контейнер
+        buttonContainer.appendChild(searchButton);
+        buttonContainer.appendChild(searchAllPageButton);
+
+        // Добавляем элементы в основной контейнер
         searchContainer.appendChild(searchInput);
-        searchContainer.appendChild(searchButton);
-        searchContainer.appendChild(searchAllPageButton);
+        searchContainer.appendChild(buttonContainer);
         searchContainer.appendChild(filterInput);
 
         // Установить фокус на поле ввода для поиска при запуске
@@ -514,7 +543,6 @@ function displayTorrentsOnPage() {
         const statusContainer = document.createElement('div');
         statusContainer.id = 'category-counter';
         statusContainer.classList.add('category-counter');
-        statusContainer.style.display = 'flex';
         statusContainer.style.alignItems = 'center';
         statusContainer.style.backgroundColor = tableBackgroundColor;
         statusContainer.style.width = '100%';
@@ -647,10 +675,11 @@ function displayTorrentsOnPage() {
 
         // Обработчик события кнопки Esc для закрытия модального окна
         document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
+            // Проверяем, нажата ли клавиша Escape и существует ли модальное окно
+            if (event.key === 'Escape' && document.body.contains(modal)) {
                 document.body.removeChild(modal);
             }
-        });
+        });        
     });
 
     // Функция для отображения данных в таблице модального окна
@@ -687,34 +716,34 @@ function displayTorrentsOnPage() {
                         ico = chrome.runtime.getURL('icons/nonameclub.ico');
                     }
                     row.innerHTML = `
-                        <td class="source-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="source-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; vertical-align: middle;">
                             <div style="display: flex; align-items: center; height: 100%;"> <!-- Исключить перенос текста от логотипа на новую строку, высота 100% для выравнивания -->
                                 <img src="${ico}" alt="${source}" style="max-width: 16px; margin-right: 16px;">
                                 <span>${source}</span>
                             </div>
                         </td>
-                        <td class="download-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="download-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif;; vertical-align: middle;">
                                 <a href="${item.Torrent}" target="_blank" style="color: ${buttonBackgroundColor}; text-decoration: none;">💾</a>
                         </td>
-                        <td class="magnet-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="magnet-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; vertical-align: middle;">
                                 <magnetButton></magnetButton>
                         </td>
-                        <td class="name-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="name-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: pointer; font-family: Lato, sans-serif; vertical-align: middle;">
                             <a href="${item.Url}" target="_blank" style="color: ${buttonBackgroundColor}; text-decoration: none;">${item.Name}</a>
                         </td>
-                        <td class="category-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="category-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; vertical-align: middle;">
                             ${item?.Category || 'Без категории'}
                         </td>
-                        <td class="size-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="size-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; vertical-align: middle;">
                             ${item.Size}
                         </td>
-                        <td class="seeds-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="seeds-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; vertical-align: middle;">
                             ${item.Seeds}
                         </td>
-                        <td class="peers-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="peers-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; vertical-align: middle;">
                             ${item.Peers}
                         </td>
-                        <td class="date-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; font-size: 16px; vertical-align: middle;">
+                        <td class="date-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; vertical-align: middle;">
                             ${item.Date.split(' ')[0].includes(':') ? item.Date.split(':')[0].slice(0, -2) : item.Date.split(' ')[0]}
                         </td>
                     `;
@@ -723,7 +752,6 @@ function displayTorrentsOnPage() {
                     magnetButton.style.padding = '0'; // Убираем отступы
                     magnetButton.style.background = 'none'; // Убираем фон
                     magnetButton.style.border = 'none'; // Убираем границу
-                    magnetButton.style.fontSize = '16px'; // Увеличиваем размер символа
                     magnetButton.style.color = buttonBackgroundColor; // Цвет символа
                     magnetButton.style.cursor = 'pointer'; // Курсор при наведении 
                     magnetButton.innerHTML = '🧲';

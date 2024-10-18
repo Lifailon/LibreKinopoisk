@@ -287,6 +287,9 @@ chrome.commands.onCommand.addListener((command) => {
     if (command === "toggle-interface") {
         // Загружаем скрипт
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (chrome.runtime.lastError || !tabs[0] || isSystemPage(tabs[0].url)) {
+                return
+            }
             chrome.scripting.executeScript({
                 target: { tabId: tabs[0].id },
                 files: ['torapi.js']

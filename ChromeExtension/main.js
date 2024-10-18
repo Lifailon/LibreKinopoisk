@@ -28,33 +28,35 @@ const newElementPadding = ({ tag, id, content, href }) => {
 // Функция для отрисовки кнопок на странице
 const main = async function (url) {
     // Поиск элемента кнопки на странице по классу, после которой будет отрисовка новых кнопок
-    const buttonBlock = document.querySelector('div[class^="styles_buttons__"], div[class^="styles_watchOnlineBlock__"]')
+    let buttonBlock = document.querySelector('div[class^="styles_buttons__"], div[class^="styles_watchOnlineBlock__"]')
     // Если элемент не найден, завершаем функцию
     if (!buttonBlock) {
+        buttonBlock = document.querySelector("#__next > div.styles_root__aLAvz > div.styles_contentContainer__nsyyt.styles_baseContainer__6TbY3 > div:nth-child(1) > div.styles_content__ZVhAZ > div.styles_wrapper__vMIQB > div.styles_buttonBar__WIIgP > div")
+    }
+    else if (!buttonBlock) {
         return
     }
 
     // Поиск элемента оригинального названия на странице по классу
-    const titleElement = document.querySelector('.styles_originalTitle__JaNKM')
+    let titleElement = document.querySelector('.styles_originalTitle__JaNKM') || document.querySelector('.styles_originalTitle__QWSWS')
     // Заменяем пробелы на символ сложения
     let title = titleElement ? titleElement.textContent.replace(/ /g, '+') : ''
     // Опускаем регистр
     const _title = titleElement ? titleElement.textContent.toLowerCase().replace(/ /g, '-') : ''
 
     // Поиск элементов исходного названия
-    var titleElements = document.querySelectorAll('[class^="styles_title__"]')
+    let titleElements = document.querySelectorAll('[class^="styles_title__"]')
     // Забираем второй элемент из массива заголовков
-    var secondTitleElement = titleElements[1]
+    let secondTitleElement = titleElements[1]
     // Получаем первый элемент из массива secondTitleElement
-    // var firstTitleElement = secondTitleElement.querySelector('[class^="styles_title__"]')
+    // let firstTitleElement = secondTitleElement.querySelector('[class^="styles_title__"]')
     // Получаем все дочерние элементы span, забираем только первый и его содержимое
-    var nameElement = secondTitleElement.querySelectorAll('span')[0].textContent
+    let nameElement = secondTitleElement.querySelectorAll('span')[0]?.textContent || document.querySelector('h1.styles_movieTitleRoot__sThGD')?.textContent
     // Обрезаем строку до скобки и удаляем пробелы в начале и в конце
-    var indexOfBracket = nameElement.indexOf('(')
+    let indexOfBracket = nameElement.indexOf('(')
+    let name = nameElement
     if (indexOfBracket !== -1) {
-        var name = nameElement.substring(0, indexOfBracket).trim()
-    } else {
-        var name = nameElement
+        name = nameElement.substring(0, indexOfBracket).trim()
     }
 
     // Задаем исходный язык для Wikipedia
@@ -69,9 +71,11 @@ const main = async function (url) {
     // Добавить кнопки если находим оригинальное название
     if (title) {
         // Читаем массив и забираем год
-        const yearElements = document.querySelectorAll('.styles_link__3QfAk')
-        const yearElement = yearElements[0]
-        const year = yearElement.textContent
+        const yearElement = document.querySelectorAll('.styles_link__3QfAk')[0]?.textContent
+        year = ''
+        if (yearElement) {
+            year = yearElement
+        }
 
         // Torrent
         chrome.storage.local.get(['TorrentCheckBox'], function (result) {
@@ -303,23 +307,12 @@ const main = async function (url) {
                     tag: 'a',
                     id: 'YouTube-Button',
                     href: `https://youtube.com/results?search_query=${title}+${year}+трейлер`,
-                    // content: `
-                    //     <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px; vertical-align: middle;">
-                    //         <title>YouTube</title>
-                    //         <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                    //     </svg>
-                    //     YouTube
-                    // `
-                    // content: `
-                    //     <img src="https://youtube.com/s/desktop/59ec15cc/img/favicon.ico" alt="Кинозал" style="width: 20px; height: 20px; vertical-align: middle;"/> 
-                    //     YouTube
-                    // `
                     content: 'YouTube'
-                });
-                YouTubeButton.setAttribute('target', '_blank');
-                buttonBlock.parentNode.insertBefore(YouTubeButton, buttonBlock.nextSibling);
+                })
+                YouTubeButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(YouTubeButton, buttonBlock.nextSibling)
             }
-        });
+        })
 
         // Trailer
         chrome.storage.local.get(['TrailerCheckBox'], function (result) {
@@ -330,11 +323,11 @@ const main = async function (url) {
                     id: 'YouTube-Button',
                     href: `https://widgets.kinopoisk.ru/discovery/film/${kinopoiskID}`,
                     content: 'Трейлер'
-                });
-                TrailerButton.setAttribute('target', '_blank');
-                buttonBlock.parentNode.insertBefore(TrailerButton, buttonBlock.nextSibling);
+                })
+                TrailerButton.setAttribute('target', '_blank')
+                buttonBlock.parentNode.insertBefore(TrailerButton, buttonBlock.nextSibling)
             }
-        });
+        })
     }
 
     // Kinobox
@@ -343,7 +336,7 @@ const main = async function (url) {
         // Проверка включенного CheckBox в настройках
         if (result.KinoboxCheckBox) {
             // Извлекаем ID фильма из URL
-            const kinopoiskID = url?.split('/')?.filter(itm => Number(itm)).pop();
+            const kinopoiskID = url?.split('/')?.filter(itm => Number(itm)).pop()
 
             // Создаем кнопку для открытия плеера Kinobox
             const KinoboxButton = newElementPadding({
@@ -351,56 +344,54 @@ const main = async function (url) {
                 id: 'Kinobox-Button',
                 href: '#',
                 content: 'Смотреть онлайн'
-            });
+            })
 
             // Добавляем обработчик события для кнопки
             KinoboxButton.addEventListener('click', function (event) {
-                event.preventDefault();
+                event.preventDefault()
 
                 // Создаем модальное окно
-                const modal = document.createElement('div');
-                modal.style.position = 'fixed';
-                modal.style.top = '0';
-                modal.style.left = '0';
-                modal.style.width = '100%';
-                modal.style.height = '100%';
-                modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
-                modal.style.zIndex = '10000';
-                modal.style.display = 'flex';
-                modal.style.alignItems = 'center';
-                modal.style.justifyContent = 'center';
+                const modal = document.createElement('div')
+                modal.style.position = 'fixed'
+                modal.style.top = '0'
+                modal.style.left = '0'
+                modal.style.width = '100%'
+                modal.style.height = '100%'
+                modal.style.backgroundColor = 'rgba(0,0,0,0.7)'
+                modal.style.zIndex = '10000'
+                modal.style.display = 'flex'
+                modal.style.alignItems = 'center'
+                modal.style.justifyContent = 'center'
 
                 // Создаем контейнер для плеера Kinobox
-                const playerContainer = document.createElement('div');
-                playerContainer.className = 'kinobox_player';
-                playerContainer.style.width = '80%';
-                playerContainer.style.height = '80%';
-                playerContainer.style.backgroundColor = '#000';
-                playerContainer.style.position = 'relative';
+                const playerContainer = document.createElement('div')
+                playerContainer.className = 'kinobox_player'
+                playerContainer.style.width = '80%'
+                playerContainer.style.height = '80%'
+                playerContainer.style.backgroundColor = '#000'
+                playerContainer.style.position = 'relative'
 
                 // Создаем кнопку для закрытия модального окна
-                const closeButton = document.createElement('span');
-                closeButton.textContent = '×';
-                closeButton.style.position = 'absolute';
-                closeButton.style.top = '5px';
-                closeButton.style.right = '20px';
-                closeButton.style.color = '#fff';
-                closeButton.style.fontSize = '40px';
-                closeButton.style.cursor = 'pointer';
+                const closeButton = document.createElement('span')
+                closeButton.textContent = '×'
+                closeButton.style.position = 'absolute'
+                closeButton.style.top = '5px'
+                closeButton.style.right = '20px'
+                closeButton.style.color = '#fff'
+                closeButton.style.fontSize = '40px'
+                closeButton.style.cursor = 'pointer'
                 closeButton.addEventListener('click', function () {
-                    document.body.removeChild(modal);
-                });
+                    document.body.removeChild(modal)
+                })
 
                 // modal.appendChild(iframe)
-                modal.appendChild(playerContainer);
-                modal.appendChild(closeButton);
-                document.body.appendChild(modal);
+                modal.appendChild(playerContainer)
+                modal.appendChild(closeButton)
+                document.body.appendChild(modal)
 
                 // Встраиваем и выполняем код плеера Kinobox
-                (function () {
-                    kbox('.kinobox_player', { search: { kinopoisk: kinopoiskID } });
-                })();
-            });
+                kbox('.kinobox_player', { search: { kinopoisk: kinopoiskID } })
+            })
             buttonBlock.parentNode.insertBefore(KinoboxButton, buttonBlock.nextSibling)
         } else {
             // Извлекаем идентификатора фильма из параметра с URL
@@ -426,7 +417,7 @@ const main = async function (url) {
             KinoboxButton.setAttribute('target', '_blank')
             buttonBlock.parentNode.insertBefore(KinoboxButton, buttonBlock.nextSibling)
         }
-    });
+    })
 }
 
 // Функция добавления кнопок на странице hd.kinopoisk
@@ -445,9 +436,9 @@ const hd = async function (buttonBlock) {
         href: url,
         content: '▶ Смотреть онлайн'
     })
-    KinoboxButton.style.borderRadius = '40px'; // Увеличиваем скругление углов
-    KinoboxButton.style.padding = '30px'; // Увеличиваем внутренний отступ
-    KinoboxButton.style.fontSize = '26px'; // Увеличиваем размер шрифта
+    KinoboxButton.style.borderRadius = '40px' // Увеличиваем скругление углов
+    KinoboxButton.style.padding = '30px' // Увеличиваем внутренний отступ
+    KinoboxButton.style.fontSize = '26px' // Увеличиваем размер шрифта
     KinoboxButton.setAttribute('target', '_blank')
     buttonBlock.parentNode.insertBefore(KinoboxButton, buttonBlock.nextSibling)
 }
