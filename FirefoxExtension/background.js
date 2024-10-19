@@ -287,6 +287,9 @@ browser.commands.onCommand.addListener((command) => {
     if (command === "toggle-interface") {
         // Загружаем скрипт
         browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+            if (chrome.runtime.lastError || !tabs[0] || isSystemPage(tabs[0].url)) {
+                return
+            }
             if (tabs.length > 0) {
                 browser.tabs.executeScript(tabs[0].id, { file: 'torapi.js' })
                 // После загрузки скрипта выполняем функцию displayTorrentsOnPage
