@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "name": "Launch add-on",
+            "addonPath": "${workspaceFolder}/FirefoxExtension",
+            "reloadOnChange": {
+                "watch": [ "${workspaceFolder}/FirefoxExtension/*.js" ],
+                "ignore": [ "${workspaceFolder}/ChromeExtension/**" ]
+            }
+        }
+    ]
+}
