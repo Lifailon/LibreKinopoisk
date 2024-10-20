@@ -28,7 +28,7 @@ const newElementPadding = ({ tag, id, content, href }) => {
 // Функция для отрисовки кнопок на странице
 const main = async function (url) {
     // Поиск элемента кнопки на странице по классу, после которой будет отрисовка новых кнопок
-    let buttonBlock = document.querySelector('div[class^="styles_buttons__"], div[class^="styles_watchOnlineBlock__"], div[class^="styles_buttonBar__"]')
+    let buttonBlock = document.querySelector('div[class^="styles_buttons__"], div[class^="styles_watchOnlineBlock__"], div[class^="styles_buttonBar__"], div[class^="style_buttonBar__"]')
     // Если элемент не найден, проверяем тэги для мобильных устройств или завершаем функцию
     if (!buttonBlock) {
         return
