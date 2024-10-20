@@ -1,22 +1,22 @@
 function displayTorrentsOnPage() {
 
-    let tableBackgroundColor = '#dddddd'; // мягкий светло-серый фон контейнера таблицы и статуса счетчиков
-    let inputBackgroundColor = '#f0f0f0'; // немного темнее для поля ввода и таблицы
-    let tableHeadBackgroundColor = '#e8e8e8'; // более светлый серый для заголовков столбцов
+    let tableBackgroundColor = '#dddddd'; // фон контейнера таблицы и статуса счетчиков
+    let inputBackgroundColor = '#f0f0f0'; // фон поля ввода и таблицы
+    let tableHeadBackgroundColor = '#e8e8e8'; // фон заголовков столбцов таблицы
     let buttonBackgroundColor = '#0078d4'; // фон кнопок, ссылок в таблице (менее яркий синий)
-    let buttonColor = '#000000'; // цвет текста на кнопке и в таблице
-    let tableBorderBottomColor = "#dddddd"; // мягкий светло-серый для нижней границы таблицы
+    let buttonColor = '#000000'; // цвет текста на кнопках поиска и в таблице
+    let tableBorderBottomColor = "#dddddd"; // цвет текста в таблице
 
     chrome.storage.local.get(['darkModeBox'], function (result) {
         if (result.darkModeBox) {
-            tableBackgroundColor = '#2d2d2d'; // фон контейнера таблицы и статуса счетчиков
-            inputBackgroundColor = '#333'// фон поля ввода и таблицы
-            tableHeadBackgroundColor = '#444'// фон заголовков столбцов таблицы
-            buttonBackgroundColor = '#1e90ff'; // фон кнопок, ссылок в таблице
-            buttonColor = '#ffffff'; // цвет букв на кнопке и в таблице
-            tableBorderBottomColor = "#555555"
-        }
-    })
+            tableBackgroundColor = '#2d2d2d'; 
+            inputBackgroundColor = '#333';
+            tableHeadBackgroundColor = '#444';
+            buttonBackgroundColor = '#1e90ff';
+            buttonColor = '#ffffff';
+            tableBorderBottomColor = "#555555";
+        };
+    });
 
     chrome.storage.local.get(['TorApiServer'], function(result) {
         var TorApiServer = result.TorApiServer;
@@ -39,11 +39,9 @@ function displayTorrentsOnPage() {
 
         // Контейнер для таблицы
         const tableContainer = document.createElement('div');
-        tableContainer.style.width = '90%';
-        tableContainer.style.height = '85%';
+        tableContainer.id = 'torapi-container';
         tableContainer.style.backgroundColor = tableBackgroundColor;
         tableContainer.style.padding = '20px';
-        tableContainer.style.borderRadius = '10px';
         tableContainer.style.overflowY = 'auto';
         tableContainer.style.position = 'relative';
         tableContainer.style.display = 'flex';
@@ -51,29 +49,36 @@ function displayTorrentsOnPage() {
         tableContainer.style.fontFamily = 'Lato, sans-serif';
         tableContainer.style.fontSize = '16px';
 
-        // Контейнер для полей ввода (поиск и фильтрация) и кнопки поиска
+        // Контейнер для полей ввода (поиск и фильтрация) и кнопок поиска
         const searchContainer = document.createElement('div');
         searchContainer.id = 'torrent-search-container';
         searchContainer.style.display = 'flex';
-        // searchContainer.style.flexDirection = 'column';
         searchContainer.style.alignItems = 'center';
         searchContainer.style.marginBottom = '10px';
         searchContainer.style.gap = '10px';
         searchContainer.style.fontFamily = 'Lato, sans-serif';
         searchContainer.style.fontSize = '16px';
 
-        // Стили для placeholder
+        // Общие стили и адаптация под мобильные устройства
         const styleElement = document.createElement('style');
         styleElement.textContent = `
-            /* Анимация кнопки загрузки */
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
+            /* Сброс стилей для стабильности */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            /* Размер модального окна */
+            #torapi-container {
+                width: 90%;
+                height: 85%;
+                border-radius: 15px; /* скругление углов */
             }
 
             #torrent-table {
-                width: 100%; /* Занимает всю ширину экрана */
-                border-collapse: collapse; /* Убирает пробелы между ячейками */
+                width: 100%;                /* Занимает всю ширину экрана */
+                border-collapse: collapse;  /* Убирает пробелы между ячейками */
             }
 
             /* Расположить статус счетчиков рядом с выпадающим списком фильтров */
@@ -82,32 +87,47 @@ function displayTorrentsOnPage() {
             }
           
             #torrent-table th, #torrent-table td, .source-cell, .source-cell div, .source-cell span {
-                font-size: 18px; /* Определяем размер шрифта в таблице по умолчанию     */
-                text-align: left; /* Выравнивание текста */
-                white-space: normal;   /* Разрешает перенос строк */
-                word-break: normal;    /* Перенос слов только по целым словам */
-                overflow-wrap: normal; /* Разрешает перенос длинных слов */
-                hyphens: manual;       /* Управляет расстановкой дефисов (по умолчанию) */
+                font-size: 18px;        /* Определяем размер шрифта в таблице по умолчанию */
+                text-align: left;       /* Выравнивание текста */
+                white-space: normal;    /* Разрешает перенос строк */
+                word-break: normal;     /* Перенос слов только по целым словам */
+                overflow-wrap: normal;  /* Разрешает перенос длинных слов */
+                hyphens: manual;        /* Управляет расстановкой дефисов (по умолчанию) */
             }
             
             #torrent-button-container {
-                display: flex; /* Используем flexbox для размещения кнопок в ряд */
-                gap: 10px; /* Отступ между кнопками */
+                display: flex;  /* Используем flexbox для размещения кнопок в ряд */
+                gap: 10px;      /* Отступ между кнопками */
+            }
+
+            /* Анимация кнопки загрузки */
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
             }
 
             /* Адаптировать интерфейс таблицы под мобильные устройства */
             @media (max-width: 1000px) {
-                #torrent-table {
-                    display: block; /* Позволяет прокрутку */
-                    overflow-x: auto; /* Включает горизонтальную прокрутку */
-                }
-            
-                #torrent-table thead {
-                    display: none; /* Скрыть заголовки таблицы на маленьких экранах */
+                /* Размер модального окна*/
+                #torapi-container {
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 0px;
                 }
 
+                #torrent-table {
+                    display: block;     /* Позволяет прокрутку */
+                    overflow-x: auto;   /* Включает горизонтальную прокрутку */
+                }
+            
+                /* Скрыть заголовки таблицы */
+                #torrent-table thead {
+                    display: none;
+                }
+
+                /* Скрыть список категорий и счетчики */
                 #category-counter {
-                    display: none; /* Скрыть список категорий и счетчики */
+                    display: none; 
                 }
 
                 #torrent-table tr {
@@ -123,13 +143,22 @@ function displayTorrentsOnPage() {
                     display: flex; /* Позволяет использовать flexbox внутри ячеек */
                     justify-content: flex-start; /* Выравнивание по левому краю */
                 }
+
+                /* Скрыть категории из таблицы */
+                .category-cell {
+                    display: none;
+                }
+
+                #modalCloseButton {
+                    display: none;
+                }
                     
                 /* Остальные ячейки остаются вертикальными и занимают 100% ширины */
                 .name-cell, .category-cell {
                     flex: 1 1 100%; /* Занимают 100% ширины */
                 }
 
-                /* Добавление текста эмодзи в ячейки .seeds-cell и .peers-cell */
+                /* Добавление эмодзи в ячейки .seeds-cell и .peers-cell */
                 .seeds-cell::before {
                     content: "⬆️ "; /*✅🔼🆗*/
                 }
@@ -149,9 +178,9 @@ function displayTorrentsOnPage() {
                 }
 
                 #torrent-button-container {
-                    display: flex; /* Кнопки идут в ряд */
-                    width: 100%; /* Занимает всю ширину */
-                    gap: 5px; /* Отступ между кнопками */
+                    display: flex;  /* Кнопки идут в ряд */
+                    width: 100%;    /* Занимает всю ширину */
+                    gap: 5px;       /* Отступ между кнопками */
                 }
                 
                 #torrent-search-button,
@@ -656,6 +685,7 @@ function displayTorrentsOnPage() {
 
         // Создаем кнопку для закрытия модального окна
         const closeButton = document.createElement('span');
+        closeButton.id = 'modalCloseButton';
         closeButton.textContent = '×';
         closeButton.style.position = 'absolute';
         closeButton.style.top = '5px';
