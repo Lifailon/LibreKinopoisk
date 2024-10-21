@@ -1,9 +1,11 @@
 function displayTorrentsOnPage() {
 
+    const textFontSize = '16px'
+
     let tableBackgroundColor = '#dddddd'; // фон контейнера таблицы и статуса счетчиков
     let inputBackgroundColor = '#f0f0f0'; // фон поля ввода и таблицы
     let tableHeadBackgroundColor = '#e8e8e8'; // фон заголовков столбцов таблицы
-    let buttonBackgroundColor = '#0078d4'; // фон кнопок, ссылок в таблице (менее яркий синий)
+    let buttonBackgroundColor = '#2398d5'; // фон кнопок, ссылок в таблице
     let buttonColor = '#000000'; // цвет текста на кнопках поиска и в таблице
     let tableBorderBottomColor = "#dddddd"; // цвет текста в таблице
 
@@ -35,7 +37,7 @@ function displayTorrentsOnPage() {
         modal.style.alignItems = 'center';
         modal.style.justifyContent = 'center';
         modal.style.fontFamily = 'Lato, sans-serif'; // Устанавливаем шрифт для модального окна
-        modal.style.fontSize = '16px'; // Размер шрифта
+        modal.style.fontSize = textFontSize; // Размер шрифта
 
         // Контейнер для таблицы
         const tableContainer = document.createElement('div');
@@ -47,7 +49,7 @@ function displayTorrentsOnPage() {
         tableContainer.style.display = 'flex';
         tableContainer.style.flexDirection = 'column';
         tableContainer.style.fontFamily = 'Lato, sans-serif';
-        tableContainer.style.fontSize = '16px';
+        tableContainer.style.fontSize = textFontSize;
 
         // Контейнер для полей ввода (поиск и фильтрация) и кнопок поиска
         const searchContainer = document.createElement('div');
@@ -57,7 +59,7 @@ function displayTorrentsOnPage() {
         searchContainer.style.marginBottom = '10px';
         searchContainer.style.gap = '10px';
         searchContainer.style.fontFamily = 'Lato, sans-serif';
-        searchContainer.style.fontSize = '16px';
+        searchContainer.style.fontSize = textFontSize;
 
         // Общие стили и адаптация под мобильные устройства
         const styleElement = document.createElement('style');
@@ -69,11 +71,39 @@ function displayTorrentsOnPage() {
                 box-sizing: border-box;
             }
 
-            /* Размер модального окна */
+            /* Модальное окно */
             #torapi-container {
-                width: 90%;
-                height: 85%;
-                border-radius: 15px; /* скругление углов */
+                width: 90%; /* Ширина модального окна */
+                height: 85%; /* Высота модального окна */
+                border-radius: 10px; /* скругление углов окна */
+                overflow-y: auto; /* Позволяет вертикальный скроллинг */
+                scrollbar-width: thin;
+                scrollbar-color: ${buttonBackgroundColor} ${tableBackgroundColor}; /* Цвет для ползунка и фона скроллбара */
+            }
+
+            /* Скругление ползунка */
+            #torapi-container::-webkit-scrollbar-thumb {
+                border-radius: 15px;
+            }
+            
+            /* Скрыть стрелки */
+            #torapi-container::-webkit-scrollbar-button {
+                display: none;
+            }
+
+            /* Стили для скроллбара выпадающего списка в WebKit-браузерах */
+            select::-webkit-scrollbar {
+                width: 8px; /* Ширина скроллбара */
+            }
+
+            select::-webkit-scrollbar-track {
+                background: ${tableBackgroundColor}; /* Цвет трека скроллбара */
+            }
+
+            select::-webkit-scrollbar-thumb {
+                background-color: ${buttonBackgroundColor}; /* Цвет ползунка */
+                border-radius: 10px; /* Скругление ползунка */
+                border: 2px solid transparent; /* Прозрачная граница для улучшения контраста */
             }
 
             #torrent-table {
@@ -127,7 +157,7 @@ function displayTorrentsOnPage() {
 
                 /* Скрыть список категорий и счетчики */
                 #category-counter {
-                    display: none; 
+                    display: none;
                 }
 
                 #torrent-table tr {
@@ -208,7 +238,7 @@ function displayTorrentsOnPage() {
         searchInput.style.backgroundColor = inputBackgroundColor;
         searchInput.style.color = buttonColor;
         searchInput.style.fontFamily = 'Lato, sans-serif';
-        searchInput.style.fontSize = '16px';
+        searchInput.style.fontSize = textFontSize;
 
         // Кнопка для выполнения быстрого поиска 🔎
         const searchButton = document.createElement('button');
@@ -363,7 +393,7 @@ function displayTorrentsOnPage() {
         filterInput.style.backgroundColor = inputBackgroundColor;
         filterInput.style.color = buttonColor;
         filterInput.style.fontFamily = 'Lato, sans-serif';
-        filterInput.style.fontSize = '16px';
+        filterInput.style.fontSize = textFontSize;
 
         // Функция для выделения текста при фильтрации
         function highlightText(text, words) {
@@ -586,7 +616,7 @@ function displayTorrentsOnPage() {
         const filterLabel = document.createElement('span');
         filterLabel.textContent = 'Фильтрация по категории:';
         filterLabel.style.fontFamily = 'Lato, sans-serif';
-        filterLabel.style.fontSize = '16px';
+        filterLabel.style.fontSize = textFontSize;
         filterLabel.style.marginRight = '10px'; // Отступ справа
         filterLabel.style.color = buttonColor;
             
@@ -595,8 +625,9 @@ function displayTorrentsOnPage() {
             
         // Создаем выпадающий список
         const dropdown = document.createElement('select');
+        dropdown.id = 'torapi-dropdown-category';
         dropdown.style.fontFamily = 'Lato, sans-serif';
-        dropdown.style.fontSize = '16px'; // Размер текста
+        dropdown.style.fontSize = textFontSize; // Размер текста
         dropdown.style.padding = '3px'; // Ширина окна относительно текста
         dropdown.style.borderRadius = '5px'; // Скругление
         dropdown.style.border = `1px solid ${buttonColor}`; // Толщина и цвет окна
@@ -734,7 +765,7 @@ function displayTorrentsOnPage() {
                     row.style.backgroundColor = inputBackgroundColor;
                     row.style.borderBottom = `1px solid ${tableBorderBottomColor}`;
                     row.style.fontFamily = 'Lato, sans-serif';
-                    row.style.fontSize = '16px';
+                    row.style.fontSize = textFontSize;
                     let ico
                     if (source.toLowerCase().trim() === "rutracker") {
                         ico = chrome.runtime.getURL('icons/rutracker.ico');
@@ -748,7 +779,7 @@ function displayTorrentsOnPage() {
                     row.innerHTML = `
                         <td class="source-cell" style="padding: 10px; border-bottom: 1px solid ${tableBorderBottomColor}; cursor: default; font-family: Lato, sans-serif; vertical-align: middle;">
                             <div style="display: flex; align-items: center; height: 100%;"> <!-- Исключить перенос текста от логотипа на новую строку, высота 100% для выравнивания -->
-                                <img src="${ico}" alt="${source}" style="max-width: 16px; margin-right: 16px;">
+                                <img src="${ico}" alt="${source}" style="max-width: ${textFontSize}; margin-right: ${textFontSize};">
                                 <span>${source}</span>
                             </div>
                         </td>
